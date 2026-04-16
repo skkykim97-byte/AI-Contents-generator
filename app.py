@@ -4,10 +4,10 @@ from datetime import datetime
 
 # 페이지 설정
 st.set_page_config(
-    page_title="롯데백화점 콘텐츠 생성기",
-    page_icon="🏢",
+    page_title="팝업 행사 생성기",
+    page_icon="🎪",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # 세션 상태 초기화
@@ -17,75 +17,287 @@ if 'benefits' not in st.session_state:
     st.session_state.benefits = []
 if 'generated_html' not in st.session_state:
     st.session_state.generated_html = ""
+if 'header_bg' not in st.session_state:
+    st.session_state.header_bg = "#FFFFFF"
+if 'hero_image' not in st.session_state:
+    st.session_state.hero_image = ""
 
-# CSS 스타일
+# 롯데 컬러 팔레트
+LOTTE_COLORS = [
+    {"name": "화이트", "hex": "#FFFFFF"},
+    {"name": "아이보리", "hex": "#FFF8F0"},
+    {"name": "베이지", "hex": "#F0EFE8"},
+    {"name": "핑크", "hex": "#FFF0F3"},
+    {"name": "라벤더", "hex": "#F5F0FF"},
+    {"name": "민트", "hex": "#F0FFF8"},
+    {"name": "스카이", "hex": "#F0F8FF"},
+    {"name": "피치", "hex": "#FFF5F0"},
+    {"name": "레드", "hex": "#C8102E"},
+    {"name": "골드", "hex": "#B07310"},
+    {"name": "네이비", "hex": "#1A2B3C"},
+    {"name": "그레이", "hex": "#767670"}
+]
+
+# 원본 HTML UI 스타일 적용
 st.markdown("""
 <style>
-    :root {
-        --lotte-red: #C8102E;
-        --lotte-bg: #F0EFE8;
-    }
-    
-    .main-header {
-        background: linear-gradient(135deg, #C8102E 0%, #8B0A1F 100%);
-        padding: 2rem;
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-        color: white;
-        box-shadow: 0 4px 20px rgba(200, 16, 46, 0.2);
-    }
-    
-    .stButton>button {
-        background: #C8102E !important;
-        color: white !important;
-        font-weight: 600;
-        border: none;
-        padding: 0.6rem 1.5rem;
-        border-radius: 8px;
-    }
-    
-    .stButton>button:hover {
-        background: #8B0A1F !important;
-        box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
-    }
-    
-    .preview-container {
-        background: #C8C7BE;
-        border-radius: 12px;
-        padding: 2rem;
-        display: flex;
-        justify-content: center;
-        min-height: 600px;
-    }
-    
-    .section-badge {
-        background: #FFF0F3;
-        color: #C8102E;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        display: inline-block;
-        margin-bottom: 0.5rem;
-    }
+/* 전체 리셋 */
+* {box-sizing: border-box;}
+.stApp {background: #F0EFE8;}
+
+/* 컨테이너 제거 */
+.block-container {
+    padding: 0 !important;
+    max-width: 100% !important;
+}
+
+/* 사이드바 숨기기 */
+[data-testid="stSidebar"] {display: none;}
+
+/* Top Bar */
+.topbar {
+    height: 50px;
+    background: #fff;
+    border-bottom: 1px solid #E0DFD8;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+}
+.tp-chip {
+    background: #FFF0F3;
+    color: #C8102E;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+.tp-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1A1A18;
+}
+.tp-sub {
+    font-size: 12px;
+    color: #767670;
+    flex: 1;
+}
+
+/* Main Layout */
+.main-layout {
+    display: flex;
+    height: calc(100vh - 50px);
+    margin-top: 50px;
+}
+
+/* Form Panel */
+.form-panel {
+    width: 400px;
+    min-width: 400px;
+    overflow-y: auto;
+    background: #F0EFE8;
+    border-right: 1px solid #E0DFD8;
+}
+
+/* Preview Panel */
+.preview-panel {
+    flex: 1;
+    overflow-y: auto;
+    background: #C8C7BE;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px;
+}
+.prev-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+.prev-device {
+    background: #fff;
+    width: 390px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    border-radius: 2px;
+}
+
+/* Block Styles */
+.blk {
+    background: #fff;
+    border: 1px solid #ECEAE3;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+.blk-head {
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #ECEAE3;
+    background: #fff;
+}
+.blk-ico {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+.blk-name {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1A1A18;
+    letter-spacing: 0.2px;
+}
+.blk-badge {
+    font-size: 10px;
+    color: #767670;
+    background: #F0EFE8;
+    border: 1px solid #E0DFD8;
+    padding: 2px 6px;
+    border-radius: 8px;
+}
+.blk-body {
+    padding: 14px;
+}
+
+/* Form Elements */
+.field {
+    margin-bottom: 11px;
+}
+.lbl {
+    font-size: 11px;
+    font-weight: 700;
+    color: #767670;
+    letter-spacing: 0.2px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* Streamlit Input Override */
+.stTextInput input, .stTextArea textarea {
+    border: 1px solid #E0DFD8 !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    padding: 7px 9px !important;
+    font-family: 'Noto Sans KR', sans-serif !important;
+    background: #fff !important;
+}
+.stTextInput input:focus, .stTextArea textarea:focus {
+    border-color: #C8102E !important;
+    box-shadow: 0 0 0 2px rgba(200,16,46,0.07) !important;
+}
+
+/* Color Palette */
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.color-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+}
+.color-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    transition: all 0.12s;
+    cursor: pointer;
+}
+.color-dot:hover {
+    transform: scale(1.08);
+}
+.color-dot.selected {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #1A1A18;
+    transform: scale(1.08);
+}
+.color-name {
+    font-size: 9px;
+    color: #767670;
+    font-weight: 500;
+}
+
+/* Variable Cards */
+.vcard {
+    background: #F0EFE8;
+    border: 1px solid #ECEAE3;
+    border-radius: 7px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+.vc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 9px;
+}
+.vc-num {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+}
+
+/* Button Styles */
+.stButton > button {
+    width: 100%;
+    background: #1A1A18 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    padding: 8px 14px !important;
+    height: 32px !important;
+}
+.stButton > button:hover {
+    background: #333 !important;
+}
+
+/* Number Input */
+.stNumberInput input {
+    border: 1px solid #E0DFD8 !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+}
+
+/* Expander */
+.streamlit-expanderHeader {
+    background: #F0EFE8 !important;
+    border: 1px solid #ECEAE3 !important;
+    border-radius: 7px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 8px 12px !important;
+}
+
+/* Hide Streamlit Branding */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
-
-# 템플릿 정의
-TEMPLATES = {
-    "점별 팝업행사": {"icon": "🎪", "color": "#C8102E"},
-    "우수고객 혜택 안내": {"icon": "👑", "color": "#B07310"},
-    "뉴오픈 or 리뉴얼": {"icon": "✨", "color": "#2C5F2D"},
-    "스페셜 베네핏 + 상품": {"icon": "🎁", "color": "#1E3A8A"}
-}
-
-# 롯데백화점 컬러 팔레트
-LOTTE_COLORS = {
-    "화이트": "#FFFFFF", "아이보리": "#FFF8F0", "베이지": "#F0EFE8",
-    "핑크": "#FFF0F3", "라벤더": "#F5F0FF", "민트": "#F0FFF8",
-    "스카이": "#F0F8FF", "피치": "#FFF5F0", "레드": "#C8102E",
-    "골드": "#B07310", "네이비": "#1A2B3C", "그레이": "#767670"
-}
 
 def calculate_luminance(hex_color):
     """색상 밝기 계산"""
@@ -114,7 +326,7 @@ def generate_popup_html(data):
 <style>
 *{{margin:0;padding:0;box-sizing:border-box}}
 body{{font-family:'Noto Sans KR',sans-serif;background:#fff;-webkit-font-smoothing:antialiased}}
-#c{{width:390px;margin:0 auto;background:#fff}}
+#c{{width:390px;background:#fff}}
 .hd{{padding:20px 20px 18px;background:{hdr_bg}}}
 .hd-brand{{font-size:12px;font-weight:400;letter-spacing:.3px;margin-bottom:7px;line-height:1.4;color:{hdr_muted}}}
 .hd-title{{font-size:19px;font-weight:700;letter-spacing:-.4px;line-height:1.35;margin-bottom:14px;word-break:keep-all;color:{hdr_tx}}}
@@ -170,7 +382,7 @@ body{{font-family:'Noto Sans KR',sans-serif;background:#fff;-webkit-font-smoothi
     if data.get('hero_image'):
         html += f'<img src="{data["hero_image"]}" alt="대표">'
     else:
-        html += '<div class="hero-ph">대표 이미지</div>'
+        html += '<div class="hero-ph">대표 이미지를 업로드하세요</div>'
     html += '</div>'
     
     # 소개
@@ -216,145 +428,227 @@ body{{font-family:'Noto Sans KR',sans-serif;background:#fff;-webkit-font-smoothi
     html += '</div></body></html>'
     return html
 
-# 헤더
-st.markdown('<div class="main-header"><h1>🏢 롯데백화점 콘텐츠 생성기</h1><p>점별 팝업행사 템플릿으로 빠르게 HTML 콘텐츠를 생성하세요</p></div>', unsafe_allow_html=True)
-
-# 사이드바
-with st.sidebar:
-    st.markdown("### 📋 템플릿 선택")
-    
-    selected_template = st.selectbox(
-        "콘텐츠 유형",
-        list(TEMPLATES.keys()),
-        format_func=lambda x: f"{TEMPLATES[x]['icon']} {x}"
-    )
-    
-    st.markdown("---")
-    st.info(f"**{selected_template}** 템플릿이 선택되었습니다.\n\n현재는 점별 팝업행사 템플릿만 완전 구현되어 있습니다.")
-
-# 메인 영역
-if selected_template == "점별 팝업행사":
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
-        st.markdown("### ✏️ 콘텐츠 입력")
-        
-        # 헤더 정보
-        st.markdown('<div class="section-badge">📌 기본 정보</div>', unsafe_allow_html=True)
-        brand = st.text_input("브랜드명", placeholder="예: 루이비통")
-        title = st.text_input("행사 제목*", placeholder="예: 2025 S/S 팝업 스토어")
-        
-        col_a, col_b = st.columns(2)
-        with col_a:
-            period = st.text_input("기간", placeholder="1.15 ~ 1.31")
-        with col_b:
-            store = st.text_input("매장", placeholder="본점")
-        
-        location = st.text_input("장소", placeholder="9F 명품관")
-        
-        # 헤더 배경색
-        st.markdown('<div class="section-badge">🎨 헤더 색상</div>', unsafe_allow_html=True)
-        color_cols = st.columns(6)
-        selected_color = "#FFFFFF"
-        
-        for idx, (name, color) in enumerate(LOTTE_COLORS.items()):
-            with color_cols[idx % 6]:
-                if st.button(name, key=f"color_{name}", use_container_width=True):
-                    selected_color = color
-        
-        header_bg = st.color_picker("또는 직접 선택", selected_color, key="custom_color")
-        
-        # 대표 이미지
-        st.markdown('<div class="section-badge">🖼️ 대표 이미지</div>', unsafe_allow_html=True)
-        hero_image = st.text_input("이미지 URL", placeholder="https://...")
-        
-        # 소개 텍스트
-        st.markdown('<div class="section-badge">📝 소개</div>', unsafe_allow_html=True)
-        intro = st.text_area("소개 텍스트", placeholder="행사 소개 내용을 입력하세요.\n\n단락 구분은 빈 줄로 합니다.", height=100)
-        
-        # Items
-        st.markdown('<div class="section-badge">🎁 아이템 목록</div>', unsafe_allow_html=True)
-        num_items = st.number_input("아이템 개수", 0, 10, len(st.session_state.items))
-        
-        # 아이템 개수 조정
-        while len(st.session_state.items) < num_items:
-            st.session_state.items.append({"name": "", "price": "", "desc": "", "image": ""})
-        while len(st.session_state.items) > num_items:
-            st.session_state.items.pop()
-        
-        for i, item in enumerate(st.session_state.items):
-            with st.expander(f"아이템 {i+1}"):
-                item['name'] = st.text_input(f"상품명 {i+1}", item['name'], key=f"item_name_{i}")
-                item['price'] = st.text_input(f"가격 {i+1}", item['price'], key=f"item_price_{i}", placeholder="₩1,200,000")
-                item['desc'] = st.text_area(f"설명 {i+1}", item['desc'], key=f"item_desc_{i}", height=60)
-                item['image'] = st.text_input(f"이미지 URL {i+1}", item['image'], key=f"item_img_{i}")
-        
-        # Benefits
-        st.markdown('<div class="section-badge">⭐ 특별 혜택</div>', unsafe_allow_html=True)
-        num_benefits = st.number_input("혜택 개수", 0, 10, len(st.session_state.benefits))
-        
-        while len(st.session_state.benefits) < num_benefits:
-            st.session_state.benefits.append({"cond": "", "gift": "", "image": ""})
-        while len(st.session_state.benefits) > num_benefits:
-            st.session_state.benefits.pop()
-        
-        for i, bn in enumerate(st.session_state.benefits):
-            with st.expander(f"혜택 {i+1}"):
-                bn['cond'] = st.text_input(f"조건 {i+1}", bn['cond'], key=f"bn_cond_{i}", placeholder="행사 SNS 이벤트 참여 시")
-                bn['gift'] = st.text_input(f"혜택 내용 {i+1}", bn['gift'], key=f"bn_gift_{i}", placeholder="2ml 바이알 1개 증정")
-                bn['image'] = st.text_input(f"이미지 URL {i+1}", bn['image'], key=f"bn_img_{i}")
-        
-        # 유의사항
-        st.markdown('<div class="section-badge">⚠️ 유의사항</div>', unsafe_allow_html=True)
-        notes = st.text_area("유의사항", placeholder="행사 유의사항을 입력하세요", height=80)
-        
-        st.markdown("---")
-        if st.button("🎨 HTML 생성하기", type="primary", use_container_width=True):
-            data = {
-                'brand': brand, 'title': title, 'period': period, 'store': store,
-                'location': location, 'header_bg': header_bg, 'hero_image': hero_image,
-                'intro': intro, 'items': st.session_state.items,
-                'benefits': st.session_state.benefits, 'notes': notes
-            }
-            st.session_state.generated_html = generate_popup_html(data)
-            st.success("✅ HTML이 생성되었습니다!")
-    
-    with col2:
-        st.markdown("### 👁️ 미리보기 및 다운로드")
-        
-        if st.session_state.generated_html:
-            st.markdown('<div class="preview-container">', unsafe_allow_html=True)
-            st.components.v1.html(st.session_state.generated_html, height=800, scrolling=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-            st.markdown("---")
-            
-            col_a, col_b = st.columns(2)
-            with col_a:
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                filename = f"팝업행사_{title or '콘텐츠'}_{timestamp}.html"
-                st.download_button(
-                    "📥 HTML 다운로드",
-                    st.session_state.generated_html,
-                    filename,
-                    "text/html",
-                    use_container_width=True
-                )
-            
-            with col_b:
-                if st.button("📋 코드 보기", use_container_width=True):
-                    st.code(st.session_state.generated_html, language="html")
-        else:
-            st.info("👈 왼쪽에서 내용을 입력하고 'HTML 생성하기' 버튼을 눌러주세요")
-
-else:
-    st.warning(f"**{selected_template}** 템플릿은 현재 개발 중입니다.")
-
-# 푸터
-st.markdown("---")
+# Top Bar
 st.markdown("""
-<div style="text-align:center;color:#888;padding:1rem">
-<p>🏢 롯데백화점 DX팀 | 콘텐츠 생성기 v1.0</p>
-<p style="font-size:0.9rem">템플릿 기반 자동 생성으로 퍼블리싱 시간 60% 단축</p>
+<div class="topbar">
+    <span class="tp-chip">TOOL</span>
+    <span class="tp-title">팝업 행사 생성기</span>
+    <span class="tp-sub">롯데백화점 DX팀</span>
 </div>
 """, unsafe_allow_html=True)
+
+# Main Layout
+col_form, col_preview = st.columns([400, None], gap="none")
+
+with col_form:
+    st.markdown('<div class="form-panel"><div style="padding: 16px;">', unsafe_allow_html=True)
+    
+    # 1. 행사 기본정보
+    st.markdown("""
+    <div class="blk">
+        <div class="blk-head">
+            <div class="blk-ico" style="background:#FFF0F3;color:#C8102E">1</div>
+            <div class="blk-name">행사 기본정보</div>
+        </div>
+        <div class="blk-body">
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<span class="lbl">브랜드명</span>', unsafe_allow_html=True)
+    brand = st.text_input("브랜드명", label_visibility="collapsed", placeholder="루이비통", key="brand")
+    
+    st.markdown('<span class="lbl">행사 제목</span>', unsafe_allow_html=True)
+    title = st.text_input("행사 제목", label_visibility="collapsed", placeholder="2025 S/S 팝업 스토어", key="title")
+    
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.markdown('<span class="lbl">기간</span>', unsafe_allow_html=True)
+        period = st.text_input("기간", label_visibility="collapsed", placeholder="1.15 ~ 1.31", key="period")
+    with col_b:
+        st.markdown('<span class="lbl">매장</span>', unsafe_allow_html=True)
+        store = st.text_input("매장", label_visibility="collapsed", placeholder="본점", key="store")
+    
+    st.markdown('<span class="lbl">장소</span>', unsafe_allow_html=True)
+    location = st.text_input("장소", label_visibility="collapsed", placeholder="9F 명품관", key="location")
+    
+    st.markdown('</div></div>', unsafe_allow_html=True)
+    
+    # 2. 헤더 색상
+    st.markdown("""
+    <div class="blk">
+        <div class="blk-head">
+            <div class="blk-ico" style="background:#FFF8EC;color:#B07310">2</div>
+            <div class="blk-name">헤더 색상</div>
+        </div>
+        <div class="blk-body">
+    """, unsafe_allow_html=True)
+    
+    # 컬러 팔레트 그리드
+    st.markdown('<div class="color-grid">', unsafe_allow_html=True)
+    cols = st.columns(4)
+    for idx, color in enumerate(LOTTE_COLORS):
+        with cols[idx % 4]:
+            selected_class = "selected" if st.session_state.header_bg == color['hex'] else ""
+            if st.button(f"⬤", key=f"color_{idx}", help=color['name']):
+                st.session_state.header_bg = color['hex']
+                st.rerun()
+            st.markdown(f'<div style="text-align:center;margin-top:-20px;"><div class="color-dot {selected_class}" style="background:{color["hex"]};margin:0 auto;"></div><div class="color-name">{color["name"]}</div></div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('</div></div>', unsafe_allow_html=True)
+    
+    # 3. 대표 이미지
+    st.markdown("""
+    <div class="blk">
+        <div class="blk-head">
+            <div class="blk-ico" style="background:#F0F8FF;color:#1E3A8A">3</div>
+            <div class="blk-name">대표 이미지</div>
+        </div>
+        <div class="blk-body">
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<span class="lbl">이미지 URL</span>', unsafe_allow_html=True)
+    hero_image = st.text_input("이미지 URL", label_visibility="collapsed", placeholder="https://...", key="hero_img", value=st.session_state.hero_image)
+    st.session_state.hero_image = hero_image
+    
+    st.markdown('</div></div>', unsafe_allow_html=True)
+    
+    # 4. 브랜드 소개
+    st.markdown("""
+    <div class="blk">
+        <div class="blk-head">
+            <div class="blk-ico" style="background:#F5F0FF;color:#7C3AED">4</div>
+            <div class="blk-name">브랜드 소개</div>
+        </div>
+        <div class="blk-body">
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<span class="lbl">소개 텍스트</span>', unsafe_allow_html=True)
+    intro = st.text_area("소개", label_visibility="collapsed", placeholder="브랜드 및 행사 소개를 입력하세요.\n\n단락 구분은 빈 줄로 합니다.", height=100, key="intro")
+    
+    st.markdown('</div></div>', unsafe_allow_html=True)
+    
+    # 5. Item 목록
+    st.markdown(f"""
+    <div class="blk">
+        <div class="blk-head">
+            <div class="blk-ico" style="background:#FFF5F0;color:#EA580C">5</div>
+            <div class="blk-name">Item 목록</div>
+            <span class="blk-badge">{len(st.session_state.items)}개</span>
+        </div>
+        <div class="blk-body">
+    """, unsafe_allow_html=True)
+    
+    num_items = st.number_input("아이템 개수", 0, 10, len(st.session_state.items), label_visibility="collapsed", key="num_items")
+    
+    while len(st.session_state.items) < num_items:
+        st.session_state.items.append({"name": "", "price": "", "desc": "", "image": ""})
+    while len(st.session_state.items) > num_items:
+        st.session_state.items.pop()
+    
+    for i in range(len(st.session_state.items)):
+        st.markdown(f'<div class="vcard"><div class="vc-head"><span class="vc-num" style="background:#FFF5F0;color:#EA580C">아이템 {i+1}</span></div>', unsafe_allow_html=True)
+        
+        st.markdown('<span class="lbl">상품명</span>', unsafe_allow_html=True)
+        st.session_state.items[i]['name'] = st.text_input(f"상품명{i}", st.session_state.items[i]['name'], label_visibility="collapsed", key=f"item_name_{i}", placeholder="상품명")
+        
+        st.markdown('<span class="lbl">가격</span>', unsafe_allow_html=True)
+        st.session_state.items[i]['price'] = st.text_input(f"가격{i}", st.session_state.items[i]['price'], label_visibility="collapsed", key=f"item_price_{i}", placeholder="₩1,200,000")
+        
+        st.markdown('<span class="lbl">설명</span>', unsafe_allow_html=True)
+        st.session_state.items[i]['desc'] = st.text_area(f"설명{i}", st.session_state.items[i]['desc'], label_visibility="collapsed", key=f"item_desc_{i}", height=60, placeholder="상품 설명")
+        
+        st.markdown('<span class="lbl">이미지 URL</span>', unsafe_allow_html=True)
+        st.session_state.items[i]['image'] = st.text_input(f"이미지{i}", st.session_state.items[i]['image'], label_visibility="collapsed", key=f"item_img_{i}", placeholder="https://...")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('</div></div>', unsafe_allow_html=True)
+    
+    # 6. Special Benefit
+    st.markdown(f"""
+    <div class="blk">
+        <div class="blk-head">
+            <div class="blk-ico" style="background:#FFF8EC;color:#B07310">6</div>
+            <div class="blk-name">Special Benefit</div>
+            <span class="blk-badge">{len(st.session_state.benefits)}개</span>
+        </div>
+        <div class="blk-body">
+    """, unsafe_allow_html=True)
+    
+    num_benefits = st.number_input("혜택 개수", 0, 10, len(st.session_state.benefits), label_visibility="collapsed", key="num_benefits")
+    
+    while len(st.session_state.benefits) < num_benefits:
+        st.session_state.benefits.append({"cond": "", "gift": "", "image": ""})
+    while len(st.session_state.benefits) > num_benefits:
+        st.session_state.benefits.pop()
+    
+    for i in range(len(st.session_state.benefits)):
+        st.markdown(f'<div class="vcard"><div class="vc-head"><span class="vc-num" style="background:#FFF8EC;color:#B07310">혜택 {i+1}</span></div>', unsafe_allow_html=True)
+        
+        st.markdown('<span class="lbl">조건 (연한 글씨)</span>', unsafe_allow_html=True)
+        st.session_state.benefits[i]['cond'] = st.text_input(f"조건{i}", st.session_state.benefits[i]['cond'], label_visibility="collapsed", key=f"bn_cond_{i}", placeholder="행사 SNS 이벤트 참여 시")
+        
+        st.markdown('<span class="lbl">혜택 내용 (굵은 글씨)</span>', unsafe_allow_html=True)
+        st.session_state.benefits[i]['gift'] = st.text_input(f"혜택{i}", st.session_state.benefits[i]['gift'], label_visibility="collapsed", key=f"bn_gift_{i}", placeholder="2ml 바이알 1개 증정")
+        
+        st.markdown('<span class="lbl">이미지 URL</span>', unsafe_allow_html=True)
+        st.session_state.benefits[i]['image'] = st.text_input(f"혜택이미지{i}", st.session_state.benefits[i]['image'], label_visibility="collapsed", key=f"bn_img_{i}", placeholder="https://...")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('</div></div>', unsafe_allow_html=True)
+    
+    # 7. 유의사항
+    st.markdown("""
+    <div class="blk">
+        <div class="blk-head">
+            <div class="blk-ico" style="background:#FEF3C7;color:#92400E">7</div>
+            <div class="blk-name">유의사항</div>
+        </div>
+        <div class="blk-body">
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<span class="lbl">유의사항 텍스트</span>', unsafe_allow_html=True)
+    notes = st.text_area("유의사항", label_visibility="collapsed", placeholder="행사 유의사항을 입력하세요", height=80, key="notes")
+    
+    st.markdown('</div></div>', unsafe_allow_html=True)
+    
+    # 생성 버튼
+    if st.button("HTML 생성하기", key="generate"):
+        data = {
+            'brand': brand, 'title': title, 'period': period, 'store': store,
+            'location': location, 'header_bg': st.session_state.header_bg,
+            'hero_image': hero_image, 'intro': intro,
+            'items': st.session_state.items, 'benefits': st.session_state.benefits,
+            'notes': notes
+        }
+        st.session_state.generated_html = generate_popup_html(data)
+        st.rerun()
+    
+    st.markdown('</div></div>', unsafe_allow_html=True)
+
+with col_preview:
+    st.markdown('<div class="preview-panel">', unsafe_allow_html=True)
+    st.markdown('<div class="prev-lbl">PREVIEW — 390px mobile</div>', unsafe_allow_html=True)
+    
+    if st.session_state.generated_html:
+        st.markdown('<div class="prev-device">', unsafe_allow_html=True)
+        st.components.v1.html(st.session_state.generated_html, height=800, scrolling=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # 다운로드 버튼
+        st.markdown('<div style="margin-top:20px;width:390px;">', unsafe_allow_html=True)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"[팝업]_{brand or '행사'}_{title or 'content'}_{timestamp}.html"
+        st.download_button(
+            "📥 HTML 다운로드",
+            st.session_state.generated_html,
+            filename,
+            "text/html",
+            use_container_width=True
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        st.markdown('<div style="color:rgba(255,255,255,0.6);font-size:13px;text-align:center;margin-top:100px;">← 왼쪽 폼을 작성하고<br>HTML 생성하기 버튼을 눌러주세요</div>', unsafe_allow_html=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
