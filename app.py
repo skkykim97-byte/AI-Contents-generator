@@ -1,5 +1,4 @@
 import streamlit as st
-import base64
 from datetime import datetime
 
 # 페이지 설정
@@ -19,8 +18,6 @@ if 'generated_html' not in st.session_state:
     st.session_state.generated_html = ""
 if 'header_bg' not in st.session_state:
     st.session_state.header_bg = "#FFFFFF"
-if 'hero_image' not in st.session_state:
-    st.session_state.hero_image = ""
 
 # 롯데 컬러 팔레트
 LOTTE_COLORS = [
@@ -38,269 +35,81 @@ LOTTE_COLORS = [
     {"name": "그레이", "hex": "#767670"}
 ]
 
-# 원본 HTML UI 스타일 적용
+# 스타일
 st.markdown("""
 <style>
-/* 전체 리셋 */
-* {box-sizing: border-box;}
 .stApp {background: #F0EFE8;}
-
-/* 컨테이너 제거 */
-.block-container {
-    padding: 0 !important;
-    max-width: 100% !important;
-}
-
-/* 사이드바 숨기기 */
+.block-container {padding: 0 !important; max-width: 100% !important;}
 [data-testid="stSidebar"] {display: none;}
+#MainMenu, footer, header {visibility: hidden;}
 
-/* Top Bar */
 .topbar {
-    height: 50px;
-    background: #fff;
-    border-bottom: 1px solid #E0DFD8;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    gap: 10px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 999;
+    height: 50px; background: #fff; border-bottom: 1px solid #E0DFD8;
+    display: flex; align-items: center; padding: 0 20px; gap: 10px;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
 }
-.tp-chip {
-    background: #FFF0F3;
-    color: #C8102E;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
+.tp-chip {background: #FFF0F3; color: #C8102E; font-size: 10px; font-weight: 700; 
+    padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px;}
+.tp-title {font-size: 13px; font-weight: 700; color: #1A1A18;}
+.tp-sub {font-size: 12px; color: #767670; flex: 1;}
+
+.blk {background: #fff; border: 1px solid #ECEAE3; border-radius: 10px; 
+    overflow: hidden; margin-bottom: 8px;}
+.blk-head {padding: 10px 14px; display: flex; align-items: center; gap: 8px; 
+    border-bottom: 1px solid #ECEAE3; background: #fff;}
+.blk-ico {width: 20px; height: 20px; border-radius: 4px; display: flex; 
+    align-items: center; justify-content: center; font-size: 10px; font-weight: 700;}
+.blk-name {flex: 1; font-size: 12px; font-weight: 700; color: #1A1A18; letter-spacing: 0.2px;}
+.blk-badge {font-size: 10px; color: #767670; background: #F0EFE8; 
+    border: 1px solid #E0DFD8; padding: 2px 6px; border-radius: 8px;}
+.blk-body {padding: 14px;}
+
+.lbl {font-size: 11px; font-weight: 700; color: #767670; letter-spacing: 0.2px; 
+    margin-bottom: 4px; display: block;}
+
+.stTextInput input, .stTextArea textarea, .stNumberInput input {
+    border: 1px solid #E0DFD8 !important; border-radius: 6px !important;
+    font-size: 13px !important; padding: 7px 9px !important;
+    font-family: 'Noto Sans KR', sans-serif !important; background: #fff !important;
 }
-.tp-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: #1A1A18;
-}
-.tp-sub {
-    font-size: 12px;
-    color: #767670;
-    flex: 1;
+.stTextInput input:focus, .stTextArea textarea:focus, .stNumberInput input:focus {
+    border-color: #C8102E !important; box-shadow: 0 0 0 2px rgba(200,16,46,0.07) !important;
 }
 
-/* Main Layout */
-.main-layout {
-    display: flex;
-    height: calc(100vh - 50px);
-    margin-top: 50px;
-}
+.color-grid {display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 8px 0;}
+.color-item {text-align: center;}
+.color-dot {width: 36px; height: 36px; border-radius: 6px; margin: 0 auto 3px; 
+    border: 2px solid transparent; cursor: pointer; transition: all 0.12s;}
+.color-dot:hover {transform: scale(1.08);}
+.color-dot.selected {box-shadow: 0 0 0 2px #fff, 0 0 0 4px #1A1A18; transform: scale(1.08);}
+.color-name {font-size: 9px; color: #767670; font-weight: 500;}
 
-/* Form Panel */
-.form-panel {
-    width: 400px;
-    min-width: 400px;
-    overflow-y: auto;
-    background: #F0EFE8;
-    border-right: 1px solid #E0DFD8;
-}
+.vcard {background: #F0EFE8; border: 1px solid #ECEAE3; border-radius: 7px; 
+    padding: 12px; margin-bottom: 8px;}
+.vc-head {display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px;}
+.vc-num {font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;}
 
-/* Preview Panel */
-.preview-panel {
-    flex: 1;
-    overflow-y: auto;
-    background: #C8C7BE;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 28px 20px;
-}
-.prev-lbl {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: rgba(255,255,255,0.55);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-}
-.prev-device {
-    background: #fff;
-    width: 390px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    border-radius: 2px;
-}
-
-/* Block Styles */
-.blk {
-    background: #fff;
-    border: 1px solid #ECEAE3;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 8px;
-}
-.blk-head {
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid #ECEAE3;
-    background: #fff;
-}
-.blk-ico {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-.blk-name {
-    flex: 1;
-    font-size: 12px;
-    font-weight: 700;
-    color: #1A1A18;
-    letter-spacing: 0.2px;
-}
-.blk-badge {
-    font-size: 10px;
-    color: #767670;
-    background: #F0EFE8;
-    border: 1px solid #E0DFD8;
-    padding: 2px 6px;
-    border-radius: 8px;
-}
-.blk-body {
-    padding: 14px;
-}
-
-/* Form Elements */
-.field {
-    margin-bottom: 11px;
-}
-.lbl {
-    font-size: 11px;
-    font-weight: 700;
-    color: #767670;
-    letter-spacing: 0.2px;
-    margin-bottom: 4px;
-    display: block;
-}
-
-/* Streamlit Input Override */
-.stTextInput input, .stTextArea textarea {
-    border: 1px solid #E0DFD8 !important;
-    border-radius: 6px !important;
-    font-size: 13px !important;
-    padding: 7px 9px !important;
-    font-family: 'Noto Sans KR', sans-serif !important;
-    background: #fff !important;
-}
-.stTextInput input:focus, .stTextArea textarea:focus {
-    border-color: #C8102E !important;
-    box-shadow: 0 0 0 2px rgba(200,16,46,0.07) !important;
-}
-
-/* Color Palette */
-.color-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-bottom: 8px;
-}
-.color-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    cursor: pointer;
-}
-.color-dot {
-    width: 36px;
-    height: 36px;
-    border-radius: 6px;
-    border: 2px solid transparent;
-    transition: all 0.12s;
-    cursor: pointer;
-}
-.color-dot:hover {
-    transform: scale(1.08);
-}
-.color-dot.selected {
-    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #1A1A18;
-    transform: scale(1.08);
-}
-.color-name {
-    font-size: 9px;
-    color: #767670;
-    font-weight: 500;
-}
-
-/* Variable Cards */
-.vcard {
-    background: #F0EFE8;
-    border: 1px solid #ECEAE3;
-    border-radius: 7px;
-    padding: 12px;
-    margin-bottom: 8px;
-}
-.vc-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 9px;
-}
-.vc-num {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 4px;
-}
-
-/* Button Styles */
 .stButton > button {
-    width: 100%;
-    background: #1A1A18 !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 6px !important;
-    font-weight: 700 !important;
-    font-size: 12px !important;
-    padding: 8px 14px !important;
-    height: 32px !important;
+    width: 100% !important; background: #1A1A18 !important; color: white !important;
+    border: none !important; border-radius: 6px !important; font-weight: 700 !important;
+    font-size: 12px !important; padding: 8px 14px !important; height: 32px !important;
 }
-.stButton > button:hover {
-    background: #333 !important;
-}
+.stButton > button:hover {background: #333 !important;}
 
-/* Number Input */
-.stNumberInput input {
-    border: 1px solid #E0DFD8 !important;
-    border-radius: 6px !important;
-    font-size: 13px !important;
-}
-
-/* Expander */
 .streamlit-expanderHeader {
-    background: #F0EFE8 !important;
-    border: 1px solid #ECEAE3 !important;
-    border-radius: 7px !important;
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    padding: 8px 12px !important;
+    background: #F0EFE8 !important; border: 1px solid #ECEAE3 !important;
+    border-radius: 7px !important; font-size: 11px !important; font-weight: 700 !important;
 }
 
-/* Hide Streamlit Branding */
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
+.preview-panel {background: #C8C7BE; padding: 28px 20px; min-height: calc(100vh - 50px);}
+.prev-lbl {font-size: 9px; font-weight: 700; letter-spacing: 2px; 
+    color: rgba(255,255,255,0.55); text-transform: uppercase; margin-bottom: 14px; text-align: center;}
+.prev-device {background: #fff; width: 390px; margin: 0 auto; 
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25); border-radius: 2px;}
 </style>
 """, unsafe_allow_html=True)
 
 def calculate_luminance(hex_color):
-    """색상 밝기 계산"""
     hex_color = hex_color.lstrip('#')
     r, g, b = tuple(int(hex_color[i:i+2], 16) / 255 for i in (0, 2, 4))
     r = r/12.92 if r <= 0.03928 else ((r+0.055)/1.055)**2.4
@@ -309,7 +118,6 @@ def calculate_luminance(hex_color):
     return 0.2126*r + 0.7152*g + 0.0722*b
 
 def generate_popup_html(data):
-    """점별 팝업행사 HTML 생성"""
     hdr_bg = data.get('header_bg', '#FFFFFF')
     lum = calculate_luminance(hdr_bg)
     hdr_tx = '#111' if lum > 0.45 else 'rgba(255,255,255,0.95)'
@@ -363,7 +171,6 @@ body{{font-family:'Noto Sans KR',sans-serif;background:#fff;-webkit-font-smoothi
 </head>
 <body><div id="c">"""
     
-    # 헤더
     html += '<div class="hd">'
     if data.get('brand'):
         html += f'<div class="hd-brand">{data["brand"]}</div>'
@@ -377,7 +184,6 @@ body{{font-family:'Noto Sans KR',sans-serif;background:#fff;-webkit-font-smoothi
         html += f'<div class="hd-row"><span class="hd-key">장소</span><span class="hd-val">{data["location"]}</span></div>'
     html += '</div></div>'
     
-    # 대표 이미지
     html += '<div class="hero">'
     if data.get('hero_image'):
         html += f'<img src="{data["hero_image"]}" alt="대표">'
@@ -385,14 +191,12 @@ body{{font-family:'Noto Sans KR',sans-serif;background:#fff;-webkit-font-smoothi
         html += '<div class="hero-ph">대표 이미지를 업로드하세요</div>'
     html += '</div>'
     
-    # 소개
     if data.get('intro'):
         html += '<div class="intro">'
         for p in data['intro'].split('\n\n'):
             html += f'<p>{p.replace(chr(10),"<br>")}</p>'
         html += '</div>'
     
-    # Items
     if data.get('items'):
         html += '<div class="sec"><span class="sec-txt">Item</span><div class="sec-line"></div></div>'
         for it in data['items']:
@@ -407,7 +211,6 @@ body{{font-family:'Noto Sans KR',sans-serif;background:#fff;-webkit-font-smoothi
                 html += f'<div class="item-desc">{it["desc"].replace(chr(10),"<br>")}</div>'
             html += '</div></div>'
     
-    # Benefits
     if data.get('benefits'):
         html += '<div class="sec"><span class="sec-txt">Special Benefit</span><div class="sec-line"></div></div>'
         for i, bn in enumerate(data['benefits']):
@@ -421,7 +224,6 @@ body{{font-family:'Noto Sans KR',sans-serif;background:#fff;-webkit-font-smoothi
                 html += f'<div class="bn-gift">{bn["gift"]}</div>'
             html += '</div></div>'
     
-    # 유의사항
     if data.get('notes'):
         html += f'<div class="notes"><div class="notes-ttl">유의사항</div><div class="notes-txt">{data["notes"]}</div></div>'
     
@@ -435,13 +237,14 @@ st.markdown("""
     <span class="tp-title">팝업 행사 생성기</span>
     <span class="tp-sub">롯데백화점 DX팀</span>
 </div>
+<div style="height:50px;"></div>
 """, unsafe_allow_html=True)
 
-# Main Layout
-col_form, col_preview = st.columns([400, None], gap="none")
+# 레이아웃
+col1, col2 = st.columns([1, 2])
 
-with col_form:
-    st.markdown('<div class="form-panel"><div style="padding: 16px;">', unsafe_allow_html=True)
+with col1:
+    st.markdown('<div style="padding:16px;background:#F0EFE8;min-height:calc(100vh - 50px);">', unsafe_allow_html=True)
     
     # 1. 행사 기본정보
     st.markdown("""
@@ -482,16 +285,18 @@ with col_form:
         <div class="blk-body">
     """, unsafe_allow_html=True)
     
-    # 컬러 팔레트 그리드
     st.markdown('<div class="color-grid">', unsafe_allow_html=True)
-    cols = st.columns(4)
     for idx, color in enumerate(LOTTE_COLORS):
-        with cols[idx % 4]:
-            selected_class = "selected" if st.session_state.header_bg == color['hex'] else ""
-            if st.button(f"⬤", key=f"color_{idx}", help=color['name']):
-                st.session_state.header_bg = color['hex']
-                st.rerun()
-            st.markdown(f'<div style="text-align:center;margin-top:-20px;"><div class="color-dot {selected_class}" style="background:{color["hex"]};margin:0 auto;"></div><div class="color-name">{color["name"]}</div></div>', unsafe_allow_html=True)
+        selected = "selected" if st.session_state.header_bg == color['hex'] else ""
+        st.markdown(f'''
+        <div class="color-item">
+            <div class="color-dot {selected}" style="background:{color["hex"]}"></div>
+            <div class="color-name">{color["name"]}</div>
+        </div>
+        ''', unsafe_allow_html=True)
+        if st.button("선택", key=f"clr_{idx}", help=color['name']):
+            st.session_state.header_bg = color['hex']
+            st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown('</div></div>', unsafe_allow_html=True)
@@ -507,8 +312,7 @@ with col_form:
     """, unsafe_allow_html=True)
     
     st.markdown('<span class="lbl">이미지 URL</span>', unsafe_allow_html=True)
-    hero_image = st.text_input("이미지 URL", label_visibility="collapsed", placeholder="https://...", key="hero_img", value=st.session_state.hero_image)
-    st.session_state.hero_image = hero_image
+    hero_image = st.text_input("이미지 URL", label_visibility="collapsed", placeholder="https://...", key="hero")
     
     st.markdown('</div></div>', unsafe_allow_html=True)
     
@@ -523,11 +327,11 @@ with col_form:
     """, unsafe_allow_html=True)
     
     st.markdown('<span class="lbl">소개 텍스트</span>', unsafe_allow_html=True)
-    intro = st.text_area("소개", label_visibility="collapsed", placeholder="브랜드 및 행사 소개를 입력하세요.\n\n단락 구분은 빈 줄로 합니다.", height=100, key="intro")
+    intro = st.text_area("소개", label_visibility="collapsed", placeholder="브랜드 소개", height=100, key="intro")
     
     st.markdown('</div></div>', unsafe_allow_html=True)
     
-    # 5. Item 목록
+    # 5. Item
     st.markdown(f"""
     <div class="blk">
         <div class="blk-head">
@@ -538,7 +342,7 @@ with col_form:
         <div class="blk-body">
     """, unsafe_allow_html=True)
     
-    num_items = st.number_input("아이템 개수", 0, 10, len(st.session_state.items), label_visibility="collapsed", key="num_items")
+    num_items = st.number_input("개수", 0, 10, len(st.session_state.items), label_visibility="collapsed", key="ni")
     
     while len(st.session_state.items) < num_items:
         st.session_state.items.append({"name": "", "price": "", "desc": "", "image": ""})
@@ -546,25 +350,15 @@ with col_form:
         st.session_state.items.pop()
     
     for i in range(len(st.session_state.items)):
-        st.markdown(f'<div class="vcard"><div class="vc-head"><span class="vc-num" style="background:#FFF5F0;color:#EA580C">아이템 {i+1}</span></div>', unsafe_allow_html=True)
-        
-        st.markdown('<span class="lbl">상품명</span>', unsafe_allow_html=True)
-        st.session_state.items[i]['name'] = st.text_input(f"상품명{i}", st.session_state.items[i]['name'], label_visibility="collapsed", key=f"item_name_{i}", placeholder="상품명")
-        
-        st.markdown('<span class="lbl">가격</span>', unsafe_allow_html=True)
-        st.session_state.items[i]['price'] = st.text_input(f"가격{i}", st.session_state.items[i]['price'], label_visibility="collapsed", key=f"item_price_{i}", placeholder="₩1,200,000")
-        
-        st.markdown('<span class="lbl">설명</span>', unsafe_allow_html=True)
-        st.session_state.items[i]['desc'] = st.text_area(f"설명{i}", st.session_state.items[i]['desc'], label_visibility="collapsed", key=f"item_desc_{i}", height=60, placeholder="상품 설명")
-        
-        st.markdown('<span class="lbl">이미지 URL</span>', unsafe_allow_html=True)
-        st.session_state.items[i]['image'] = st.text_input(f"이미지{i}", st.session_state.items[i]['image'], label_visibility="collapsed", key=f"item_img_{i}", placeholder="https://...")
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.expander(f"아이템 {i+1}"):
+            st.session_state.items[i]['name'] = st.text_input("상품명", st.session_state.items[i]['name'], key=f"in_{i}")
+            st.session_state.items[i]['price'] = st.text_input("가격", st.session_state.items[i]['price'], key=f"ip_{i}")
+            st.session_state.items[i]['desc'] = st.text_area("설명", st.session_state.items[i]['desc'], key=f"id_{i}", height=60)
+            st.session_state.items[i]['image'] = st.text_input("이미지", st.session_state.items[i]['image'], key=f"ii_{i}")
     
     st.markdown('</div></div>', unsafe_allow_html=True)
     
-    # 6. Special Benefit
+    # 6. Benefit
     st.markdown(f"""
     <div class="blk">
         <div class="blk-head">
@@ -575,26 +369,18 @@ with col_form:
         <div class="blk-body">
     """, unsafe_allow_html=True)
     
-    num_benefits = st.number_input("혜택 개수", 0, 10, len(st.session_state.benefits), label_visibility="collapsed", key="num_benefits")
+    num_bn = st.number_input("개수", 0, 10, len(st.session_state.benefits), label_visibility="collapsed", key="nb")
     
-    while len(st.session_state.benefits) < num_benefits:
+    while len(st.session_state.benefits) < num_bn:
         st.session_state.benefits.append({"cond": "", "gift": "", "image": ""})
-    while len(st.session_state.benefits) > num_benefits:
+    while len(st.session_state.benefits) > num_bn:
         st.session_state.benefits.pop()
     
     for i in range(len(st.session_state.benefits)):
-        st.markdown(f'<div class="vcard"><div class="vc-head"><span class="vc-num" style="background:#FFF8EC;color:#B07310">혜택 {i+1}</span></div>', unsafe_allow_html=True)
-        
-        st.markdown('<span class="lbl">조건 (연한 글씨)</span>', unsafe_allow_html=True)
-        st.session_state.benefits[i]['cond'] = st.text_input(f"조건{i}", st.session_state.benefits[i]['cond'], label_visibility="collapsed", key=f"bn_cond_{i}", placeholder="행사 SNS 이벤트 참여 시")
-        
-        st.markdown('<span class="lbl">혜택 내용 (굵은 글씨)</span>', unsafe_allow_html=True)
-        st.session_state.benefits[i]['gift'] = st.text_input(f"혜택{i}", st.session_state.benefits[i]['gift'], label_visibility="collapsed", key=f"bn_gift_{i}", placeholder="2ml 바이알 1개 증정")
-        
-        st.markdown('<span class="lbl">이미지 URL</span>', unsafe_allow_html=True)
-        st.session_state.benefits[i]['image'] = st.text_input(f"혜택이미지{i}", st.session_state.benefits[i]['image'], label_visibility="collapsed", key=f"bn_img_{i}", placeholder="https://...")
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.expander(f"혜택 {i+1}"):
+            st.session_state.benefits[i]['cond'] = st.text_input("조건", st.session_state.benefits[i]['cond'], key=f"bc_{i}")
+            st.session_state.benefits[i]['gift'] = st.text_input("혜택", st.session_state.benefits[i]['gift'], key=f"bg_{i}")
+            st.session_state.benefits[i]['image'] = st.text_input("이미지", st.session_state.benefits[i]['image'], key=f"bi_{i}")
     
     st.markdown('</div></div>', unsafe_allow_html=True)
     
@@ -608,13 +394,12 @@ with col_form:
         <div class="blk-body">
     """, unsafe_allow_html=True)
     
-    st.markdown('<span class="lbl">유의사항 텍스트</span>', unsafe_allow_html=True)
-    notes = st.text_area("유의사항", label_visibility="collapsed", placeholder="행사 유의사항을 입력하세요", height=80, key="notes")
+    st.markdown('<span class="lbl">유의사항</span>', unsafe_allow_html=True)
+    notes = st.text_area("유의사항", label_visibility="collapsed", placeholder="유의사항", height=80, key="notes")
     
     st.markdown('</div></div>', unsafe_allow_html=True)
     
-    # 생성 버튼
-    if st.button("HTML 생성하기", key="generate"):
+    if st.button("HTML 생성하기", key="gen"):
         data = {
             'brand': brand, 'title': title, 'period': period, 'store': store,
             'location': location, 'header_bg': st.session_state.header_bg,
@@ -625,9 +410,9 @@ with col_form:
         st.session_state.generated_html = generate_popup_html(data)
         st.rerun()
     
-    st.markdown('</div></div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-with col_preview:
+with col2:
     st.markdown('<div class="preview-panel">', unsafe_allow_html=True)
     st.markdown('<div class="prev-lbl">PREVIEW — 390px mobile</div>', unsafe_allow_html=True)
     
@@ -636,19 +421,12 @@ with col_preview:
         st.components.v1.html(st.session_state.generated_html, height=800, scrolling=True)
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # 다운로드 버튼
-        st.markdown('<div style="margin-top:20px;width:390px;">', unsafe_allow_html=True)
+        st.markdown('<div style="margin-top:20px;width:390px;margin-left:auto;margin-right:auto;">', unsafe_allow_html=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"[팝업]_{brand or '행사'}_{title or 'content'}_{timestamp}.html"
-        st.download_button(
-            "📥 HTML 다운로드",
-            st.session_state.generated_html,
-            filename,
-            "text/html",
-            use_container_width=True
-        )
+        st.download_button("📥 HTML 다운로드", st.session_state.generated_html, filename, "text/html", use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
     else:
-        st.markdown('<div style="color:rgba(255,255,255,0.6);font-size:13px;text-align:center;margin-top:100px;">← 왼쪽 폼을 작성하고<br>HTML 생성하기 버튼을 눌러주세요</div>', unsafe_allow_html=True)
+        st.markdown('<div style="color:rgba(255,255,255,0.6);font-size:13px;text-align:center;margin-top:100px;">← 왼쪽 폼 작성 후<br>HTML 생성하기 버튼 클릭</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
