@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/26767389/README.md)
 # 롯데백화점 HTML 콘텐츠 생성기
 
 템플릿 기반으로 HTML 콘텐츠를 자동 생성하는 Streamlit 앱입니다.
