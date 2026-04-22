@@ -23,7 +23,7 @@ body{
   font-family:var(--fn);
   background:var(--page);
   color:var(--tx-dark);
-  font-size:15px;
+  font-size:14px;
   height:100vh;
   overflow:hidden;
   display:flex;
@@ -47,19 +47,19 @@ body{
 }
 .tb-logo{display:flex;align-items:center;gap:10px}
 .tb-badge{
-  font-size:11px;font-weight:700;
+  font-size:10px;font-weight:700;
   letter-spacing:.6px;
   padding:4px 9px;border-radius:5px;
   background:var(--accent);color:#fff;
   text-transform:uppercase;
 }
-.tb-name{font-size:15px;font-weight:700;color:var(--tx-dark);letter-spacing:-.3px}
-.tb-desc{font-size:13px;color:var(--tx-light);flex:1;letter-spacing:-.1px}
+.tb-name{font-size:14px;font-weight:700;color:var(--tx-dark);letter-spacing:-.3px}
+.tb-desc{font-size:12px;color:var(--tx-light);flex:1;letter-spacing:-.1px}
 .tb-divider{width:1px;height:22px;background:var(--border)}
 .tb-btn{
   height:34px;padding:0 16px;
   border-radius:var(--radius-sm);
-  font-size:13px;font-weight:700;
+  font-size:12px;font-weight:700;
   font-family:var(--fn);
   cursor:pointer;border:none;
   display:flex;align-items:center;gap:6px;
@@ -112,12 +112,12 @@ body{
   width:26px;height:26px;
   border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;
+  font-size:12px;font-weight:700;
   flex-shrink:0;
 }
-.sec-title{flex:1;font-size:14px;font-weight:700;color:var(--tx-dark);letter-spacing:-.2px}
+.sec-title{flex:1;font-size:13px;font-weight:700;color:var(--tx-dark);letter-spacing:-.2px}
 .sec-tag{
-  font-size:11px;font-weight:700;
+  font-size:10px;font-weight:700;
   color:var(--tx-light);
   background:var(--page);
   border:1px solid var(--border);
@@ -129,13 +129,13 @@ body{
 /* 폼 필드 */
 .field{display:flex;flex-direction:column;gap:6px}
 .field-label{
-  font-size:12px;font-weight:700;
+  font-size:11px;font-weight:700;
   color:var(--tx-mid);
   letter-spacing:.3px;
   text-transform:uppercase;
 }
 .field-label-ko{
-  font-size:13px;font-weight:500;
+  font-size:12px;font-weight:500;
   color:var(--tx-mid);
 }
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -145,7 +145,7 @@ input[type=text],textarea{
   padding:9px 12px;
   border:1.5px solid var(--border);
   border-radius:var(--radius-sm);
-  font-size:14px;
+  font-size:13px;
   font-family:var(--fn);
   font-weight:400;
   color:var(--tx-dark);
@@ -200,7 +200,7 @@ textarea{resize:vertical;min-height:72px}
   transition:background .15s;
 }
 .color-hex-display{
-  font-size:13px;font-family:monospace;
+  font-size:12px;font-family:monospace;
   font-weight:500;color:var(--tx-mid);
   flex:1;letter-spacing:.5px;
 }
@@ -231,11 +231,11 @@ input[type=color]{position:absolute;opacity:0;width:0;height:0;pointer-events:no
   border-radius:10px;
   background:var(--page);
   display:flex;align-items:center;justify-content:center;
-  font-size:17px;
+  font-size:16px;
   border:1px solid var(--border);
 }
-.upl-title{font-size:13px;font-weight:700;color:var(--tx-mid)}
-.upl-sub{font-size:12px;color:var(--tx-hint);font-weight:300}
+.upl-title{font-size:12px;font-weight:700;color:var(--tx-mid)}
+.upl-sub{font-size:11px;color:var(--tx-hint);font-weight:300}
 .upl-filled{position:relative}
 .upl-filled img{
   width:100%;display:block;
@@ -248,7 +248,7 @@ input[type=color]{position:absolute;opacity:0;width:0;height:0;pointer-events:no
   background:rgba(18,18,16,.6);
   color:#fff;border:none;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;
+  font-size:12px;font-weight:700;
   transition:background .15s;
   backdrop-filter:blur(4px);
 }
@@ -270,7 +270,7 @@ input[type=file]{display:none}
   background:#FAFAF7;
 }
 .vcard-label{
-  font-size:12px;font-weight:700;
+  font-size:11px;font-weight:700;
   letter-spacing:.3px;
   padding:3px 9px;border-radius:20px;
   flex:1;
@@ -283,7 +283,7 @@ input[type=file]{display:none}
   cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   color:var(--tx-light);
-  font-size:12px;font-weight:700;
+  font-size:11px;font-weight:700;
   transition:all .12s;
   line-height:1;
 }
@@ -297,7 +297,7 @@ input[type=file]{display:none}
   border-radius:var(--radius-md);
   background:transparent;
   cursor:pointer;
-  font-size:13px;font-weight:700;
+  font-size:12px;font-weight:700;
   color:var(--tx-light);
   font-family:var(--fn);
   transition:all .15s;
@@ -324,7 +324,7 @@ input[type=file]{display:none}
   gap:0;
 }
 .preview-chip{
-  font-size:10px;font-weight:700;
+  font-size:9px;font-weight:700;
   letter-spacing:2px;
   color:rgba(255,255,255,.45);
   text-transform:uppercase;
@@ -355,19 +355,19 @@ input[type=file]{display:none}
 /* 헤더 */
 .o-hd{padding:44px 24px 40px}
 .o-hd-brand{
-  font-size:12.5px;font-weight:400;
+  font-size:11.5px;font-weight:400;
   letter-spacing:.2px;
   margin-bottom:2px;line-height:1.4;
 }
 .o-hd-title{
-  font-size:20px;font-weight:500;
+  font-size:19px;font-weight:500;
   letter-spacing:-.5px;
   line-height:1.35;
   margin-bottom:10px;
   word-break:keep-all;
 }
 .o-hd-meta{display:flex;flex-direction:column;gap:5px}
-.o-hd-row{display:flex;align-items:baseline;font-size:14px;font-weight:300;gap:0}
+.o-hd-row{display:flex;align-items:baseline;font-size:13px;font-weight:300;gap:0}
 .o-hd-key{width:28px;flex-shrink:0;font-weight:300}
 .o-hd-val{flex:1;line-height:1.5;word-break:keep-all;font-weight:300}
 
@@ -377,7 +377,7 @@ input[type=file]{display:none}
   width:390px;height:200px;
   background:#EDECEA;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;color:#C0BFB8;
+  font-size:12px;color:#C0BFB8;
   font-family:'MaisonNeue','Noto Sans KR',sans-serif;
   font-weight:300;
 }
@@ -388,7 +388,7 @@ input[type=file]{display:none}
   border-bottom:1px solid #E8E6DF;
 }
 .o-intro p{
-  font-size:14px;font-weight:400;
+  font-size:13px;font-weight:400;
   color:#2E2E2C;line-height:1.6;
   word-break:keep-all;
 }
@@ -400,7 +400,7 @@ input[type=file]{display:none}
   display:flex;align-items:center;gap:12px;
 }
 .o-sec-txt{
-  font-size:15px;font-weight:700;
+  font-size:14px;font-weight:700;
   color:#111;letter-spacing:.3px;
   white-space:nowrap;
 }
@@ -422,21 +422,21 @@ input[type=file]{display:none}
   width:130px;height:130px;
   flex-shrink:0;background:#EDECEA;
   display:flex;align-items:center;justify-content:center;
-  font-size:12px;color:#C0BFB8;
+  font-size:11px;color:#C0BFB8;
   font-family:'MaisonNeue','Noto Sans KR',sans-serif;font-weight:300;
 }
 .o-item-info{flex:1;min-width:0;padding-top:3px}
 .o-item-name{
-  font-size:14.5px;font-weight:700;
+  font-size:13.5px;font-weight:700;
   color:#111;line-height:1.45;
   margin-bottom:5px;word-break:keep-all;
 }
 .o-item-price{
-  font-size:16.5px;font-weight:700;
+  font-size:15.5px;font-weight:700;
   color:#111;margin-bottom:9px;letter-spacing:-.3px;
 }
 .o-item-desc{
-  font-size:12.5px;font-weight:400;
+  font-size:11.5px;font-weight:400;
   color:#8A8A84;line-height:1.75;
   word-break:keep-all;
 }
@@ -450,7 +450,7 @@ input[type=file]{display:none}
 .o-bn-num{
   width:22px;height:22px;border-radius:50%;
   background:#18181A;color:#fff;
-  font-size:11px;font-weight:700;
+  font-size:10px;font-weight:700;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;margin-top:4px;
   font-family:'MaisonNeue','Noto Sans KR',sans-serif;
@@ -464,17 +464,17 @@ input[type=file]{display:none}
   width:80px;height:80px;
   flex-shrink:0;background:#EDECEA;
   display:flex;align-items:center;justify-content:center;
-  font-size:11px;color:#C0BFB8;
+  font-size:10px;color:#C0BFB8;
   font-family:'MaisonNeue','Noto Sans KR',sans-serif;font-weight:300;
 }
 .o-bn-txt{flex:1;min-width:0;padding-top:4px}
 .o-bn-cond{
-  font-size:13px;font-weight:300;
+  font-size:12px;font-weight:300;
   color:#888;line-height:1.55;
   margin-bottom:4px;word-break:keep-all;
 }
 .o-bn-gift{
-  font-size:14px;font-weight:700;
+  font-size:13px;font-weight:700;
   color:#111;line-height:1.55;
   word-break:keep-all;
 }
@@ -485,7 +485,7 @@ input[type=file]{display:none}
   background:#F6F5EF;
 }
 .o-notes-ttl{
-  font-size:12px;font-weight:700;
+  font-size:11px;font-weight:700;
   color:#8A8A84;
   letter-spacing:1.2px;
   text-transform:uppercase;
@@ -493,7 +493,7 @@ input[type=file]{display:none}
   font-family:'MaisonNeue','Noto Sans KR',sans-serif;
 }
 .o-notes-txt{
-  font-size:13px;font-weight:300;
+  font-size:12px;font-weight:300;
   color:#6B6B66;line-height:1.95;
   white-space:pre-wrap;word-break:keep-all;
 }
@@ -506,7 +506,7 @@ input[type=file]{display:none}
   transform:translateX(-50%);
   background:#18181A;color:#fff;
   padding:10px 20px;border-radius:8px;
-  font-size:13px;font-weight:500;
+  font-size:12px;font-weight:500;
   opacity:0;transition:opacity .25s;
   pointer-events:none;z-index:9999;
   white-space:nowrap;font-family:var(--fn);
