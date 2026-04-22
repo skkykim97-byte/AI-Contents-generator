@@ -400,8 +400,8 @@ input[type=file]{display:none}
   display:flex;align-items:center;gap:12px;
 }
 .o-sec-txt{
-  font-size:15px;font-weight:700;
-  color:#111;letter-spacing:.3px;
+  font-size:20px;font-weight:500;
+  color:#111;letter-spacing:-.5px;
   white-space:nowrap;
 }
 .o-sec-line{flex:1;height:1px;background:#E2E0D9}
