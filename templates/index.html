@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>팝업 행사 생성기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- ── TOPBAR ── -->
+<div class="topbar">
+  <div class="tb-logo">
+    <span class="tb-badge">팝업행사</span>
+    <span class="tb-name">점별 팝업 행사 생성기</span>
+  </div>
+  <div class="tb-divider"></div>
+  <span class="tb-desc">JPG 내보내기</span>
+  <button class="tb-btn tb-btn-ghost" onclick="resetAll()">초기화</button>
+  <button class="tb-btn tb-btn-fill" id="expbtn" onclick="doExport()">
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+      <path d="M7 1v8M3.5 5.5L7 9l3.5-3.5M1 11.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    JPG 내보내기
+  </button>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="layout">
+
+  <!-- FORM -->
+  <div class="form-panel">
+    <div class="form-body">
+
+      <!-- 1. 행사 기본 정보 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#FFF1F3;color:var(--accent)">1</div>
+          <span class="sec-title">행사 기본 정보</span>
+        </div>
+        <div class="sec-body">
+          <div class="field">
+            <span class="field-label-ko">행사 제목 첫째줄</span>
+            <input type="text" id="f-brand" placeholder="반클리프 아펠 오뜨 퍼퓨머리" oninput="render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">행사 제목 둘째줄</span>
+            <input type="text" id="f-title" placeholder="국내 첫 Pop-Up Open" oninput="render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">기간</span>
+            <input type="text" id="f-period" placeholder="3.26(목) - 4.02(월)" oninput="render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">장소</span>
+            <input type="text" id="f-loc" placeholder="롯데백화점 본점 1F 명품관" oninput="render()"/>
+          </div>
+
+          <!-- 헤더 배경 색상 -->
+          <div class="field">
+            <span class="field-label-ko">헤더 배경 색상</span>
+            <div class="color-section">
+              <div class="color-swatches" id="swatch-row"></div>
+              <div class="color-custom-row" id="custom-color-row" onclick="document.getElementById('cpicker').click()">
+                <div class="color-dot-preview" id="cdot-preview" style="background:#FFFFFF;border:1.5px solid var(--border)"></div>
+                <span class="color-hex-display" id="chex">#FFFFFF</span>
+                <svg class="color-edit-icon" width="13" height="13" viewBox="0 0 14 14" fill="none">
+                  <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                </svg>
+                <input type="color" id="cpicker" value="#FFFFFF" oninput="applyColor(this.value,'','')"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 브랜드 소개 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#EFF4FF;color:#3B6BDE">2</div>
+          <span class="sec-title">브랜드 소개</span>
+        </div>
+        <div class="sec-body">
+          <div class="field">
+            <span class="field-label-ko">대표 이미지</span>
+            <div class="uploader" id="hero-zone" onclick="document.getElementById('hero-file').click()">
+              <div class="upl-empty">
+                <div class="upl-icon">🖼</div>
+                <div class="upl-title">클릭하여 이미지 업로드</div>
+                <div class="upl-sub">JPG · PNG · WEBP</div>
+              </div>
+            </div>
+            <input type="file" id="hero-file" accept="image/*" onchange="loadImg(this,'hero')"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">소개 문구 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 빈 줄로 단락 구분</span></span>
+            <textarea id="f-intro" rows="5" placeholder="반클리프 아펠 여행을 자연인&#10;불가사의한 신비, 항구 간결한 상쾌함으로 ..." oninput="render()"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Item 섹션 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#EEF9F1;color:#2A8847">3</div>
+          <span class="sec-title">Item 섹션</span>
+          <span class="sec-tag" id="item-cnt">0개</span>
+        </div>
+        <div class="sec-body">
+          <div class="vcard-list" id="items-list"></div>
+          <button class="add-card-btn" onclick="addItem()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            상품 추가
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. Special Benefit -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#FFF8EC;color:#B07010">4</div>
+          <span class="sec-title">Special Benefit</span>
+          <span class="sec-tag" id="bn-cnt">0개</span>
+        </div>
+        <div class="sec-body">
+          <div class="vcard-list" id="bn-list"></div>
+          <button class="add-card-btn" onclick="addBenefit()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            혜택 추가
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. 유의사항 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#F2F1EC;color:#888">5</div>
+          <span class="sec-title">참고사항</span>
+          <span class="sec-tag">선택</span>
+        </div>
+        <div class="sec-body">
+          <textarea id="f-notes" rows="4"
+            placeholder="※ 이벤트는 사전 예고 없이 변경되거나 조기 종료될 수 있습니다&#10;※ 혜택은 1인 1회 제공됩니다"
+            oninput="render()"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-panel">
+    <div class="preview-chip">Preview · 390px</div>
+    <div class="preview-frame">
+      <div id="output"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

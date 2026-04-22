@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "c:\\github\\practice\\static\\css",
+      "c:\\github\\practice\\static\\js"
+    ],
+    "allow": [
+      "Bash(sed -i '1d' \"c:/github/practice/static/css/fonts.css\")",
+      "Bash(sed -i '1d' \"c:/github/practice/static/js/app.js\")"
+    ]
+  }
+}
