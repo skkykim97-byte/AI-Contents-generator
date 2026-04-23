@@ -56,7 +56,7 @@ def render_popup():
     html = read(base / "pages" / "branch popup.html")
     back_btn = (
         '<button class="tb-btn tb-btn-ghost" '
-        "onclick=\"window.parent.location.href='/?'\" "
+        "onclick=\"window.top.location.href='/?'\" "
         'style="margin-right:4px">← 홈</button>'
         '<div class="tb-divider"></div>'
     )
@@ -89,7 +89,7 @@ def render_coming_soon(title: str):
   <div class="emoji">🚧</div>
   <h2>{title}</h2>
   <p>준비 중입니다. 곧 만나요!</p>
-  <button class="btn" onclick="window.parent.location.href='/?'">← 처음으로 돌아가기</button>
+  <button class="btn" onclick="window.top.location.href='/?'">← 처음으로 돌아가기</button>
 </div>
 </body>
 </html>"""

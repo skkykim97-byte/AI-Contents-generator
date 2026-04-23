@@ -375,7 +375,7 @@
     saveToSheet(v);
 
     const params = new URLSearchParams({ page: v.template, name: v.name, empno: v.empno, reason: v.reason });
-    window.parent.location.href = '/?' + params.toString();
+    window.top.location.href = '/?' + params.toString();
   }
 
   function resetForm() {
