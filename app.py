@@ -1,3 +1,4 @@
+import base64
 import streamlit as st
 from pathlib import Path
 
@@ -17,6 +18,28 @@ header, footer { display: none !important; }
 
 base = Path(__file__).parent
 
+# 로고 이미지 fallback SVG (파일이 없을 때)
+_LOGO_SVG = (
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' "
+    "width='36' height='36'%3E%3Crect width='36' height='36' rx='9' fill='%23111'/%3E"
+    "%3Ctext x='18' y='27' text-anchor='middle' font-family='Georgia,serif' "
+    "font-style='italic' font-size='24' fill='white'%3E%E2%84%93%3C/text%3E%3C/svg%3E"
+)
+
+
+def get_logo_src() -> str:
+    """static/img/logo.png(jpg) 를 base64로 반환. 없으면 SVG fallback."""
+    for p in [
+        base / "static" / "img" / "logo.png",
+        base / "static" / "img" / "logo.jpg",
+        base / "static" / "img" / "logo.jpeg",
+    ]:
+        if p.exists():
+            mime = "jpeg" if p.suffix in (".jpg", ".jpeg") else "png"
+            data = base64.b64encode(p.read_bytes()).decode()
+            return f"data:image/{mime};base64,{data}"
+    return _LOGO_SVG
+
 
 def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
@@ -24,36 +47,20 @@ def read(path: Path) -> str:
 
 def render_home():
     html = read(base / "pages" / "home.html")
+    html = html.replace("LOGO_PLACEHOLDER", get_logo_src())
     st.components.v1.html(html, height=900, scrolling=True)
 
 
 def render_popup():
-    fonts_css = read(base / "static/css/fonts.css")
-    style_css = read(base / "static/css/style.css")
-    app_js    = read(base / "static/js/app.js")
-    html      = read(base / "templates/index.html")
-
-    html = html.replace(
-        "<link rel=\"stylesheet\" href=\"{{ url_for('static', filename='css/fonts.css') }}\">",
-        f"<style>\n{fonts_css}\n</style>",
-    )
-    html = html.replace(
-        "<link rel=\"stylesheet\" href=\"{{ url_for('static', filename='css/style.css') }}\">",
-        f"<style>\n{style_css}\n</style>",
-    )
-    html = html.replace(
-        "<script src=\"{{ url_for('static', filename='js/app.js') }}\"></script>",
-        f"<script>\n{app_js}\n</script>",
-    )
-
-    # 상단 바에 '← 홈' 버튼 주입
+    """pages/branch popup.html — self-contained, 홈 버튼 주입."""
+    html = read(base / "pages" / "branch popup.html")
     back_btn = (
         '<button class="tb-btn tb-btn-ghost" '
-        'onclick="window.parent.location.href=\'/?\'">← 홈</button>'
+        "onclick=\"window.parent.location.href='/?'\" "
+        'style="margin-right:4px">← 홈</button>'
         '<div class="tb-divider"></div>'
     )
     html = html.replace('<div class="tb-logo">', back_btn + '<div class="tb-logo">', 1)
-
     st.components.v1.html(html, height=960, scrolling=True)
 
 
@@ -65,29 +72,15 @@ def render_coming_soon(title: str):
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 <style>
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-  body {{
-    font-family: 'Noto Sans KR', sans-serif;
-    background: #F7F7F7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }}
+  body {{ font-family: 'Noto Sans KR', sans-serif; background: #F7F7F7;
+          display: flex; align-items: center; justify-content: center; height: 100vh; }}
   .box {{ text-align: center; }}
   .emoji {{ font-size: 52px; margin-bottom: 20px; }}
   h2 {{ font-size: 20px; font-weight: 700; color: #111; margin-bottom: 8px; }}
   p  {{ font-size: 13px; color: #999; margin-bottom: 28px; }}
-  .btn {{
-    background: #111;
-    color: white;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-  }}
+  .btn {{ background: #111; color: white; border: none; padding: 12px 28px;
+          border-radius: 10px; font-size: 14px; font-weight: 700;
+          cursor: pointer; font-family: inherit; }}
   .btn:hover {{ background: #333; }}
 </style>
 </head>
@@ -104,8 +97,7 @@ def render_coming_soon(title: str):
 
 
 # ── 라우팅 ──────────────────────────────────────────────
-params = st.query_params
-page = params.get("page", "home")
+page = st.query_params.get("page", "home")
 
 if page == "popup":
     render_popup()
