@@ -55,9 +55,9 @@ def render_popup():
     """pages/branch popup.html — self-contained, 홈 버튼 주입."""
     html = read(base / "pages" / "branch popup.html")
     back_btn = (
-        '<button class="tb-btn tb-btn-ghost" '
-        "onclick=\"window.top.location.href='/?'\" "
-        'style="margin-right:4px">← 홈</button>'
+        '<form method="GET" action="/" target="_top" style="display:inline">'
+        '<button type="submit" class="tb-btn tb-btn-ghost" style="margin-right:4px">← 홈</button>'
+        '</form>'
         '<div class="tb-divider"></div>'
     )
     html = html.replace('<div class="tb-logo">', back_btn + '<div class="tb-logo">', 1)
@@ -89,7 +89,9 @@ def render_coming_soon(title: str):
   <div class="emoji">🚧</div>
   <h2>{title}</h2>
   <p>준비 중입니다. 곧 만나요!</p>
-  <button class="btn" onclick="window.top.location.href='/?'">← 처음으로 돌아가기</button>
+  <form method="GET" action="/" target="_top">
+    <button type="submit" class="btn">← 처음으로 돌아가기</button>
+  </form>
 </div>
 </body>
 </html>"""

@@ -302,6 +302,14 @@
 
     </div>
 
+    <!-- 숨김 form: target="_top" 으로 Streamlit 최상위 창 이동 -->
+    <form id="navForm" method="GET" action="/" target="_top" style="display:none">
+      <input type="hidden" name="page"   id="h-page">
+      <input type="hidden" name="name"   id="h-name">
+      <input type="hidden" name="empno"  id="h-empno">
+      <input type="hidden" name="reason" id="h-reason">
+    </form>
+
     <div class="card-footer">
       <button class="btn btn-reset" onclick="resetForm()">초기화</button>
       <button class="btn btn-primary" id="btnDesign" onclick="submitForm()">디자인하기 →</button>
@@ -374,8 +382,12 @@
 
     saveToSheet(v);
 
-    const params = new URLSearchParams({ page: v.template, name: v.name, empno: v.empno, reason: v.reason });
-    window.top.location.href = '/?' + params.toString();
+    // form target="_top" → iframe 샌드박스 무관하게 최상위 창 이동
+    document.getElementById('h-page').value   = v.template;
+    document.getElementById('h-name').value   = v.name;
+    document.getElementById('h-empno').value  = v.empno;
+    document.getElementById('h-reason').value = v.reason;
+    document.getElementById('navForm').submit();
   }
 
   function resetForm() {
