@@ -96,7 +96,7 @@
 <body>
 
 <header>
-  <img src="LOGO_PLACEHOLDER" alt="롯백" class="logo-img">
+  <img src="logo.png" alt="롯백" class="logo-img" onerror="this.style.display='none'">
   <h1>롯데백화점 콘텐츠 생성기</h1>
   <span class="badge">APP</span>
 </header>
@@ -108,11 +108,7 @@
       <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     </div>
 
-    <!-- form: method=GET, target="_top" → 브라우저가 직접 최상위 창으로 이동 -->
-    <form id="mainForm" method="GET" action="/" target="_top" onsubmit="return validateForm()">
-
-      <!-- 템플릿 선택값 (JS로 채워짐) -->
-      <input type="hidden" name="page" id="h-page" value="">
+    <form id="mainForm" method="GET" action="" onsubmit="return validateForm()">
 
       <div class="card-body">
 
@@ -239,13 +235,13 @@
     if (!v.template) { document.getElementById('templateError').classList.add('show');     err = true; }
     if (err) return false; // 제출 차단
 
-    // hidden 필드에 선택된 템플릿 주입
-    document.getElementById('h-page').value = v.template;
+    // Flask route로 action 설정
+    document.getElementById('mainForm').action = '/' + v.template;
 
     // 구글 시트 저장 (fire-and-forget)
     try { navigator.sendBeacon(APPS_SCRIPT_URL, JSON.stringify({ empno: v.empno, name: v.name, reason: v.reason, template: v.template })); } catch(e) {}
 
-    return true; // 브라우저가 form 제출 → target="_top" 으로 최상위 창 이동
+    return true;
   }
 
   function resetForm() {
