@@ -411,8 +411,8 @@ input[type=file]{display:none}
   display:flex;align-items:center;gap:12px;
 }
 .o-sec-txt{
-  font-size:14px;font-weight:700;
-  color:#111;letter-spacing:.3px;
+  font-size:19px;font-weight:500;
+  color:#111;letter-spacing:-.5px;
   white-space:nowrap;
 }
 .o-sec-line{flex:1;height:1px;background:#E2E0D9}
@@ -496,7 +496,7 @@ input[type=file]{display:none}
   background:#F6F5EF;
 }
 .o-notes-ttl{
-  font-size:11px;font-weight:700;
+  font-size:12px;font-weight:700;
   color:#8A8A84;
   letter-spacing:1.2px;
   text-transform:uppercase;
@@ -504,7 +504,7 @@ input[type=file]{display:none}
   font-family:'MaisonNeue','Noto Sans KR',sans-serif;
 }
 .o-notes-txt{
-  font-size:12px;font-weight:300;
+  font-size:13px;font-weight:300;
   color:#6B6B66;line-height:1.95;
   white-space:pre-wrap;word-break:keep-all;
 }
@@ -1271,6 +1271,15 @@ function restoreFormData(data) {
 
 // ─── EXPORT ──────────────────────────────────────────────────
 async function doExport() {
+  // 이미지 미등록 검증
+  const missingHero = !imgStore.hero;
+  const missingItem = items.some(it => !it.img);
+  const missingBn = bns.some(bn => !bn.img);
+  if (missingHero || missingItem || missingBn) {
+    alert('이미지를 등록하세요');
+    return;
+  }
+
   const btn = document.getElementById('expbtn');
   btn.disabled = true;
   btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M3.5 5.5L7 9l3.5-3.5M1 11.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> 생성 중...`;
