@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/fonts.css">
+<link rel="stylesheet" href="../static/css/fonts.css">
 <style>
 /* ═══════════════════════════════════════════
    RESET & BASE
@@ -519,7 +519,7 @@ input[type=file]{display:none}
   padding:10px 20px;border-radius:8px;
   font-size:12px;font-weight:500;
   opacity:0;transition:opacity .25s;
-  pointer-events:none;z-index:9999;
+  pointer-events:none;z-index:20000;
   white-space:nowrap;font-family:var(--fn);
   box-shadow:0 4px 20px rgba(0,0,0,.25);
 }
@@ -662,6 +662,8 @@ input[type=file]{display:none}
 
 <!-- ── TOPBAR ── -->
 <div class="topbar">
+  <a href="index.html" class="tb-btn tb-btn-ghost" style="text-decoration:none;margin-right:4px">← 홈</a>
+  <div class="tb-divider"></div>
   <div class="tb-logo">
     <span class="tb-badge">팝업행사</span>
     <span class="tb-name">점별 팝업 행사 생성기</span>
@@ -824,7 +826,7 @@ input[type=file]{display:none}
     <div class="save-modal-icon">✓</div>
     <div class="save-modal-title">저장 완료</div>
     <div class="save-modal-code" id="save-modal-code">POP-XXXXXX</div>
-    <div class="save-modal-msg">콘텐츠 수정시 해당 코드를 활용해 불러오기할 수 있습니다.<br>코드를 별도로 보관해주세요.</div>
+    <div class="save-modal-msg">콘텐츠 수정시 해당 코드를 활용해<br>콘텐츠 불러오기할 수 있습니다.<br>코드를 별도로 보관해주세요.</div>
     <button class="save-modal-copy" onclick="copySaveCode()">코드 복사</button>
     <button class="save-modal-close" onclick="closeSaveModal()">닫기</button>
   </div>
