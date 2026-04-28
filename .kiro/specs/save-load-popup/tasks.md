@@ -15,15 +15,15 @@
     - Flask 기본 설정으로 `static/` 폴더를 자동 서빙하므로 별도 수정 불필요할 수 있음
     - _Requirements: 7.2_
 
-- [ ] 2. Apps Script 백엔드 확장 — Save/Load API
-  - [ ] 2.1 `apps_script.gs`의 `doPost()` 함수에 `action` 분기 추가
+- [x] 2. Apps Script 백엔드 확장 — Save/Load API
+  - [x] 2.1 `apps_script.gs`의 `doPost()` 함수에 `action` 분기 추가
     - `action: "save"` 시 `handleSave(data)` 호출
     - 기존 DATA 시트 기록 로직(사번, 이름, 제작 사유)은 `action`이 없는 경우 그대로 유지
     - `handleSave(data)`: "코드 보관" 시트가 없으면 자동 생성 + 헤더 행(`코드`, `콘텐츠 유형`, `데이터`, `생성 시간`) 추가, 이후 `[code, type, dataJSON, timestamp]` 행 append
     - 시간 형식: `Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss')`
     - 성공 시 `{ status: "ok" }`, 오류 시 `{ status: "error", msg: "..." }` JSON 응답
     - _Requirements: 2.3, 6.1, 6.2, 6.3_
-  - [ ] 2.2 `apps_script.gs`의 `doGet()` 함수에 `action=load` 분기 추가
+  - [x] 2.2 `apps_script.gs`의 `doGet()` 함수에 `action=load` 분기 추가
     - `action=load&code=POP-XXXXXX` 파라미터 수신 시 `handleLoad(code)` 호출
     - `handleLoad(code)`: "코드 보관" 시트에서 A열을 역순 검색하여 해당 코드의 가장 최근 행을 찾고, C열의 데이터 JSON 문자열을 반환
     - 매칭 행 존재 시 `{ status: "ok", data: <JSON문자열> }` 응답

@@ -15,14 +15,21 @@
 
 var SHEET_ID   = '1PX8tFrDVpHciruGL-m06Bs0pkfoU4wtQ47SEP3eqxmg';
 var SHEET_NAME = 'DATA';
+var SAVE_SHEET_NAME = '코드 보관';
 
 function doPost(e) {
   try {
-    var data  = JSON.parse(e.postData.contents);
+    var data = JSON.parse(e.postData.contents);
+
+    // action: "save" → 코드 보관 시트에 저장
+    if (data.action === 'save') {
+      return handleSave(data);
+    }
+
+    // 기존 DATA 시트 기록 로직 (action 없는 경우)
     var ss    = SpreadsheetApp.openById(SHEET_ID);
     var sheet = ss.getSheetByName(SHEET_NAME);
 
-    // 헤더가 없으면 첫 행에 추가
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(['사번', '이름', '제작 사유', '콘텐츠 유형', '시간']);
     }
@@ -41,9 +48,79 @@ function doPost(e) {
   }
 }
 
-// GET 요청 테스트용 (브라우저에서 URL 직접 접근 시 동작 확인)
+// ── Save: "코드 보관" 시트에 코드·유형·데이터·시간 기록 ──
+function handleSave(data) {
+  try {
+    var ss = SpreadsheetApp.openById(SHEET_ID);
+    var sheet = ss.getSheetByName(SAVE_SHEET_NAME);
+
+    // 시트가 없으면 자동 생성 + 헤더 행
+    if (!sheet) {
+      sheet = ss.insertSheet(SAVE_SHEET_NAME);
+      sheet.appendRow(['코드', '콘텐츠 유형', '데이터', '생성 시간']);
+    }
+
+    var now = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
+    sheet.appendRow([data.code, data.type, data.data, now]);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'ok' }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'error', msg: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// GET 요청 — action=load 시 코드 보관 시트에서 데이터 조회
 function doGet(e) {
+  var action = (e && e.parameter && e.parameter.action) || '';
+
+  if (action === 'load') {
+    return handleLoad(e.parameter.code);
+  }
+
+  // 기존 동작 유지 (브라우저에서 URL 직접 접근 시)
   return ContentService
     .createTextOutput('Apps Script 정상 작동 중')
     .setMimeType(ContentService.MimeType.TEXT);
+}
+
+// ── Load: "코드 보관" 시트에서 코드로 가장 최근 행 검색 ──
+function handleLoad(code) {
+  try {
+    var ss = SpreadsheetApp.openById(SHEET_ID);
+    var sheet = ss.getSheetByName(SAVE_SHEET_NAME);
+
+    if (!sheet) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'not_found' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var lastRow = sheet.getLastRow();
+    var searchCode = String(code || '').trim();
+
+    // 역순 검색 — 가장 최근 행 우선
+    for (var i = lastRow; i >= 2; i--) {
+      var cellValue = String(sheet.getRange(i, 1).getValue()).trim();
+      if (cellValue === searchCode) {
+        var dataJSON = sheet.getRange(i, 3).getValue();
+        return ContentService
+          .createTextOutput(JSON.stringify({ status: 'ok', data: dataJSON }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'not_found' }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'error', msg: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
