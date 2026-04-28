@@ -524,6 +524,138 @@ input[type=file]{display:none}
   box-shadow:0 4px 20px rgba(0,0,0,.25);
 }
 .toast.show{opacity:1}
+
+/* ═══════════════════════════════════════════
+   LOAD BAR
+═══════════════════════════════════════════ */
+.load-bar{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding:14px 16px;
+  background:var(--white);
+  border-radius:var(--radius-lg);
+  border:1px solid var(--border);
+}
+.load-bar input{
+  flex:1;
+  padding:9px 12px;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  font-size:13px;
+  font-family:var(--fn);
+  font-weight:500;
+  color:var(--tx-dark);
+  letter-spacing:.5px;
+  outline:none;
+  transition:border-color .15s;
+}
+.load-bar input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(200,16,46,.08);
+}
+.load-bar input::placeholder{color:var(--tx-hint);font-weight:300}
+.load-bar button{
+  height:38px;
+  padding:0 18px;
+  border-radius:var(--radius-sm);
+  font-size:12px;
+  font-weight:700;
+  font-family:var(--fn);
+  cursor:pointer;
+  border:1px solid var(--border);
+  background:var(--white);
+  color:var(--tx-mid);
+  transition:all .15s;
+  white-space:nowrap;
+}
+.load-bar button:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:var(--accent-bg);
+}
+.load-bar button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+/* ═══════════════════════════════════════════
+   SAVE MODAL
+═══════════════════════════════════════════ */
+.save-modal-overlay{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:10000;
+  align-items:center;
+  justify-content:center;
+  backdrop-filter:blur(2px);
+}
+.save-modal-overlay.show{display:flex}
+.save-modal{
+  background:#fff;
+  border-radius:16px;
+  padding:36px 32px 28px;
+  width:340px;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+  animation:modalIn .2s ease;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.save-modal-icon{
+  font-size:36px;
+  margin-bottom:12px;
+  color:#2A8847;
+}
+.save-modal-title{
+  font-size:18px;font-weight:700;
+  color:var(--tx-dark);
+  margin-bottom:16px;
+}
+.save-modal-code{
+  font-size:22px;font-weight:700;
+  font-family:monospace;
+  letter-spacing:2px;
+  color:var(--accent);
+  background:var(--accent-bg);
+  padding:12px 20px;
+  border-radius:10px;
+  margin-bottom:16px;
+  user-select:all;
+}
+.save-modal-msg{
+  font-size:12px;
+  color:var(--tx-mid);
+  line-height:1.7;
+  margin-bottom:20px;
+}
+.save-modal-copy{
+  width:100%;
+  padding:11px;
+  border:none;
+  border-radius:var(--radius-sm);
+  background:var(--tx-dark);
+  color:#fff;
+  font-size:13px;font-weight:700;
+  font-family:var(--fn);
+  cursor:pointer;
+  margin-bottom:8px;
+  transition:background .15s;
+}
+.save-modal-copy:hover{background:#2A2A28}
+.save-modal-close{
+  width:100%;
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  background:transparent;
+  color:var(--tx-mid);
+  font-size:12px;font-weight:500;
+  font-family:var(--fn);
+  cursor:pointer;
+  transition:all .15s;
+}
+.save-modal-close:hover{background:var(--page)}
 </style>
 </head>
 <body>
@@ -551,6 +683,12 @@ input[type=file]{display:none}
   <!-- FORM -->
   <div class="form-panel">
     <div class="form-body">
+
+      <!-- Load Dialog -->
+      <div class="load-bar">
+        <input type="text" id="load-code" placeholder="POP-XXXXXX" maxlength="10" />
+        <button id="load-btn" onclick="doLoad()">불러오기</button>
+      </div>
 
       <!-- 1. 행사 기본 정보 -->
       <div class="sec">
@@ -679,6 +817,18 @@ input[type=file]{display:none}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- 저장 완료 팝업 -->
+<div class="save-modal-overlay" id="save-modal" onclick="closeSaveModal(event)">
+  <div class="save-modal">
+    <div class="save-modal-icon">✓</div>
+    <div class="save-modal-title">저장 완료</div>
+    <div class="save-modal-code" id="save-modal-code">POP-XXXXXX</div>
+    <div class="save-modal-msg">콘텐츠 수정시 해당 코드를 활용해 불러오기할 수 있습니다.<br>코드를 별도로 보관해주세요.</div>
+    <button class="save-modal-copy" onclick="copySaveCode()">코드 복사</button>
+    <button class="save-modal-close" onclick="closeSaveModal()">닫기</button>
+  </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -1026,6 +1176,97 @@ function render() {
   document.getElementById('output').innerHTML = h;
 }
 
+// ─── APPS SCRIPT URL ─────────────────────────────────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZnJ_SrTV6YGFZNadBjghIiQwepHgDGRdwDNW__VdPLm1oywONwX9KGsPPJErCqKLYvQ/exec';
+
+// ─── SAVE CODE ───────────────────────────────────────────────
+function generateSaveCode() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const arr = new Uint8Array(6);
+  crypto.getRandomValues(arr);
+  let code = 'POP-';
+  for (let i = 0; i < 6; i++) code += chars[arr[i] % 36];
+  return code;
+}
+
+// ─── FORM DATA COLLECT / RESTORE ─────────────────────────────
+function collectFormData() {
+  return {
+    brand: v('f-brand'),
+    title: v('f-title'),
+    period: v('f-period'),
+    loc: v('f-loc'),
+    headerBg: headerBg,
+    intro: v('f-intro'),
+    notes: v('f-notes'),
+    items: items.map(it => ({ name: it.name, price: it.price, desc: it.desc })),
+    benefits: bns.map(bn => ({ cond: bn.cond, gift: bn.gift }))
+  };
+}
+
+// ─── LOAD ─────────────────────────────────────────────────────
+async function doLoad() {
+  const codeInput = document.getElementById('load-code');
+  const btn = document.getElementById('load-btn');
+  const code = codeInput.value.trim();
+  if (!code) return;
+
+  btn.textContent = '불러오는 중...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?action=load&code=' + encodeURIComponent(code));
+    const result = await res.json();
+
+    if (result.status === 'ok') {
+      try {
+        const data = JSON.parse(result.data);
+        restoreFormData(data);
+        showToast('✓ 불러오기 완료');
+      } catch(e) {
+        showToast('⚠ 데이터 형식 오류');
+      }
+    } else if (result.status === 'not_found') {
+      showToast('해당 코드의 저장 데이터가 없습니다');
+    } else {
+      showToast('⚠ 불러오기 실패');
+    }
+  } catch(e) {
+    showToast('불러오기 실패. 네트워크를 확인해 주세요');
+  }
+
+  btn.textContent = '불러오기';
+  btn.disabled = false;
+}
+
+function restoreFormData(data) {
+  document.getElementById('f-brand').value = data.brand || '';
+  document.getElementById('f-title').value = data.title || '';
+  document.getElementById('f-period').value = data.period || '';
+  document.getElementById('f-loc').value = data.loc || '';
+  if (data.headerBg) applyColor(data.headerBg, '', '');
+  document.getElementById('f-intro').value = data.intro || '';
+  document.getElementById('f-notes').value = data.notes || '';
+
+  // Items 재생성
+  items = []; iIdx = 0;
+  (data.items || []).forEach(it => {
+    const id = ++iIdx;
+    items.push({ id, img: null, name: it.name, price: it.price, desc: it.desc });
+  });
+  rebuildItems();
+
+  // Benefits 재생성
+  bns = []; bIdx = 0;
+  (data.benefits || []).forEach(bn => {
+    const id = ++bIdx;
+    bns.push({ id, img: null, cond: bn.cond, gift: bn.gift });
+  });
+  rebuildBns();
+
+  render();
+}
+
 // ─── EXPORT ──────────────────────────────────────────────────
 async function doExport() {
   const btn = document.getElementById('expbtn');
@@ -1046,8 +1287,26 @@ async function doExport() {
       a.href = URL.createObjectURL(blob);
       a.download = fname;
       a.click();
-      showToast('✓  저장 완료 — ' + fname);
     }, 'image/jpeg', 0.95);
+
+    // ── 저장 로직: 항상 새 코드 생성 ──
+    const code = generateSaveCode();
+    const formData = collectFormData();
+    try {
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'save', code: code, type: 'popup', data: JSON.stringify(formData) })
+      });
+      const result = await res.json();
+      if (result.status === 'ok') {
+        showSaveModal(code);
+      } else {
+        showToast('⚠ 저장 실패');
+      }
+    } catch(e) {
+      showToast('⚠ 저장 실패');
+    }
+
   } catch(e) {
     showToast('⚠  내보내기 실패: ' + e.message);
   }
@@ -1059,6 +1318,25 @@ function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+let lastSavedCode = '';
+function showSaveModal(code) {
+  lastSavedCode = code;
+  document.getElementById('save-modal-code').textContent = code;
+  document.getElementById('save-modal').classList.add('show');
+}
+function closeSaveModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('save-modal').classList.remove('show');
+}
+async function copySaveCode() {
+  try {
+    await navigator.clipboard.writeText(lastSavedCode);
+    showToast('✓ 코드가 클립보드에 복사되었습니다');
+  } catch(e) {
+    showToast('⚠ 복사 실패');
+  }
 }
 
 function resetAll() {
