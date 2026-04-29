@@ -84,6 +84,11 @@
       <div class="card-body">
         <div>
           <div class="section-label"><div class="dot"></div><span>사용자 정보</span><span class="req">필수</span></div>
+          <div class="field" id="field-dept" style="margin-bottom:12px">
+            <label>소속 점포/소속 팀 <span class="required">*</span></label>
+            <input type="text" id="inputDept" name="dept" placeholder="예) 잠실점 영업기획팀" maxlength="40" oninput="onInput()">
+            <div class="error-msg">소속 점포/소속 팀을 입력해 주세요.</div>
+          </div>
           <div class="field-row" style="margin-bottom:12px">
             <div class="field" id="field-name">
               <label>이름 <span class="required">*</span></label>
@@ -165,6 +170,7 @@
   }
 
   function onInput() {
+    document.getElementById('field-dept').classList.remove('has-error');
     document.getElementById('field-name').classList.remove('has-error');
     document.getElementById('field-empno').classList.remove('has-error');
     document.getElementById('field-reason').classList.remove('has-error');
@@ -173,6 +179,7 @@
 
   function getValues() {
     return {
+      dept: document.getElementById('inputDept').value.trim(),
       name: document.getElementById('inputName').value.trim(),
       empno: document.getElementById('inputEmpno').value.trim(),
       reason: document.getElementById('inputReason').value.trim(),
@@ -182,7 +189,7 @@
 
   function updateButton() {
     const v = getValues();
-    const ok = v.name && v.empno && v.reason && v.template;
+    const ok = v.dept && v.name && v.empno && v.reason && v.template;
     const btn = document.getElementById('btnDesign');
     if (ok) {
       btn.style.background = '#111';
@@ -195,21 +202,22 @@
       btn.style.cursor = 'not-allowed';
       btn.style.boxShadow = 'none';
     }
-    const filled = [v.name, v.empno, v.reason, v.template].filter(Boolean).length;
-    document.getElementById('progressFill').style.width = (filled / 4 * 100) + '%';
+    const filled = [v.dept, v.name, v.empno, v.reason, v.template].filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (filled / 5 * 100) + '%';
   }
 
   function validateForm() {
     const v = getValues();
     let err = false;
+    if (!v.dept) { document.getElementById('field-dept').classList.add('has-error'); err = true; }
     if (!v.name) { document.getElementById('field-name').classList.add('has-error'); err = true; }
     if (!v.empno) { document.getElementById('field-empno').classList.add('has-error'); err = true; }
     if (!v.reason) { document.getElementById('field-reason').classList.add('has-error'); err = true; }
     if (!v.template) { document.getElementById('templateError').classList.add('show'); err = true; }
     if (err) return false;
 
-    // 구글 시트 저장
-    try { navigator.sendBeacon(APPS_SCRIPT_URL, JSON.stringify({ empno: v.empno, name: v.name, reason: v.reason, template: v.template })); } catch(e) {}
+    // 구글 시트 저장 (A: dept, B: empno, C: name, D: reason, E: template)
+    try { navigator.sendBeacon(APPS_SCRIPT_URL, JSON.stringify({ dept: v.dept, empno: v.empno, name: v.name, reason: v.reason, template: v.template })); } catch(e) {}
 
     // 정적 페이지로 이동
     const page = TEMPLATE_PAGES[v.template];
@@ -223,11 +231,12 @@
   }
 
   function resetForm() {
+    document.getElementById('inputDept').value = '';
     document.getElementById('inputName').value = '';
     document.getElementById('inputEmpno').value = '';
     document.getElementById('inputReason').value = '';
     document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
-    ['field-name','field-empno','field-reason'].forEach(id => document.getElementById(id).classList.remove('has-error'));
+    ['field-dept','field-name','field-empno','field-reason'].forEach(id => document.getElementById(id).classList.remove('has-error'));
     document.getElementById('templateError').classList.remove('show');
     selectedTemplate = null;
     updateButton();
