@@ -134,21 +134,19 @@ input[type=file]{display:none}
 .o-notes-txt{font-size:13px;font-weight:300;color:#6B6B66;line-height:1.95;white-space:pre-wrap;word-break:keep-all;}
 
 /* 브랜드데이 */
-.o-bd{padding:28px 20px 32px;}
-.o-bd-ttl{font-size:22px;font-weight:700;color:#222;letter-spacing:-.6px;margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;}
-.o-bd-period{font-size:14px;font-weight:400;color:#888;margin-bottom:20px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
-.o-bd-sub{font-size:13px;font-weight:700;color:#E8357A;letter-spacing:.5px;margin-bottom:14px;font-family:'Noto Sans KR',sans-serif;}
-.o-bd-row{margin-bottom:16px;}
+.o-bd{padding:0 0 32px;}
+.o-bd-period{font-size:14px;font-weight:400;color:#888;padding:0 20px;margin-bottom:20px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-bd-sub{font-size:13px;font-weight:700;color:#E8357A;letter-spacing:.5px;padding:0 20px;margin-bottom:14px;font-family:'Noto Sans KR',sans-serif;}
+.o-bd-row{margin-bottom:16px;padding:0 20px;}
 .o-bd-rate{font-size:18px;font-weight:700;color:#222;letter-spacing:-.3px;margin-bottom:4px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-bd-brands{font-size:13px;font-weight:400;color:#444;line-height:1.75;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
-.o-bd-note{font-size:12px;font-weight:300;color:#999;margin-top:12px;line-height:1.7;white-space:pre-wrap;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-bd-note{font-size:12px;font-weight:300;color:#999;margin-top:12px;line-height:1.7;white-space:pre-wrap;font-family:'MaisonNeue','Noto Sans KR',sans-serif;padding:0 20px;}
 
 /* 구매 금액대별 프로모션 */
-.o-promo{padding:28px 20px 32px;}
-.o-promo-ttl{font-size:22px;font-weight:700;color:#222;letter-spacing:-.6px;margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;}
-.o-promo-period{font-size:14px;font-weight:400;color:#888;margin-bottom:20px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
-.o-promo-sub{font-size:13px;font-weight:700;color:#E8357A;letter-spacing:.5px;margin-bottom:14px;font-family:'Noto Sans KR',sans-serif;}
-.o-promo-row{margin-bottom:18px;}
+.o-promo{padding:0 0 32px;}
+.o-promo-period{font-size:14px;font-weight:400;color:#888;padding:0 20px;margin-bottom:20px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-promo-sub{font-size:13px;font-weight:700;color:#E8357A;letter-spacing:.5px;padding:0 20px;margin-bottom:14px;font-family:'Noto Sans KR',sans-serif;}
+.o-promo-row{margin-bottom:18px;padding:0 20px;}
 .o-promo-brand{font-size:14px;font-weight:700;color:#222;letter-spacing:-.2px;margin-bottom:4px;font-family:'Noto Sans KR',sans-serif;}
 .o-promo-body{font-size:13px;font-weight:400;color:#444;line-height:1.75;white-space:pre-wrap;word-break:keep-all;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-promo-note{font-size:12px;font-weight:300;color:#999;margin-top:10px;line-height:1.7;white-space:pre-wrap;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
@@ -667,8 +665,8 @@ function render() {
   const bdPeriod = v('f-bd-period'), bdNote = v('f-bd-note');
   if (bds.length > 0 || bdPeriod) {
     h += `<div class="o-sec-divider"></div>`;
+    h += `<div class="o-sec"><span class="o-sec-txt">브랜드데이</span><div class="o-sec-line"></div></div>`;
     h += `<div class="o-bd">`;
-    h += `<div class="o-bd-ttl">브랜드데이</div>`;
     if (bdPeriod) h += `<div class="o-bd-period">${bdPeriod}</div>`;
     h += `<div class="o-bd-sub">할인</div>`;
     bds.forEach(bd => {
@@ -685,8 +683,8 @@ function render() {
   const promoPeriod = v('f-promo-period');
   if (promos.length > 0 || promoPeriod) {
     h += `<div class="o-sec-divider"></div>`;
+    h += `<div class="o-sec"><span class="o-sec-txt">구매 금액대별 프로모션</span><div class="o-sec-line"></div></div>`;
     h += `<div class="o-promo">`;
-    h += `<div class="o-promo-ttl">구매 금액대별 프로모션</div>`;
     if (promoPeriod) h += `<div class="o-promo-period">${promoPeriod}</div>`;
     h += `<div class="o-promo-sub">증정</div>`;
     promos.forEach(pm => {
