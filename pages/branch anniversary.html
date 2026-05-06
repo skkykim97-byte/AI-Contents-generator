@@ -622,6 +622,94 @@ function rebuildBns() {
 }
 
 // ─── RENDER ──────────────────────────────────────────────────
+function v(id) { const el=document.getElementById(id); return el?el.value.trim():''; }
+
+function render() {
+  const store=v('f-store'), title1=v('f-title1'), title2=v('f-title2');
+  const period=v('f-period'), notes=v('f-notes');
+  const lum = getLuminance(headerBg);
+  const storeColor  = lum > 0.42 ? '#E8357A' : 'rgba(255,255,255,0.85)';
+  const titleColor  = lum > 0.42 ? '#222222' : '#FFFFFF';
+  const periodColor = lum > 0.42 ? '#555555' : 'rgba(255,255,255,0.75)';
+
+  let h = '';
+
+  // 헤더
+  h += `<div class="o-hd" style="background:${headerBg}">`;
+  if (store) h += `<div class="o-hd-store" style="color:${storeColor}">${store}</div>`;
+  h += `<div style="padding-right:${imgStore.logo?'96px':'0'}">`;
+  h += `<div class="o-hd-title1" style="color:${titleColor}">${title1||'롯데백화점 OO점'}</div>`;
+  h += `<div class="o-hd-title2" style="color:${titleColor}">${title2||'개점 OO주년'}</div>`;
+  h += `</div>`;
+  if (period) h += `<div class="o-hd-period" style="color:${periodColor}">${period}</div>`;
+  if (imgStore.logo) h += `<div class="o-hd-logo"><img src="${imgStore.logo}" class="o-hd-logo-img"/></div>`;
+  h += `</div>`;
+
+  // Special Benefit
+  if (bns.length > 0) {
+    h += `<div class="o-sec"><span class="o-sec-txt">Special Benefit</span><div class="o-sec-line"></div></div>`;
+    bns.forEach((bn, idx) => {
+      if (idx > 0) h += `<div class="o-bn-divider"></div>`;
+      h += `<div class="o-bn">`;
+      h += `<div class="o-bn-img-wrap">`;
+      h += bn.img
+        ? `<img src="${bn.img}" class="o-bn-img" style="object-position:${bn.imgCropX||50}% ${bn.imgCropY||50}%"/>`
+        : `<div class="o-bn-img-ph">이미지를 업로드하세요</div>`;
+      h += `</div>`;
+      if (bn.title) h += `<div class="o-bn-ttl">${bn.title}</div>`;
+      if (bn.body)  h += `<div class="o-bn-body">${bn.body.replace(/\n/g,'<br>')}</div>`;
+      if (bn.note)  h += `<div class="o-bn-note">${bn.note.replace(/\n/g,'<br>')}</div>`;
+      h += `</div>`;
+    });
+  }
+
+  // 브랜드데이
+  const bdPeriod = v('f-bd-period'), bdNote = v('f-bd-note');
+  if (bds.length > 0 || bdPeriod) {
+    h += `<div class="o-sec-divider"></div>`;
+    h += `<div class="o-bd">`;
+    h += `<div class="o-bd-ttl">브랜드데이</div>`;
+    if (bdPeriod) h += `<div class="o-bd-period">${bdPeriod}</div>`;
+    h += `<div class="o-bd-sub">할인</div>`;
+    bds.forEach(bd => {
+      h += `<div class="o-bd-row">`;
+      if (bd.rate)   h += `<div class="o-bd-rate">${bd.rate}</div>`;
+      if (bd.brands) h += `<div class="o-bd-brands">${bd.brands.replace(/\n/g,'<br>')}</div>`;
+      h += `</div>`;
+    });
+    if (bdNote) h += `<div class="o-bd-note">${bdNote.replace(/\n/g,'<br>')}</div>`;
+    h += `</div>`;
+  }
+
+  // 구매 금액대별 프로모션
+  const promoPeriod = v('f-promo-period');
+  if (promos.length > 0 || promoPeriod) {
+    h += `<div class="o-sec-divider"></div>`;
+    h += `<div class="o-promo">`;
+    h += `<div class="o-promo-ttl">구매 금액대별 프로모션</div>`;
+    if (promoPeriod) h += `<div class="o-promo-period">${promoPeriod}</div>`;
+    h += `<div class="o-promo-sub">증정</div>`;
+    promos.forEach(pm => {
+      h += `<div class="o-promo-row">`;
+      if (pm.brand) h += `<div class="o-promo-brand">${pm.brand}</div>`;
+      if (pm.body)  h += `<div class="o-promo-body">${pm.body.replace(/\n/g,'<br>')}</div>`;
+      if (pm.note)  h += `<div class="o-promo-note">${pm.note.replace(/\n/g,'<br>')}</div>`;
+      h += `</div>`;
+    });
+    h += `</div>`;
+  }
+
+  // 참고사항
+  if (notes) {
+    h += `<div class="o-notes">`;
+    h += `<div class="o-notes-ttl">참고사항</div>`;
+    h += `<div class="o-notes-txt">${notes.replace(/\n/g,'<br>')}</div>`;
+    h += `</div>`;
+  }
+
+  document.getElementById('output').innerHTML = h;
+}
+
 // ─── BRAND DAY ───────────────────────────────────────────────
 let bds = [], bdIdx = 0;
 
@@ -702,95 +790,6 @@ function rebuildPromo() {
       </div>`;
     list.appendChild(card);
   });
-}
-
-function render() {
-  const store=v('f-store'), title1=v('f-title1'), title2=v('f-title2');
-  const period=v('f-period'), notes=v('f-notes');
-  const lum = getLuminance(headerBg);
-  const storeColor = lum > 0.42 ? '#E8357A' : 'rgba(255,255,255,0.85)';
-  const titleColor = lum > 0.42 ? '#222222' : '#FFFFFF';
-  const periodColor = lum > 0.42 ? '#555555' : 'rgba(255,255,255,0.75)';
-
-  let h = '';
-
-  // 헤더
-  h += `<div class="o-hd" style="background:${headerBg}">`;
-  if (store) h += `<div class="o-hd-store" style="color:${storeColor}">${store}</div>`;
-  h += `<div style="padding-right:${imgStore.logo?'96px':'0'}">`;
-  h += `<div class="o-hd-title1" style="color:${titleColor}">${title1||'롯데백화점 OO점'}</div>`;
-  h += `<div class="o-hd-title2" style="color:${titleColor}">${title2||'개점 OO주년'}</div>`;
-  h += `</div>`;
-  if (period) h += `<div class="o-hd-period" style="color:${periodColor}">${period}</div>`;
-  // 로고 우측 상단
-  if (imgStore.logo) {
-    h += `<div class="o-hd-logo"><img src="${imgStore.logo}" class="o-hd-logo-img"/></div>`;
-  }
-  h += `</div>`;
-
-  // Special Benefit
-  if (bns.length > 0) {
-    h += `<div class="o-sec"><span class="o-sec-txt">Special Benefit</span><div class="o-sec-line"></div></div>`;
-    bns.forEach((bn, idx) => {
-      if (idx > 0) h += `<div class="o-bn-divider"></div>`;
-      h += `<div class="o-bn">`;
-      h += `<div class="o-bn-img-wrap">`;
-      h += bn.img
-        ? `<img src="${bn.img}" class="o-bn-img" style="object-position:${bn.imgCropX||50}% ${bn.imgCropY||50}%"/>`
-        : `<div class="o-bn-img-ph">이미지를 업로드하세요</div>`;
-      h += `</div>`;
-      if (bn.title) h += `<div class="o-bn-ttl">${bn.title}</div>`;
-      if (bn.body)  h += `<div class="o-bn-body">${bn.body.replace(/\n/g,'<br>')}</div>`;
-      if (bn.note)  h += `<div class="o-bn-note">${bn.note.replace(/\n/g,'<br>')}</div>`;
-      h += `</div>`;
-    });
-  }
-
-  // 브랜드데이
-  const bdPeriod = v('f-bd-period'), bdNote = v('f-bd-note');
-  if (bds.length > 0 || bdPeriod) {
-    h += `<div class="o-sec-divider"></div>`;
-    h += `<div class="o-bd">`;
-    h += `<div class="o-bd-ttl">브랜드데이</div>`;
-    if (bdPeriod) h += `<div class="o-bd-period">${bdPeriod}</div>`;
-    h += `<div class="o-bd-sub">할인</div>`;
-    bds.forEach(bd => {
-      h += `<div class="o-bd-row">`;
-      if (bd.rate)   h += `<div class="o-bd-rate">${bd.rate}</div>`;
-      if (bd.brands) h += `<div class="o-bd-brands">${bd.brands.replace(/\n/g,'<br>')}</div>`;
-      h += `</div>`;
-    });
-    if (bdNote) h += `<div class="o-bd-note">${bdNote.replace(/\n/g,'<br>')}</div>`;
-    h += `</div>`;
-  }
-
-  // 구매 금액대별 프로모션
-  const promoPeriod = v('f-promo-period');
-  if (promos.length > 0 || promoPeriod) {
-    h += `<div class="o-sec-divider"></div>`;
-    h += `<div class="o-promo">`;
-    h += `<div class="o-promo-ttl">구매 금액대별 프로모션</div>`;
-    if (promoPeriod) h += `<div class="o-promo-period">${promoPeriod}</div>`;
-    h += `<div class="o-promo-sub">증정</div>`;
-    promos.forEach(pm => {
-      h += `<div class="o-promo-row">`;
-      if (pm.brand) h += `<div class="o-promo-brand">${pm.brand}</div>`;
-      if (pm.body)  h += `<div class="o-promo-body">${pm.body.replace(/\n/g,'<br>')}</div>`;
-      if (pm.note)  h += `<div class="o-promo-note">${pm.note.replace(/\n/g,'<br>')}</div>`;
-      h += `</div>`;
-    });
-    h += `</div>`;
-  }
-
-  // 참고사항
-  if (notes) {
-    h += `<div class="o-notes">`;
-    h += `<div class="o-notes-ttl">참고사항</div>`;
-    h += `<div class="o-notes-txt">${notes.replace(/\n/g,'<br>')}</div>`;
-    h += `</div>`;
-  }
-
-  document.getElementById('output').innerHTML = h;
 }
 
 // ─── CHAR COUNTER ────────────────────────────────────────────
