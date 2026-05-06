@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>롯데백화점 콘텐츠 생성기</title>
+<title>Self 콘텐츠 제작 센터</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -97,7 +97,7 @@
 
 <header>
   <img src="logo.png" alt="롯백" class="logo-img" onerror="this.style.display='none'">
-  <h1>롯데백화점 콘텐츠 생성기</h1>
+  <h1>Self 콘텐츠 제작 센터</h1>
   <span class="badge">APP</span>
 </header>
 
@@ -116,19 +116,6 @@
         <div>
           <div class="section-label">
             <div class="dot"></div><span>사용자 정보</span><span class="req">필수</span>
-          </div>
-
-          <div class="field-row" style="margin-bottom:12px">
-            <div class="field" id="field-name">
-              <label>이름 <span class="required">*</span></label>
-              <input type="text" id="inputName" name="name" placeholder="예) 홍길동" maxlength="20" oninput="onInput()">
-              <div class="error-msg">이름을 입력해 주세요.</div>
-            </div>
-            <div class="field" id="field-empno">
-              <label>사번 <span class="required">*</span></label>
-              <input type="text" id="inputEmpno" name="empno" placeholder="예) 122600123" maxlength="12" oninput="onInput()">
-              <div class="error-msg">사번을 입력해 주세요.</div>
-            </div>
           </div>
 
           <div class="field" id="field-reason">
@@ -202,16 +189,12 @@
   }
 
   function onInput() {
-    document.getElementById('field-name').classList.remove('has-error');
-    document.getElementById('field-empno').classList.remove('has-error');
     document.getElementById('field-reason').classList.remove('has-error');
     updateButton();
   }
 
   function getValues() {
     return {
-      name:     document.getElementById('inputName').value.trim(),
-      empno:    document.getElementById('inputEmpno').value.trim(),
       reason:   document.getElementById('inputReason').value.trim(),
       template: selectedTemplate
     };
@@ -219,37 +202,30 @@
 
   function updateButton() {
     const v = getValues();
-    const ok = v.name && v.empno && v.reason && v.template;
+    const ok = v.reason && v.template;
     document.getElementById('btnDesign').classList.toggle('active', ok);
-    const filled = [v.name, v.empno, v.reason, v.template].filter(Boolean).length;
-    document.getElementById('progressFill').style.width = (filled / 4 * 100) + '%';
+    const filled = [v.reason, v.template].filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (filled / 2 * 100) + '%';
   }
 
-  // form onsubmit 핸들러: 유효성 검사 후 hidden 필드 채움
   function validateForm() {
     const v = getValues();
     let err = false;
-    if (!v.name)     { document.getElementById('field-name').classList.add('has-error');   err = true; }
-    if (!v.empno)    { document.getElementById('field-empno').classList.add('has-error');  err = true; }
     if (!v.reason)   { document.getElementById('field-reason').classList.add('has-error'); err = true; }
     if (!v.template) { document.getElementById('templateError').classList.add('show');     err = true; }
-    if (err) return false; // 제출 차단
+    if (err) return false;
 
-    // Flask route로 action 설정
     document.getElementById('mainForm').action = '/' + v.template;
 
-    // 구글 시트 저장 (fire-and-forget)
-    try { navigator.sendBeacon(APPS_SCRIPT_URL, JSON.stringify({ empno: v.empno, name: v.name, reason: v.reason, template: v.template })); } catch(e) {}
+    try { navigator.sendBeacon(APPS_SCRIPT_URL, JSON.stringify({ reason: v.reason, template: v.template })); } catch(e) {}
 
     return true;
   }
 
   function resetForm() {
-    document.getElementById('inputName').value = '';
-    document.getElementById('inputEmpno').value = '';
     document.getElementById('inputReason').value = '';
     document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
-    ['field-name','field-empno','field-reason'].forEach(id => document.getElementById(id).classList.remove('has-error'));
+    ['field-reason'].forEach(id => document.getElementById(id).classList.remove('has-error'));
     document.getElementById('templateError').classList.remove('show');
     selectedTemplate = null;
     updateButton();
