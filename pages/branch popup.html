@@ -148,7 +148,12 @@ body{
 .field-label-ko{
   font-size:12px;font-weight:500;
   color:var(--tx-mid);
+  display:flex;align-items:center;justify-content:space-between;
 }
+.byte-counter{
+  font-size:11px;font-weight:400;color:var(--tx-hint);margin-left:auto;
+}
+.byte-counter.over{color:#E03030;font-weight:600;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
 input[type=text],textarea{
@@ -383,7 +388,7 @@ input[type=file]{display:none}
 .o-hd-val{flex:1;line-height:1.5;word-break:keep-all;font-weight:300}
 
 /* 대표 이미지 */
-.o-hero img{width:390px;display:block}
+.o-hero img{width:390px;height:390px;display:block;object-fit:cover}
 .o-hero-ph{
   width:390px;height:200px;
   background:#EDECEA;
@@ -701,20 +706,20 @@ input[type=file]{display:none}
         </div>
         <div class="sec-body">
           <div class="field">
-            <span class="field-label-ko">행사 제목 첫째줄</span>
-            <input type="text" id="f-brand" placeholder="반클리프 아펠 오뜨 퍼퓨머리" oninput="render()"/>
+            <span class="field-label-ko">행사 제목 첫째줄 <span class="byte-counter" id="cnt-brand">*22자</span></span>
+            <input type="text" id="f-brand" placeholder="반클리프 아펠 오뜨 퍼퓨머리" oninput="updateByteCount(this,'cnt-brand');render()"/>
           </div>
           <div class="field">
-            <span class="field-label-ko">행사 제목 둘째줄</span>
-            <input type="text" id="f-title" placeholder="국내 첫 Pop-Up Open" oninput="render()"/>
+            <span class="field-label-ko">행사 제목 둘째줄 <span class="byte-counter" id="cnt-title">*22자</span></span>
+            <input type="text" id="f-title" placeholder="국내 첫 Pop-Up Open" oninput="updateByteCount(this,'cnt-title');render()"/>
           </div>
           <div class="field">
-            <span class="field-label-ko">기간</span>
-            <input type="text" id="f-period" placeholder="3.26(목) - 4.02(월)" oninput="render()"/>
+            <span class="field-label-ko">기간 <span class="byte-counter" id="cnt-period">*22자</span></span>
+            <input type="text" id="f-period" placeholder="3.26(목) - 4.02(월)" oninput="updateByteCount(this,'cnt-period');render()"/>
           </div>
           <div class="field">
-            <span class="field-label-ko">장소</span>
-            <input type="text" id="f-loc" placeholder="롯데백화점 본점 1F 명품관" oninput="render()"/>
+            <span class="field-label-ko">장소 <span class="byte-counter" id="cnt-loc">*22자</span></span>
+            <input type="text" id="f-loc" placeholder="롯데백화점 본점 1F 명품관" oninput="updateByteCount(this,'cnt-loc');render()"/>
           </div>
 
           <!-- 헤더 배경 색상 -->
@@ -905,9 +910,23 @@ function loadImg(input, key) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    imgStore[key] = e.target.result;
-    renderUploaderFilled('hero-zone', e.target.result, 'hero');
-    render();
+    const img = new Image();
+    img.onload = () => {
+      // 정방형 크롭: 짧은 변 기준으로 중앙 크롭
+      const size = Math.min(img.width, img.height);
+      const sx = (img.width - size) / 2;
+      const sy = (img.height - size) / 2;
+      const canvas = document.createElement('canvas');
+      canvas.width = 390;
+      canvas.height = 390;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, sx, sy, size, size, 0, 0, 390, 390);
+      const cropped = canvas.toDataURL('image/jpeg', 0.95);
+      imgStore[key] = cropped;
+      renderUploaderFilled('hero-zone', cropped, 'hero');
+      render();
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -1029,18 +1048,18 @@ function rebuildItems() {
           <input type="file" id="file-it${it.id}" accept="image/*" onchange="loadItemImg(this,${it.id})"/>
         </div>
         <div class="field">
-          <span class="field-label-ko">상품명 · 용량 포함</span>
-          <input type="text" value="${it.name}" placeholder="플뢰리에 네롤리 이리야 EDP 75ml"
-            oninput="items.find(i=>i.id===${it.id}).name=this.value;render()"/>
+          <span class="field-label-ko">상품명 <span class="byte-counter" id="cnt-iname-${it.id}">*22자</span></span>
+          <textarea rows="2" id="iname-${it.id}" placeholder="플뢰리에 네롤리 이리야 EDP 75ml"
+            oninput="items.find(i=>i.id===${it.id}).name=this.value;updateByteCount(this,'cnt-iname-${it.id}');render()">${it.name}</textarea>
         </div>
         <div class="field">
-          <span class="field-label-ko">가격</span>
-          <input type="text" value="${it.price}" placeholder="318,000원"
-            oninput="items.find(i=>i.id===${it.id}).price=this.value;render()"/>
+          <span class="field-label-ko">가격 <span class="byte-counter" id="cnt-iprice-${it.id}">*15자</span></span>
+          <input type="text" value="${it.price}" placeholder="318,000원" maxlength="15"
+            oninput="items.find(i=>i.id===${it.id}).price=this.value;updateCharCount(this,'cnt-iprice-${it.id}',15);render()"/>
         </div>
         <div class="field">
-          <span class="field-label-ko">상품 설명</span>
-          <textarea oninput="items.find(i=>i.id===${it.id}).desc=this.value;render()">${it.desc}</textarea>
+          <span class="field-label-ko">상품 설명 <span class="byte-counter" id="cnt-idesc-${it.id}">*200자</span></span>
+          <textarea maxlength="200" oninput="items.find(i=>i.id===${it.id}).desc=this.value;updateCharCount(this,'cnt-idesc-${it.id}',200);render()">${it.desc}</textarea>
         </div>
       </div>`;
     list.appendChild(card);
@@ -1083,14 +1102,14 @@ function rebuildBns() {
           <input type="file" id="file-bn${bn.id}" accept="image/*" onchange="loadBnImg(this,${bn.id})"/>
         </div>
         <div class="field">
-          <span class="field-label-ko">조건 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 연한 글씨</span></span>
-          <input type="text" value="${bn.cond}" placeholder="행사 SNS 이벤트 참여 시"
-            oninput="bns.find(b=>b.id===${bn.id}).cond=this.value;render()"/>
+          <span class="field-label-ko">조건 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 연한 글씨</span><span class="byte-counter" id="cnt-bcond-${bn.id}">*40자</span></span>
+          <textarea rows="2" maxlength="40" id="bcond-${bn.id}" placeholder="행사 SNS 이벤트 참여 시"
+            oninput="bns.find(b=>b.id===${bn.id}).cond=this.value;updateCharCount(this,'cnt-bcond-${bn.id}',40);render()">${bn.cond}</textarea>
         </div>
         <div class="field">
-          <span class="field-label-ko">혜택 내용 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 굵은 글씨</span></span>
-          <input type="text" value="${bn.gift}" placeholder="2ml 바이알 1개 증정"
-            oninput="bns.find(b=>b.id===${bn.id}).gift=this.value;render()"/>
+          <span class="field-label-ko">혜택 내용 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 굵은 글씨</span><span class="byte-counter" id="cnt-bgift-${bn.id}">*40자</span></span>
+          <textarea rows="2" maxlength="40" id="bgift-${bn.id}" placeholder="2ml 바이알 1개 증정"
+            oninput="bns.find(b=>b.id===${bn.id}).gift=this.value;updateCharCount(this,'cnt-bgift-${bn.id}',40);render()">${bn.gift}</textarea>
         </div>
       </div>`;
     list.appendChild(card);
@@ -1147,7 +1166,7 @@ function render() {
       h += `<div class="o-item">`;
       h += it.img ? `<img src="${it.img}" class="o-item-img"/>` : `<div class="o-item-img-ph">이미지</div>`;
       h += `<div class="o-item-info">`;
-      if (it.name)  h += `<div class="o-item-name">${it.name}</div>`;
+      if (it.name)  h += `<div class="o-item-name">${it.name.replace(/\n/g,'<br>')}</div>`;
       if (it.price) h += `<div class="o-item-price">${it.price}</div>`;
       if (it.desc)  h += `<div class="o-item-desc">${it.desc.replace(/\n/g,'<br>')}</div>`;
       h += `</div></div>`;
@@ -1162,8 +1181,8 @@ function render() {
       h += `<div class="o-bn-num">${idx+1}</div>`;
       h += bn.img ? `<img src="${bn.img}" class="o-bn-img"/>` : `<div class="o-bn-img-ph">이미지</div>`;
       h += `<div class="o-bn-txt">`;
-      if (bn.cond) h += `<div class="o-bn-cond">${bn.cond}</div>`;
-      if (bn.gift) h += `<div class="o-bn-gift">${bn.gift}</div>`;
+      if (bn.cond) h += `<div class="o-bn-cond">${bn.cond.replace(/\n/g,'<br>')}</div>`;
+      if (bn.gift) h += `<div class="o-bn-gift">${bn.gift.replace(/\n/g,'<br>')}</div>`;
       h += `</div></div>`;
     });
   }
@@ -1172,7 +1191,7 @@ function render() {
   if (notes) {
     h += `<div class="o-notes">`;
     h += `<div class="o-notes-ttl">참고사항</div>`;
-    h += `<div class="o-notes-txt">${notes}</div>`;
+    h += `<div class="o-notes-txt">${notes.replace(/\n/g,'<br>')}</div>`;
     h += `</div>`;
   }
 
@@ -1181,6 +1200,50 @@ function render() {
 
 // ─── APPS SCRIPT URL ─────────────────────────────────────────
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZnJ_SrTV6YGFZNadBjghIiQwepHgDGRdwDNW__VdPLm1oywONwX9KGsPPJErCqKLYvQ/exec';
+
+// ─── BYTE / CHAR COUNTER ─────────────────────────────────────
+const MAX_BYTES = 39; // 공백 포함 39byte
+
+function getByteLength(str) {
+  let b = 0;
+  for (let i = 0; i < str.length; i++) {
+    b += (str.charCodeAt(i) > 127) ? 3 : 1; // UTF-8: 한글 3byte, ASCII 1byte
+  }
+  return b;
+}
+
+function updateByteCount(input, counterId) {
+  const counter = document.getElementById(counterId);
+  if (!counter) return;
+  const bytes = getByteLength(input.value);
+  const remaining = MAX_BYTES - bytes;
+  if (remaining < 0) {
+    // 초과 시 잘라내기
+    let trimmed = '';
+    let total = 0;
+    for (let i = 0; i < input.value.length; i++) {
+      const cb = (input.value.charCodeAt(i) > 127) ? 3 : 1;
+      if (total + cb > MAX_BYTES) break;
+      trimmed += input.value[i];
+      total += cb;
+    }
+    input.value = trimmed;
+    counter.textContent = '*22자';
+    counter.classList.remove('over');
+  } else {
+    const charCount = input.value.length;
+    counter.textContent = `${charCount}자 / *22자`;
+    counter.classList.toggle('over', bytes > MAX_BYTES * 0.9);
+  }
+}
+
+function updateCharCount(input, counterId, max) {
+  const counter = document.getElementById(counterId);
+  if (!counter) return;
+  const len = input.value.length;
+  counter.textContent = `${len} / *${max}자`;
+  counter.classList.toggle('over', len >= max);
+}
 
 // ─── SAVE CODE ───────────────────────────────────────────────
 function generateSaveCode() {
