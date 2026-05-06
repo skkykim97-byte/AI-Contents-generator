@@ -118,6 +118,31 @@
             <div class="dot"></div><span>사용자 정보</span><span class="req">필수</span>
           </div>
 
+          <div class="field" id="field-dept" style="margin-bottom:12px">
+            <label>소속 점포/소속 팀 <span class="required">*</span></label>
+            <input type="text" id="inputDept" name="dept" placeholder="예) 잠실점 영업기획팀" maxlength="40" oninput="onInput()">
+            <div class="error-msg">소속 점포/소속 팀을 입력해 주세요.</div>
+          </div>
+
+          <div class="field-row" style="margin-bottom:12px">
+            <div class="field" id="field-name">
+              <label>이름 <span class="required">*</span></label>
+              <input type="text" id="inputName" name="name" placeholder="예) 홍길동" maxlength="20" oninput="onInput()">
+              <div class="error-msg">이름을 입력해 주세요.</div>
+            </div>
+            <div class="field" id="field-empno">
+              <label>사번 <span class="required">*</span></label>
+              <input type="text" id="inputEmpno" name="empno" placeholder="예) 122600123" maxlength="12" oninput="onInput()">
+              <div class="error-msg">사번을 입력해 주세요.</div>
+            </div>
+          </div>
+
+          <div class="field" id="field-dept" style="margin-bottom:12px">
+            <label>소속 점포/소속 팀 <span class="required">*</span></label>
+            <input type="text" id="inputDept" name="dept" placeholder="예) 잠실점 영업기획팀" maxlength="40" oninput="onInput()">
+            <div class="error-msg">소속 점포/소속 팀을 입력해 주세요.</div>
+          </div>
+
           <div class="field" id="field-reason">
             <label>제작 사유 <span class="required">*</span></label>
             <textarea id="inputReason" name="reason" rows="3" placeholder="예) 잠실점 브랜드 New Open" maxlength="200" oninput="onInput()"></textarea>
@@ -189,12 +214,14 @@
   }
 
   function onInput() {
+    document.getElementById('field-dept').classList.remove('has-error');
     document.getElementById('field-reason').classList.remove('has-error');
     updateButton();
   }
 
   function getValues() {
     return {
+      dept:     document.getElementById('inputDept').value.trim(),
       reason:   document.getElementById('inputReason').value.trim(),
       template: selectedTemplate
     };
@@ -202,30 +229,32 @@
 
   function updateButton() {
     const v = getValues();
-    const ok = v.reason && v.template;
+    const ok = v.dept && v.reason && v.template;
     document.getElementById('btnDesign').classList.toggle('active', ok);
-    const filled = [v.reason, v.template].filter(Boolean).length;
-    document.getElementById('progressFill').style.width = (filled / 2 * 100) + '%';
+    const filled = [v.dept, v.reason, v.template].filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (filled / 3 * 100) + '%';
   }
 
   function validateForm() {
     const v = getValues();
     let err = false;
+    if (!v.dept)     { document.getElementById('field-dept').classList.add('has-error');   err = true; }
     if (!v.reason)   { document.getElementById('field-reason').classList.add('has-error'); err = true; }
     if (!v.template) { document.getElementById('templateError').classList.add('show');     err = true; }
     if (err) return false;
 
     document.getElementById('mainForm').action = '/' + v.template;
 
-    try { navigator.sendBeacon(APPS_SCRIPT_URL, JSON.stringify({ reason: v.reason, template: v.template })); } catch(e) {}
+    try { navigator.sendBeacon(APPS_SCRIPT_URL, JSON.stringify({ dept: v.dept, reason: v.reason, template: v.template })); } catch(e) {}
 
     return true;
   }
 
   function resetForm() {
+    document.getElementById('inputDept').value = '';
     document.getElementById('inputReason').value = '';
     document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
-    ['field-reason'].forEach(id => document.getElementById(id).classList.remove('has-error'));
+    ['field-dept', 'field-reason'].forEach(id => document.getElementById(id).classList.remove('has-error'));
     document.getElementById('templateError').classList.remove('show');
     selectedTemplate = null;
     updateButton();
