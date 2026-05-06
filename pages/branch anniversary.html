@@ -105,27 +105,27 @@ input[type=file]{display:none}
 
 /* 헤더 */
 .o-hd{padding:36px 24px 32px;position:relative;}
-.o-hd-store{font-size:13px;font-weight:700;color:#E8357A;margin-bottom:6px;letter-spacing:-.2px;}
-.o-hd-title1{font-size:26px;font-weight:700;letter-spacing:-.8px;line-height:1.25;color:#222;word-break:keep-all;}
-.o-hd-title2{font-size:26px;font-weight:700;letter-spacing:-.8px;line-height:1.25;color:#222;margin-bottom:16px;word-break:keep-all;}
-.o-hd-period{font-size:14px;font-weight:400;color:#555;letter-spacing:-.2px;}
+.o-hd-store{font-size:15px;font-weight:500;color:#E8357A;margin-bottom:6px;letter-spacing:-.2px;font-family:'Noto Sans KR',sans-serif;}
+.o-hd-title1{font-size:26px;font-weight:500;letter-spacing:-.8px;line-height:1.25;color:#222;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-hd-title2{font-size:26px;font-weight:500;letter-spacing:-.8px;line-height:1.25;color:#222;margin-bottom:16px;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-hd-period{font-size:15px;font-weight:400;color:#555;letter-spacing:-.2px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-hd-logo{position:absolute;top:32px;right:24px;width:80px;text-align:center;}
 .o-hd-logo-img{width:80px;height:80px;object-fit:contain;display:block;}
 .o-hd-logo-ph{width:80px;height:80px;background:#F5E6EC;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#C0A0A8;font-weight:300;}
 
 /* 섹션 타이틀 */
 .o-sec{padding:22px 20px 8px;display:flex;align-items:center;gap:12px;}
-.o-sec-txt{font-size:19px;font-weight:700;color:#111;letter-spacing:-.5px;white-space:nowrap;}
+.o-sec-txt{font-size:19px;font-weight:500;color:#111;letter-spacing:-.5px;white-space:nowrap;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-sec-line{flex:1;height:1px;background:#E2E0D9}
 
 /* Special Benefit 카드 */
 .o-bn{padding:0 20px 28px;}
-.o-bn-img-wrap{width:100%;background:#FDF0F5;padding:28px 20px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;}
-.o-bn-img{width:280px;height:280px;object-fit:cover;display:block;border-radius:16px;box-shadow:0 8px 32px rgba(232,53,122,.25);}
-.o-bn-img-ph{width:280px;height:280px;background:#F5E6EC;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#C0A0A8;font-weight:300;}
-.o-bn-ttl{font-size:16px;font-weight:700;color:#111;letter-spacing:-.3px;margin-bottom:10px;line-height:1.4;}
-.o-bn-body{font-size:13px;font-weight:400;color:#333;line-height:1.85;margin-bottom:6px;white-space:pre-wrap;word-break:break-all;}
-.o-bn-note{font-size:12px;font-weight:300;color:#999;line-height:1.75;white-space:pre-wrap;word-break:break-all;}
+.o-bn-img-wrap{width:100%;background:#FDF0F5;padding:20px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;}
+.o-bn-img{width:350px;height:197px;object-fit:cover;display:block;border-radius:12px;box-shadow:0 8px 32px rgba(232,53,122,.25);}
+.o-bn-img-ph{width:350px;height:197px;background:#F5E6EC;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#C0A0A8;font-weight:300;}
+.o-bn-ttl{font-size:16px;font-weight:700;color:#111;letter-spacing:-.3px;margin-bottom:10px;line-height:1.4;font-family:'Noto Sans KR',sans-serif;}
+.o-bn-body{font-size:13px;font-weight:400;color:#333;line-height:1.85;margin-bottom:6px;white-space:pre-wrap;word-break:break-all;font-family:'Noto Sans KR',sans-serif;}
+.o-bn-note{font-size:12px;font-weight:300;color:#999;line-height:1.75;white-space:pre-wrap;word-break:break-all;font-family:'Noto Sans KR',sans-serif;}
 .o-bn-divider{height:1px;background:#EDECEA;margin:0 20px;}
 
 /* 유의사항 */
@@ -385,7 +385,7 @@ const BN_EX = [
 function addBenefit() {
   const id = ++bIdx;
   const ex = BN_EX[bns.length] || { title:'', body:'', note:'' };
-  bns.push({ id, img:null, title:ex.title, body:ex.body, note:ex.note });
+  bns.push({ id, img:null, imgRaw:null, imgCropX:50, imgCropY:50, title:ex.title, body:ex.body, note:ex.note });
   rebuildBns(); render();
 }
 
@@ -398,19 +398,20 @@ function loadBnImg(input, id) {
   const file = input.files[0]; if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    // 정방형 크롭
     const img = new Image();
     img.onload = () => {
-      const size = Math.min(img.width, img.height);
-      const sx = (img.width-size)/2, sy = (img.height-size)/2;
-      const canvas = document.createElement('canvas');
-      canvas.width = 560; canvas.height = 560;
-      canvas.getContext('2d').drawImage(img, sx, sy, size, size, 0, 0, 560, 560);
-      const cropped = canvas.toDataURL('image/jpeg', 0.95);
-      const bn = bns.find(b=>b.id===id); if(bn) bn.img = cropped;
+      const bn = bns.find(b=>b.id===id); if(!bn) return;
+      bn.imgRaw = e.target.result;
+      bn.imgCropX = 50; bn.imgCropY = 50;
+      bn.img = e.target.result; // 프리뷰용 원본
+      // 크롭 슬라이더 표시 여부 결정
+      const isLandscape = img.width / img.height > 16/9 + 0.05; // 가로가 더 넓으면 좌우
+      const isPortrait  = img.height / img.width > 9/16 + 0.05; // 세로가 더 길면 상하
       const zone = document.getElementById('zone-bn'+id);
       zone.onclick = null;
-      zone.innerHTML = `<div class="upl-filled"><img src="${cropped}"/><button class="upl-remove" onclick="clearBnImg(${id});event.stopPropagation()">✕</button></div>`;
+      zone.innerHTML = `<div class="upl-filled"><img src="${e.target.result}" style="width:100%;max-height:120px;object-fit:cover;"/><button class="upl-remove" onclick="clearBnImg(${id});event.stopPropagation()">✕</button></div>`;
+      // 슬라이더 UI 업데이트
+      showBnCropHandle(id, isPortrait, isLandscape);
       render();
     };
     img.src = e.target.result;
@@ -418,11 +419,75 @@ function loadBnImg(input, id) {
   reader.readAsDataURL(file);
 }
 
+function showBnCropHandle(id, portrait, landscape) {
+  const wrap = document.getElementById('bn-crop-handle-'+id);
+  const rowY  = document.getElementById('bn-crop-row-y-'+id);
+  const rowX  = document.getElementById('bn-crop-row-x-'+id);
+  if (!wrap) return;
+  wrap.style.display = (portrait||landscape) ? 'flex' : 'none';
+  if (rowY) rowY.style.display = portrait  ? 'flex' : 'none';
+  if (rowX) rowX.style.display = landscape ? 'flex' : 'none';
+  const sy = document.getElementById('bn-crop-sy-'+id);
+  const sx = document.getElementById('bn-crop-sx-'+id);
+  if (sy) sy.value = 50;
+  if (sx) sx.value = 50;
+  const ly = document.getElementById('bn-crop-ly-'+id);
+  const lx = document.getElementById('bn-crop-lx-'+id);
+  if (ly) ly.textContent = '50%';
+  if (lx) lx.textContent = '50%';
+}
+
+function applyBnCrop(id, axis, val) {
+  val = Math.max(0, Math.min(100, val));
+  const bn = bns.find(b=>b.id===id); if(!bn) return;
+  if (axis==='y') bn.imgCropY = val;
+  if (axis==='x') bn.imgCropX = val;
+  const label = document.getElementById(`bn-crop-l${axis}-${id}`);
+  if (label) label.textContent = Math.round(val)+'%';
+  render();
+}
+
+// 내보내기용 16:9 크롭 Canvas 생성
+function getCroppedBnCanvas(bn) {
+  return new Promise(resolve => {
+    if (!bn.imgRaw) { resolve(bn.img); return; }
+    const img = new Image();
+    img.onload = () => {
+      // 16:9 비율로 크롭
+      const targetRatio = 16/9;
+      const srcRatio = img.width / img.height;
+      let sw, sh, sx, sy;
+      if (srcRatio > targetRatio) {
+        // 가로가 더 넓음 → 좌우 크롭
+        sh = img.height;
+        sw = Math.round(sh * targetRatio);
+        const maxSx = img.width - sw;
+        sx = Math.round(maxSx * (bn.imgCropX||50) / 100);
+        sy = 0;
+      } else {
+        // 세로가 더 길음 → 상하 크롭
+        sw = img.width;
+        sh = Math.round(sw / targetRatio);
+        const maxSy = img.height - sh;
+        sy = Math.round(maxSy * (bn.imgCropY||50) / 100);
+        sx = 0;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = 700; canvas.height = 394; // 16:9 출력
+      canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, 700, 394);
+      resolve(canvas.toDataURL('image/jpeg', 0.95));
+    };
+    img.src = bn.imgRaw;
+  });
+}
+
 function clearBnImg(id) {
-  const bn = bns.find(b=>b.id===id); if(bn) bn.img = null;
+  const bn = bns.find(b=>b.id===id);
+  if(bn) { bn.img=null; bn.imgRaw=null; bn.imgCropX=50; bn.imgCropY=50; }
   const zone = document.getElementById('zone-bn'+id);
-  zone.innerHTML = `<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">혜택 이미지 업로드</div><div class="upl-sub">정방형 권장</div></div>`;
+  zone.innerHTML = `<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">혜택 이미지 업로드</div><div class="upl-sub">16:9 비율 권장</div></div>`;
   zone.onclick = () => document.getElementById('file-bn'+id).click();
+  showBnCropHandle(id, false, false);
   render();
 }
 
@@ -439,13 +504,36 @@ function rebuildBns() {
       </div>
       <div class="vcard-body">
         <div class="field">
-          <span class="field-label-ko">혜택 이미지 <span style="color:#E03030;font-weight:500;font-size:11px">· 필수</span></span>
+          <span class="field-label-ko">혜택 이미지 <span style="color:#E03030;font-weight:500;font-size:11px">· 필수</span><span style="color:var(--tx-hint);font-weight:300;font-size:11px;margin-left:4px">· 16:9 비율 권장</span></span>
           <div class="uploader" id="zone-bn${bn.id}" onclick="document.getElementById('file-bn${bn.id}').click()">
             ${bn.img
-              ? `<div class="upl-filled"><img src="${bn.img}"/><button class="upl-remove" onclick="clearBnImg(${bn.id});event.stopPropagation()">✕</button></div>`
-              : `<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">혜택 이미지 업로드</div><div class="upl-sub">정방형 권장</div></div>`}
+              ? `<div class="upl-filled"><img src="${bn.img}" style="width:100%;max-height:120px;object-fit:cover;"/><button class="upl-remove" onclick="clearBnImg(${bn.id});event.stopPropagation()">✕</button></div>`
+              : `<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">혜택 이미지 업로드</div><div class="upl-sub">16:9 비율 권장</div></div>`}
           </div>
           <input type="file" id="file-bn${bn.id}" accept="image/*" onchange="loadBnImg(this,${bn.id})"/>
+          <!-- 크롭 슬라이더 -->
+          <div id="bn-crop-handle-${bn.id}" style="display:none;flex-direction:column;gap:8px;margin-top:6px;padding:10px 12px;background:#F5F4EF;border-radius:8px;border:1px solid var(--border)">
+            <span style="font-size:11px;font-weight:600;color:var(--tx-mid)">📐 크롭 위치 조정</span>
+            <div id="bn-crop-row-y-${bn.id}" style="display:none;align-items:center;gap:8px">
+              <span style="font-size:10px;color:var(--tx-mid);width:28px;flex-shrink:0">상하</span>
+              <span style="font-size:10px;color:var(--tx-hint)">위</span>
+              <input type="range" id="bn-crop-sy-${bn.id}" min="0" max="100" value="50" step="1"
+                style="flex:1;accent-color:var(--accent);cursor:pointer"
+                oninput="applyBnCrop(${bn.id},'y',parseInt(this.value))"/>
+              <span style="font-size:10px;color:var(--tx-hint)">아래</span>
+              <span id="bn-crop-ly-${bn.id}" style="font-size:10px;color:var(--tx-light);font-family:monospace;width:28px;text-align:right">50%</span>
+            </div>
+            <div id="bn-crop-row-x-${bn.id}" style="display:none;align-items:center;gap:8px">
+              <span style="font-size:10px;color:var(--tx-mid);width:28px;flex-shrink:0">좌우</span>
+              <span style="font-size:10px;color:var(--tx-hint)">좌</span>
+              <input type="range" id="bn-crop-sx-${bn.id}" min="0" max="100" value="50" step="1"
+                style="flex:1;accent-color:var(--accent);cursor:pointer"
+                oninput="applyBnCrop(${bn.id},'x',parseInt(this.value))"/>
+              <span style="font-size:10px;color:var(--tx-hint)">우</span>
+              <span id="bn-crop-lx-${bn.id}" style="font-size:10px;color:var(--tx-light);font-family:monospace;width:28px;text-align:right">50%</span>
+            </div>
+            <span style="font-size:10px;color:var(--tx-hint)">슬라이더로 크롭 위치를 조정하세요</span>
+          </div>
         </div>
         <div class="field">
           <span class="field-label-ko">타이틀 <span class="byte-counter" id="cnt-bttl-${bn.id}">0자/30자</span></span>
@@ -503,7 +591,7 @@ function render() {
       h += `<div class="o-bn">`;
       h += `<div class="o-bn-img-wrap">`;
       h += bn.img
-        ? `<img src="${bn.img}" class="o-bn-img"/>`
+        ? `<img src="${bn.img}" class="o-bn-img" style="object-position:${bn.imgCropX||50}% ${bn.imgCropY||50}%"/>`
         : `<div class="o-bn-img-ph">이미지를 업로드하세요</div>`;
       h += `</div>`;
       if (bn.title) h += `<div class="o-bn-ttl">${bn.title}</div>`;
@@ -559,7 +647,7 @@ function restoreFormData(data) {
   document.getElementById('f-notes').value  = data.notes  || '';
   if (data.headerBg) applyColor(data.headerBg, '', '');
   bns=[]; bIdx=0;
-  (data.benefits||[]).forEach(bn=>{ const id=++bIdx; bns.push({id,img:null,title:bn.title,body:bn.body,note:bn.note}); });
+  (data.benefits||[]).forEach(bn=>{ const id=++bIdx; bns.push({id,img:null,imgRaw:null,imgCropX:50,imgCropY:50,title:bn.title,body:bn.body,note:bn.note}); });
   rebuildBns(); render();
 }
 
@@ -602,10 +690,30 @@ async function doExport() {
   btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M3.5 5.5L7 9l3.5-3.5M1 11.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> 생성 중...`;
   try {
     await document.fonts.ready;
+
+    // 내보내기 전 각 혜택 이미지를 16:9 크롭본으로 교체
+    const croppedMap = {};
+    for (const bn of bns) {
+      if (bn.imgRaw) croppedMap[bn.id] = await getCroppedBnCanvas(bn);
+    }
+    const bnImgEls = document.querySelectorAll('#output .o-bn-img');
+    const origSrcs = [];
+    bnImgEls.forEach((el, i) => {
+      origSrcs.push({ el, src: el.src, style: el.getAttribute('style') });
+      const bnId = bns[i] && bns[i].id;
+      if (bnId && croppedMap[bnId]) {
+        el.src = croppedMap[bnId];
+        el.style.objectPosition = 'center center';
+      }
+    });
+
     const canvas = await html2canvas(document.getElementById('output'), {
       scale:3, useCORS:true, allowTaint:true, backgroundColor:'#ffffff',
       scrollX:0, scrollY:0, width:390, windowWidth:390, logging:false,
     });
+
+    // 원본 복원
+    origSrcs.forEach(({ el, src, style }) => { el.src = src; if(style) el.setAttribute('style', style); else el.removeAttribute('style'); });
     const code = generateSaveCode();
     const store = v('f-store') || '주년행사';
     const fname = `[주년] ${store}_${code}`.replace(/[<>:"/\\|?*]/g,'_').slice(0,60)+'.jpg';
