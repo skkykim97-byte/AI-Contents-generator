@@ -760,18 +760,28 @@ input[type=file]{display:none}
               </div>
             </div>
             <input type="file" id="hero-file" accept="image/*" onchange="loadImg(this,'hero')"/>
-            <!-- 크롭 위치 조정 슬라이더 (세로 이미지 업로드 시 표시) -->
-            <div id="hero-crop-handle" style="display:none;flex-direction:column;gap:6px;margin-top:8px;padding:10px 12px;background:#F5F4EF;border-radius:8px;border:1px solid var(--border)">
-              <div style="display:flex;align-items:center;justify-content:space-between">
-                <span style="font-size:11px;font-weight:600;color:var(--tx-mid)">📐 크롭 위치 조정</span>
-                <span id="hero-crop-label" style="font-size:11px;color:var(--tx-light);font-family:monospace">50%</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:8px">
+            <!-- 크롭 위치 조정 슬라이더 -->
+            <div id="hero-crop-handle" style="display:none;flex-direction:column;gap:8px;margin-top:8px;padding:10px 12px;background:#F5F4EF;border-radius:8px;border:1px solid var(--border)">
+              <span style="font-size:11px;font-weight:600;color:var(--tx-mid)">📐 크롭 위치 조정</span>
+              <!-- 상하 슬라이더 (세로 이미지) -->
+              <div id="hero-crop-row-y" style="display:none;align-items:center;gap:8px">
+                <span style="font-size:10px;color:var(--tx-mid);width:28px;flex-shrink:0">상하</span>
                 <span style="font-size:10px;color:var(--tx-hint)">위</span>
-                <input type="range" id="hero-crop-slider" min="0" max="100" value="50" step="1"
+                <input type="range" id="hero-crop-slider-y" min="0" max="100" value="50" step="1"
                   style="flex:1;accent-color:var(--accent);cursor:pointer"
-                  oninput="applyHeroCrop(parseInt(this.value))"/>
+                  oninput="applyHeroCrop('y', parseInt(this.value))"/>
                 <span style="font-size:10px;color:var(--tx-hint)">아래</span>
+                <span id="hero-crop-label-y" style="font-size:10px;color:var(--tx-light);font-family:monospace;width:28px;text-align:right">50%</span>
+              </div>
+              <!-- 좌우 슬라이더 (가로 이미지) -->
+              <div id="hero-crop-row-x" style="display:none;align-items:center;gap:8px">
+                <span style="font-size:10px;color:var(--tx-mid);width:28px;flex-shrink:0">좌우</span>
+                <span style="font-size:10px;color:var(--tx-hint)">좌</span>
+                <input type="range" id="hero-crop-slider-x" min="0" max="100" value="50" step="1"
+                  style="flex:1;accent-color:var(--accent);cursor:pointer"
+                  oninput="applyHeroCrop('x', parseInt(this.value))"/>
+                <span style="font-size:10px;color:var(--tx-hint)">우</span>
+                <span id="hero-crop-label-x" style="font-size:10px;color:var(--tx-light);font-family:monospace;width:28px;text-align:right">50%</span>
               </div>
               <span style="font-size:10px;color:var(--tx-hint)">슬라이더를 움직여 프리뷰에서 크롭 위치를 확인하세요</span>
             </div>
@@ -921,7 +931,7 @@ function buildSwatches() {
 }
 
 // ─── IMAGE ────────────────────────────────────────────────────
-const imgStore = { hero: null, heroRaw: null, heroCropY: 50 }; // heroCropY: 0~100 (%)
+const imgStore = { hero: null, heroRaw: null, heroCropY: 50, heroCropX: 50 }; // 0~100 (%)
 
 function loadImg(input, key) {
   const file = input.files[0];
@@ -931,35 +941,48 @@ function loadImg(input, key) {
     const img = new Image();
     img.onload = () => {
       imgStore.heroRaw = e.target.result;
-      imgStore.heroCropY = 50; // 기본 중앙
-      // 프리뷰용: 원본 그대로 저장 (object-position으로 위치 조정)
+      imgStore.heroCropY = 50;
+      imgStore.heroCropX = 50;
       imgStore.hero = e.target.result;
       renderUploaderFilled('hero-zone', e.target.result, 'hero');
       render();
-      // 이미지가 세로가 더 길 때만 크롭 조정 UI 표시
-      const isPortrait = img.height > img.width;
-      showCropHandle(isPortrait);
+      const isPortrait  = img.height > img.width;  // 세로 긴 이미지 → 상하 슬라이더
+      const isLandscape = img.width  > img.height;  // 가로 긴 이미지 → 좌우 슬라이더
+      showCropHandle(isPortrait, isLandscape);
     };
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
 
-function showCropHandle(show) {
-  const el = document.getElementById('hero-crop-handle');
-  if (el) el.style.display = show ? 'flex' : 'none';
+function showCropHandle(portrait, landscape) {
+  const wrap  = document.getElementById('hero-crop-handle');
+  const rowY  = document.getElementById('hero-crop-row-y');
+  const rowX  = document.getElementById('hero-crop-row-x');
+  if (!wrap) return;
+  const show = portrait || landscape;
+  wrap.style.display = show ? 'flex' : 'none';
+  if (rowY) rowY.style.display = portrait  ? 'flex' : 'none';
+  if (rowX) rowX.style.display = landscape ? 'flex' : 'none';
+  // 슬라이더 초기화
+  const sy = document.getElementById('hero-crop-slider-y');
+  const sx = document.getElementById('hero-crop-slider-x');
+  if (sy) sy.value = 50;
+  if (sx) sx.value = 50;
+  const ly = document.getElementById('hero-crop-label-y');
+  const lx = document.getElementById('hero-crop-label-x');
+  if (ly) ly.textContent = '50%';
+  if (lx) lx.textContent = '50%';
 }
 
-function applyHeroCrop(y) {
-  imgStore.heroCropY = Math.max(0, Math.min(100, y));
-  // 프리뷰 이미지 object-position 업데이트
+function applyHeroCrop(axis, val) {
+  val = Math.max(0, Math.min(100, val));
+  if (axis === 'y') imgStore.heroCropY = val;
+  if (axis === 'x') imgStore.heroCropX = val;
   const heroImg = document.querySelector('#output .o-hero img');
-  if (heroImg) heroImg.style.objectPosition = `center ${imgStore.heroCropY}%`;
-  // 슬라이더 값 동기화
-  const slider = document.getElementById('hero-crop-slider');
-  if (slider) slider.value = imgStore.heroCropY;
-  const label = document.getElementById('hero-crop-label');
-  if (label) label.textContent = Math.round(imgStore.heroCropY) + '%';
+  if (heroImg) heroImg.style.objectPosition = `${imgStore.heroCropX}% ${imgStore.heroCropY}%`;
+  const label = document.getElementById(`hero-crop-label-${axis}`);
+  if (label) label.textContent = Math.round(val) + '%';
 }
 
 // 내보내기 시 최종 크롭 적용 (Canvas)
@@ -969,9 +992,9 @@ function getCroppedHeroCanvas() {
     const img = new Image();
     img.onload = () => {
       const size = Math.min(img.width, img.height);
-      const sx = (img.width - size) / 2;
-      // heroCropY(0~100)를 세로 오프셋으로 변환
+      const maxSx = img.width  - size;
       const maxSy = img.height - size;
+      const sx = (maxSx * imgStore.heroCropX) / 100;
       const sy = (maxSy * imgStore.heroCropY) / 100;
       const canvas = document.createElement('canvas');
       canvas.width = 390; canvas.height = 390;
@@ -1022,10 +1045,11 @@ function clearUpload(key) {
     imgStore.hero = null;
     imgStore.heroRaw = null;
     imgStore.heroCropY = 50;
+    imgStore.heroCropX = 50;
     const z = document.getElementById('hero-zone');
     z.innerHTML = `<div class="upl-empty"><div class="upl-icon">🖼</div><div class="upl-title">클릭하여 이미지 업로드</div><div class="upl-sub">JPG · PNG · WEBP</div></div>`;
     z.onclick = () => document.getElementById('hero-file').click();
-    showCropHandle(false);
+    showCropHandle(false, false);
   } else if (key.startsWith('it')) {
     const id = parseInt(key.slice(2));
     const it = items.find(i => i.id === id);
@@ -1522,10 +1546,11 @@ function resetAll() {
   imgStore.hero = null;
   imgStore.heroRaw = null;
   imgStore.heroCropY = 50;
+  imgStore.heroCropX = 50;
   const hz = document.getElementById('hero-zone');
   hz.innerHTML = `<div class="upl-empty"><div class="upl-icon">🖼</div><div class="upl-title">클릭하여 이미지 업로드</div><div class="upl-sub">JPG · PNG · WEBP</div></div>`;
   hz.onclick = () => document.getElementById('hero-file').click();
-  showCropHandle(false);
+  showCropHandle(false, false);
   items = []; bns = []; iIdx = 0; bIdx = 0;
   rebuildItems(); rebuildBns();
   applyColor('#FFFFFF', 0, '화이트');
