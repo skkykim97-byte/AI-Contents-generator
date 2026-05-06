@@ -133,6 +133,27 @@ input[type=file]{display:none}
 .o-notes-ttl{font-size:16px;font-weight:500;color:#111;letter-spacing:-.3px;margin-bottom:10px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-notes-txt{font-size:13px;font-weight:300;color:#6B6B66;line-height:1.95;white-space:pre-wrap;word-break:keep-all;}
 
+/* 브랜드데이 */
+.o-bd{padding:28px 20px 32px;}
+.o-bd-ttl{font-size:22px;font-weight:700;color:#222;letter-spacing:-.6px;margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;}
+.o-bd-period{font-size:14px;font-weight:400;color:#888;margin-bottom:20px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-bd-sub{font-size:13px;font-weight:700;color:#E8357A;letter-spacing:.5px;margin-bottom:14px;font-family:'Noto Sans KR',sans-serif;}
+.o-bd-row{margin-bottom:16px;}
+.o-bd-rate{font-size:18px;font-weight:700;color:#222;letter-spacing:-.3px;margin-bottom:4px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-bd-brands{font-size:13px;font-weight:400;color:#444;line-height:1.75;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-bd-note{font-size:12px;font-weight:300;color:#999;margin-top:12px;line-height:1.7;white-space:pre-wrap;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+
+/* 구매 금액대별 프로모션 */
+.o-promo{padding:28px 20px 32px;}
+.o-promo-ttl{font-size:22px;font-weight:700;color:#222;letter-spacing:-.6px;margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;}
+.o-promo-period{font-size:14px;font-weight:400;color:#888;margin-bottom:20px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-promo-sub{font-size:13px;font-weight:700;color:#E8357A;letter-spacing:.5px;margin-bottom:14px;font-family:'Noto Sans KR',sans-serif;}
+.o-promo-row{margin-bottom:18px;}
+.o-promo-brand{font-size:14px;font-weight:700;color:#222;letter-spacing:-.2px;margin-bottom:4px;font-family:'Noto Sans KR',sans-serif;}
+.o-promo-body{font-size:13px;font-weight:400;color:#444;line-height:1.75;white-space:pre-wrap;word-break:keep-all;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-promo-note{font-size:12px;font-weight:300;color:#999;margin-top:10px;line-height:1.7;white-space:pre-wrap;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-sec-divider{height:1px;background:#EDECEA;margin:0 20px;}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#18181A;color:#fff;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:500;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20000;white-space:nowrap;font-family:var(--fn);box-shadow:0 4px 20px rgba(0,0,0,.25);}
 .toast.show{opacity:1}
@@ -259,10 +280,54 @@ input[type=file]{display:none}
         </div>
       </div>
 
-      <!-- 3. 참고사항 -->
+      <!-- 3. 브랜드데이 -->
       <div class="sec">
         <div class="sec-header">
-          <div class="sec-num" style="background:#F2F1EC;color:#888">3</div>
+          <div class="sec-num" style="background:#FDE8F0;color:#E8357A">3</div>
+          <span class="sec-title">브랜드데이</span>
+          <span class="sec-tag">선택</span>
+        </div>
+        <div class="sec-body">
+          <div class="field">
+            <span class="field-label-ko">기간 <span class="byte-counter" id="cnt-bd-period">0자/22자</span></span>
+            <input type="text" id="f-bd-period" placeholder="5.1(금) - 5.5(화)" oninput="updateCharCount(this,'cnt-bd-period',22);render()"/>
+          </div>
+          <div class="vcard-list" id="bd-list"></div>
+          <button class="add-card-btn" onclick="addBrandDay()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            할인율 추가
+          </button>
+          <div class="field">
+            <span class="field-label-ko">단서조항 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
+            <textarea id="f-bd-note" rows="2" placeholder="· 일부 품목 제외" oninput="render()"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 구매 금액대별 프로모션 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#FDE8F0;color:#E8357A">4</div>
+          <span class="sec-title">구매 금액대별 프로모션</span>
+          <span class="sec-tag">선택</span>
+        </div>
+        <div class="sec-body">
+          <div class="field">
+            <span class="field-label-ko">기간 <span class="byte-counter" id="cnt-promo-period">0자/22자</span></span>
+            <input type="text" id="f-promo-period" placeholder="5.1(금) - 5.5(화)" oninput="updateCharCount(this,'cnt-promo-period',22);render()"/>
+          </div>
+          <div class="vcard-list" id="promo-list"></div>
+          <button class="add-card-btn" onclick="addPromo()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            브랜드 추가
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. 참고사항 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#F2F1EC;color:#888">5</div>
           <span class="sec-title">참고사항</span>
           <span class="sec-tag">선택</span>
         </div>
@@ -557,7 +622,87 @@ function rebuildBns() {
 }
 
 // ─── RENDER ──────────────────────────────────────────────────
-function v(id) { const el=document.getElementById(id); return el?el.value.trim():''; }
+// ─── BRAND DAY ───────────────────────────────────────────────
+let bds = [], bdIdx = 0;
+
+function addBrandDay() {
+  const id = ++bdIdx;
+  bds.push({ id, rate:'', brands:'' });
+  rebuildBrandDay(); render();
+}
+function delBrandDay(id) { bds=bds.filter(b=>b.id!==id); rebuildBrandDay(); render(); }
+
+function rebuildBrandDay() {
+  const list = document.getElementById('bd-list');
+  list.innerHTML = '';
+  bds.forEach((bd, idx) => {
+    const card = document.createElement('div');
+    card.className = 'vcard';
+    card.innerHTML = `
+      <div class="vcard-head">
+        <span class="vcard-label" style="background:#FDE8F0;color:#E8357A">할인율 ${idx+1}</span>
+        <button class="vcard-del" onclick="delBrandDay(${bd.id})">✕</button>
+      </div>
+      <div class="vcard-body">
+        <div class="field">
+          <span class="field-label-ko">할인율 <span class="byte-counter" id="cnt-bdrate-${bd.id}">0자/10자</span></span>
+          <input type="text" id="bdrate-${bd.id}" value="${bd.rate}" placeholder="OO%"
+            oninput="bds.find(b=>b.id===${bd.id}).rate=this.value;updateCharCount(this,'cnt-bdrate-${bd.id}',10);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">브랜드</span>
+          <textarea rows="3" id="bdbrands-${bd.id}"
+            placeholder="나이스필(+10%), 리스트(30-50%+10%), 세사(+10%), 주크, 포트메리온"
+            oninput="bds.find(b=>b.id===${bd.id}).brands=this.value;render()">${bd.brands}</textarea>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+// ─── PROMO ───────────────────────────────────────────────────
+let promos = [], promoIdx = 0;
+
+function addPromo() {
+  const id = ++promoIdx;
+  promos.push({ id, brand:'', body:'', note:'' });
+  rebuildPromo(); render();
+}
+function delPromo(id) { promos=promos.filter(p=>p.id!==id); rebuildPromo(); render(); }
+
+function rebuildPromo() {
+  const list = document.getElementById('promo-list');
+  list.innerHTML = '';
+  promos.forEach((pm, idx) => {
+    const card = document.createElement('div');
+    card.className = 'vcard';
+    card.innerHTML = `
+      <div class="vcard-head">
+        <span class="vcard-label" style="background:#FDE8F0;color:#E8357A">브랜드 ${idx+1}</span>
+        <button class="vcard-del" onclick="delPromo(${pm.id})">✕</button>
+      </div>
+      <div class="vcard-body">
+        <div class="field">
+          <span class="field-label-ko">브랜드명 <span class="byte-counter" id="cnt-pmb-${pm.id}">0자/30자</span></span>
+          <input type="text" id="pmb-${pm.id}" value="${pm.brand}" placeholder="스노우피크"
+            oninput="promos.find(p=>p.id===${pm.id}).brand=this.value;updateCharCount(this,'cnt-pmb-${pm.id}',30);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">내용</span>
+          <textarea rows="3" id="pmbody-${pm.id}"
+            placeholder="· 10만원 이상 구매시 키링 증정"
+            oninput="promos.find(p=>p.id===${pm.id}).body=this.value;render()">${pm.body}</textarea>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">단서조항 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
+          <textarea rows="2" id="pmnote-${pm.id}"
+            placeholder="· 사은품은 한정수량으로 조기 품절될 수 있음"
+            oninput="promos.find(p=>p.id===${pm.id}).note=this.value;render()">${pm.note}</textarea>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
 
 function render() {
   const store=v('f-store'), title1=v('f-title1'), title2=v('f-title2');
@@ -601,6 +746,42 @@ function render() {
     });
   }
 
+  // 브랜드데이
+  const bdPeriod = v('f-bd-period'), bdNote = v('f-bd-note');
+  if (bds.length > 0 || bdPeriod) {
+    h += `<div class="o-sec-divider"></div>`;
+    h += `<div class="o-bd">`;
+    h += `<div class="o-bd-ttl">브랜드데이</div>`;
+    if (bdPeriod) h += `<div class="o-bd-period">${bdPeriod}</div>`;
+    h += `<div class="o-bd-sub">할인</div>`;
+    bds.forEach(bd => {
+      h += `<div class="o-bd-row">`;
+      if (bd.rate)   h += `<div class="o-bd-rate">${bd.rate}</div>`;
+      if (bd.brands) h += `<div class="o-bd-brands">${bd.brands.replace(/\n/g,'<br>')}</div>`;
+      h += `</div>`;
+    });
+    if (bdNote) h += `<div class="o-bd-note">${bdNote.replace(/\n/g,'<br>')}</div>`;
+    h += `</div>`;
+  }
+
+  // 구매 금액대별 프로모션
+  const promoPeriod = v('f-promo-period');
+  if (promos.length > 0 || promoPeriod) {
+    h += `<div class="o-sec-divider"></div>`;
+    h += `<div class="o-promo">`;
+    h += `<div class="o-promo-ttl">구매 금액대별 프로모션</div>`;
+    if (promoPeriod) h += `<div class="o-promo-period">${promoPeriod}</div>`;
+    h += `<div class="o-promo-sub">증정</div>`;
+    promos.forEach(pm => {
+      h += `<div class="o-promo-row">`;
+      if (pm.brand) h += `<div class="o-promo-brand">${pm.brand}</div>`;
+      if (pm.body)  h += `<div class="o-promo-body">${pm.body.replace(/\n/g,'<br>')}</div>`;
+      if (pm.note)  h += `<div class="o-promo-note">${pm.note.replace(/\n/g,'<br>')}</div>`;
+      h += `</div>`;
+    });
+    h += `</div>`;
+  }
+
   // 참고사항
   if (notes) {
     h += `<div class="o-notes">`;
@@ -635,7 +816,11 @@ function collectFormData() {
   return {
     store: v('f-store'), title1: v('f-title1'), title2: v('f-title2'),
     period: v('f-period'), headerBg: headerBg, notes: v('f-notes'),
-    benefits: bns.map(bn=>({ title:bn.title, body:bn.body, note:bn.note }))
+    benefits: bns.map(bn=>({ title:bn.title, body:bn.body, note:bn.note })),
+    bdPeriod: v('f-bd-period'), bdNote: v('f-bd-note'),
+    brandDays: bds.map(bd=>({ rate:bd.rate, brands:bd.brands })),
+    promoPeriod: v('f-promo-period'),
+    promoItems: promos.map(pm=>({ brand:pm.brand, body:pm.body, note:pm.note }))
   };
 }
 
@@ -648,7 +833,19 @@ function restoreFormData(data) {
   if (data.headerBg) applyColor(data.headerBg, '', '');
   bns=[]; bIdx=0;
   (data.benefits||[]).forEach(bn=>{ const id=++bIdx; bns.push({id,img:null,imgRaw:null,imgCropX:50,imgCropY:50,title:bn.title,body:bn.body,note:bn.note}); });
-  rebuildBns(); render();
+  rebuildBns();
+  // 브랜드데이
+  const bdPEl = document.getElementById('f-bd-period'); if(bdPEl) bdPEl.value = data.bdPeriod||'';
+  const bdNEl = document.getElementById('f-bd-note');   if(bdNEl) bdNEl.value = data.bdNote||'';
+  bds=[]; bdIdx=0;
+  (data.brandDays||[]).forEach(bd=>{ const id=++bdIdx; bds.push({id,rate:bd.rate,brands:bd.brands}); });
+  rebuildBrandDay();
+  // 프로모션
+  const pmPEl = document.getElementById('f-promo-period'); if(pmPEl) pmPEl.value = data.promoPeriod||'';
+  promos=[]; promoIdx=0;
+  (data.promoItems||[]).forEach(pm=>{ const id=++promoIdx; promos.push({id,brand:pm.brand,body:pm.body,note:pm.note}); });
+  rebuildPromo();
+  render();
 }
 
 // ─── LOAD ────────────────────────────────────────────────────
@@ -737,9 +934,11 @@ async function copySaveCode() { try{ await navigator.clipboard.writeText(lastSav
 
 // ─── RESET ───────────────────────────────────────────────────
 function resetAll() {
-  ['f-store','f-title1','f-title2','f-period','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['f-store','f-title1','f-title2','f-period','f-notes','f-bd-period','f-bd-note','f-promo-period'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   clearLogo();
   bns=[]; bIdx=0; rebuildBns();
+  bds=[]; bdIdx=0; rebuildBrandDay();
+  promos=[]; promoIdx=0; rebuildPromo();
   applyColor('#FDE8F0', 0, '핑크');
   render();
 }
