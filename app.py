@@ -73,7 +73,14 @@ def coming_soon(title: str) -> Response:
 
 @app.route("/anniversary")
 def anniversary():
-    return coming_soon("개점 N주년 행사")
+    html = read(base / "pages" / "branch anniversary.html")
+    back = (
+        '<a href="/" class="tb-btn tb-btn-ghost" '
+        'style="text-decoration:none;margin-right:4px">← 홈</a>'
+        '<div class="tb-divider"></div>'
+    )
+    html = html.replace('<div class="tb-logo">', back + '<div class="tb-logo">', 1)
+    return Response(html, mimetype="text/html")
 
 
 @app.route("/newopen")

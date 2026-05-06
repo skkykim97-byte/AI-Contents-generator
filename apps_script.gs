@@ -26,16 +26,23 @@ function doPost(e) {
       return handleSave(data);
     }
 
-    // 기존 DATA 시트 기록 로직 (action 없는 경우)
+    // DATA 시트 기록 (dept, reason, template, 시간)
     var ss    = SpreadsheetApp.openById(SHEET_ID);
     var sheet = ss.getSheetByName(SHEET_NAME);
 
+    // 헤더가 없으면 생성
+    if (!sheet) {
+      sheet = ss.insertSheet(SHEET_NAME);
+    }
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(['사번', '이름', '제작 사유', '콘텐츠 유형', '시간']);
+      sheet.appendRow(['소속 점포/팀', '제작 사유', '콘텐츠 유형', '시간 (KST)']);
     }
 
+    var dept     = data.dept     || '';
+    var reason   = data.reason   || '';
+    var template = data.template || '';
     var now = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
-    sheet.appendRow([data.empno, data.name, data.reason, data.template, now]);
+    sheet.appendRow([dept, reason, template, now]);
 
     return ContentService
       .createTextOutput(JSON.stringify({ status: 'ok' }))
