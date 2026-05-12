@@ -115,7 +115,7 @@ input[type=file]{display:none}
 
 /* 섹션 타이틀 */
 .o-sec{padding:32px 20px 16px;display:flex;align-items:center;gap:12px;}
-.o-sec-txt{font-size:20px;font-weight:700;color:#111;letter-spacing:-.3px;white-space:nowrap;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-sec-txt{font-size:20px;font-weight:600;color:#111;letter-spacing:-.3px;white-space:nowrap;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-sec-line{flex:1;height:1px;background:#E2E0D9}
 
 /* Special Benefit 카드 */
@@ -322,10 +322,26 @@ input[type=file]{display:none}
         </div>
       </div>
 
-      <!-- 5. 참고사항 -->
+      <!-- 5. Special Event -->
       <div class="sec">
         <div class="sec-header">
-          <div class="sec-num" style="background:#F2F1EC;color:#888">5</div>
+          <div class="sec-num" style="background:#FDE8F0;color:#E8357A">5</div>
+          <span class="sec-title">Special Event</span>
+          <span class="sec-tag" id="evt-cnt">0개</span>
+        </div>
+        <div class="sec-body">
+          <div class="vcard-list" id="evt-list"></div>
+          <button class="add-card-btn" onclick="addEvent()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            이벤트 추가
+          </button>
+        </div>
+      </div>
+
+      <!-- 6. 참고사항 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#F2F1EC;color:#888">6</div>
           <span class="sec-title">참고사항</span>
           <span class="sec-tag">선택</span>
         </div>
@@ -619,6 +635,181 @@ function rebuildBns() {
   document.getElementById('bn-cnt').textContent = bns.length + '개';
 }
 
+// ─── SPECIAL EVENT ───────────────────────────────────────────
+let evts = [], evtIdx = 0;
+
+const EVT_EX = [
+  { title:'1분 캐리커처', body:'· 기간 : 5.1(금), 12시 - 16시\n· 장소 : 신관 5F 문화센터 로비\n· 선착순 30명\n· 영수증 소지 고객 대상 진행', note:'' },
+];
+
+function addEvent() {
+  const id = ++evtIdx;
+  const ex = EVT_EX[evts.length] || { title:'', body:'', note:'' };
+  evts.push({ id, img:null, imgRaw:null, imgCropX:50, imgCropY:50, title:ex.title, body:ex.body, note:ex.note });
+  rebuildEvts(); render();
+}
+
+function delEvt(id) {
+  evts = evts.filter(e=>e.id!==id);
+  rebuildEvts(); render();
+}
+
+function loadEvtImg(input, id) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const evt = evts.find(e=>e.id===id); if(!evt) return;
+      evt.imgRaw = e.target.result;
+      evt.imgCropX = 50; evt.imgCropY = 50;
+      evt.img = e.target.result;
+      const isLandscape = img.width / img.height > 16/9 + 0.05;
+      const isPortrait  = img.height / img.width > 9/16 + 0.05;
+      const zone = document.getElementById('zone-evt'+id);
+      zone.onclick = null;
+      zone.innerHTML = `<div class="upl-filled"><img src="${e.target.result}" style="width:100%;max-height:120px;object-fit:cover;"/><button class="upl-remove" onclick="clearEvtImg(${id});event.stopPropagation()">✕</button></div>`;
+      showEvtCropHandle(id, isPortrait, isLandscape);
+      render();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function showEvtCropHandle(id, portrait, landscape) {
+  const wrap = document.getElementById('evt-crop-handle-'+id);
+  const rowY  = document.getElementById('evt-crop-row-y-'+id);
+  const rowX  = document.getElementById('evt-crop-row-x-'+id);
+  if (!wrap) return;
+  wrap.style.display = (portrait||landscape) ? 'flex' : 'none';
+  if (rowY) rowY.style.display = portrait  ? 'flex' : 'none';
+  if (rowX) rowX.style.display = landscape ? 'flex' : 'none';
+  const sy = document.getElementById('evt-crop-sy-'+id);
+  const sx = document.getElementById('evt-crop-sx-'+id);
+  if (sy) sy.value = 50;
+  if (sx) sx.value = 50;
+  const ly = document.getElementById('evt-crop-ly-'+id);
+  const lx = document.getElementById('evt-crop-lx-'+id);
+  if (ly) ly.textContent = '50%';
+  if (lx) lx.textContent = '50%';
+}
+
+function applyEvtCrop(id, axis, val) {
+  val = Math.max(0, Math.min(100, val));
+  const evt = evts.find(e=>e.id===id); if(!evt) return;
+  if (axis==='y') evt.imgCropY = val;
+  if (axis==='x') evt.imgCropX = val;
+  const label = document.getElementById(`evt-crop-l${axis}-${id}`);
+  if (label) label.textContent = Math.round(val)+'%';
+  render();
+}
+
+function getCroppedEvtCanvas(evt) {
+  return new Promise(resolve => {
+    if (!evt.imgRaw) { resolve(evt.img); return; }
+    const img = new Image();
+    img.onload = () => {
+      const targetRatio = 16/9;
+      const srcRatio = img.width / img.height;
+      let sw, sh, sx, sy;
+      if (srcRatio > targetRatio) {
+        sh = img.height;
+        sw = Math.round(sh * targetRatio);
+        const maxSx = img.width - sw;
+        sx = Math.round(maxSx * (evt.imgCropX||50) / 100);
+        sy = 0;
+      } else {
+        sw = img.width;
+        sh = Math.round(sw / targetRatio);
+        const maxSy = img.height - sh;
+        sy = Math.round(maxSy * (evt.imgCropY||50) / 100);
+        sx = 0;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = 700; canvas.height = 394;
+      canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, 700, 394);
+      resolve(canvas.toDataURL('image/jpeg', 0.95));
+    };
+    img.src = evt.imgRaw;
+  });
+}
+
+function clearEvtImg(id) {
+  const evt = evts.find(e=>e.id===id);
+  if(evt) { evt.img=null; evt.imgRaw=null; evt.imgCropX=50; evt.imgCropY=50; }
+  const zone = document.getElementById('zone-evt'+id);
+  zone.innerHTML = `<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">이벤트 이미지 업로드</div><div class="upl-sub">16:9 비율 권장</div></div>`;
+  zone.onclick = () => document.getElementById('file-evt'+id).click();
+  showEvtCropHandle(id, false, false);
+  render();
+}
+
+function rebuildEvts() {
+  const list = document.getElementById('evt-list');
+  list.innerHTML = '';
+  evts.forEach((evt, idx) => {
+    const card = document.createElement('div');
+    card.className = 'vcard';
+    card.innerHTML = `
+      <div class="vcard-head">
+        <span class="vcard-label" style="background:#FDE8F0;color:#E8357A">이벤트 ${idx+1}</span>
+        <button class="vcard-del" onclick="delEvt(${evt.id})">✕</button>
+      </div>
+      <div class="vcard-body">
+        <div class="field">
+          <span class="field-label-ko">이벤트 이미지 <span style="color:#E03030;font-weight:500;font-size:11px">· 필수</span><span style="color:var(--tx-hint);font-weight:300;font-size:11px;margin-left:4px">· 16:9 비율 권장</span></span>
+          <div class="uploader" id="zone-evt${evt.id}" onclick="document.getElementById('file-evt${evt.id}').click()">
+            ${evt.img
+              ? `<div class="upl-filled"><img src="${evt.img}" style="width:100%;max-height:120px;object-fit:cover;"/><button class="upl-remove" onclick="clearEvtImg(${evt.id});event.stopPropagation()">✕</button></div>`
+              : `<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">이벤트 이미지 업로드</div><div class="upl-sub">16:9 비율 권장</div></div>`}
+          </div>
+          <input type="file" id="file-evt${evt.id}" accept="image/*" onchange="loadEvtImg(this,${evt.id})"/>
+          <!-- 크롭 슬라이더 -->
+          <div id="evt-crop-handle-${evt.id}" style="display:none;flex-direction:column;gap:8px;margin-top:6px;padding:10px 12px;background:#F5F4EF;border-radius:8px;border:1px solid var(--border)">
+            <span style="font-size:11px;font-weight:600;color:var(--tx-mid)">📐 크롭 위치 조정</span>
+            <div id="evt-crop-row-y-${evt.id}" style="display:none;align-items:center;gap:8px">
+              <span style="font-size:10px;color:var(--tx-mid);width:28px;flex-shrink:0">상하</span>
+              <span style="font-size:10px;color:var(--tx-hint)">위</span>
+              <input type="range" id="evt-crop-sy-${evt.id}" min="0" max="100" value="50" step="1"
+                style="flex:1;accent-color:var(--accent);cursor:pointer"
+                oninput="applyEvtCrop(${evt.id},'y',parseInt(this.value))"/>
+              <span style="font-size:10px;color:var(--tx-hint)">아래</span>
+              <span id="evt-crop-ly-${evt.id}" style="font-size:10px;color:var(--tx-light);font-family:monospace;width:28px;text-align:right">50%</span>
+            </div>
+            <div id="evt-crop-row-x-${evt.id}" style="display:none;align-items:center;gap:8px">
+              <span style="font-size:10px;color:var(--tx-mid);width:28px;flex-shrink:0">좌우</span>
+              <span style="font-size:10px;color:var(--tx-hint)">좌</span>
+              <input type="range" id="evt-crop-sx-${evt.id}" min="0" max="100" value="50" step="1"
+                style="flex:1;accent-color:var(--accent);cursor:pointer"
+                oninput="applyEvtCrop(${evt.id},'x',parseInt(this.value))"/>
+              <span style="font-size:10px;color:var(--tx-hint)">우</span>
+              <span id="evt-crop-lx-${evt.id}" style="font-size:10px;color:var(--tx-light);font-family:monospace;width:28px;text-align:right">50%</span>
+            </div>
+            <span style="font-size:10px;color:var(--tx-hint)">슬라이더로 크롭 위치를 조정하세요</span>
+          </div>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">타이틀 <span class="byte-counter" id="cnt-ettl-${evt.id}">0자/30자</span></span>
+          <input type="text" id="ettl-${evt.id}" value="${evt.title}" placeholder="1분 캐리커처"
+            oninput="evts.find(e=>e.id===${evt.id}).title=this.value;updateCharCount(this,'cnt-ettl-${evt.id}',30);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">내용 <span class="byte-counter" id="cnt-ebody-${evt.id}">0자/200자</span></span>
+          <textarea rows="4" maxlength="200" id="ebody-${evt.id}"
+            oninput="evts.find(e=>e.id===${evt.id}).body=this.value;updateCharCount(this,'cnt-ebody-${evt.id}',200);render()">${evt.body}</textarea>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">단서조항 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택 · 회색 작은 글씨</span><span class="byte-counter" id="cnt-enote-${evt.id}">0자/100자</span></span>
+          <textarea rows="2" maxlength="100" id="enote-${evt.id}"
+            oninput="evts.find(e=>e.id===${evt.id}).note=this.value;updateCharCount(this,'cnt-enote-${evt.id}',100);render()">${evt.note}</textarea>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+  document.getElementById('evt-cnt').textContent = evts.length + '개';
+}
+
 // ─── RENDER ──────────────────────────────────────────────────
 function v(id) { const el=document.getElementById(id); return el?el.value.trim():''; }
 
@@ -695,6 +886,25 @@ function render() {
       h += `</div>`;
     });
     h += `</div></div>`;
+  }
+
+  // Special Event
+  if (evts.length > 0) {
+    h += `<div class="o-sec-divider"></div>`;
+    h += `<div class="o-sec"><span class="o-sec-txt">Special Event</span><div class="o-sec-line"></div></div>`;
+    evts.forEach((evt, idx) => {
+      if (idx > 0) h += `<div class="o-bn-divider"></div>`;
+      h += `<div class="o-bn">`;
+      h += `<div class="o-bn-img-wrap">`;
+      h += evt.img
+        ? `<img src="${evt.img}" class="o-bn-img" style="object-position:${evt.imgCropX||50}% ${evt.imgCropY||50}%"/>`
+        : `<div class="o-bn-img-ph">이미지를 업로드하세요</div>`;
+      h += `</div>`;
+      if (evt.title) h += `<div class="o-bn-ttl">${evt.title}</div>`;
+      if (evt.body)  h += `<div class="o-bn-body">${evt.body.replace(/\n/g,'<br>')}</div>`;
+      if (evt.note)  h += `<div class="o-bn-note">${evt.note.replace(/\n/g,'<br>')}</div>`;
+      h += `</div>`;
+    });
   }
 
   // 참고사항
@@ -817,7 +1027,8 @@ function collectFormData() {
     bdPeriod: v('f-bd-period'), bdNote: v('f-bd-note'),
     brandDays: bds.map(bd=>({ rate:bd.rate, brands:bd.brands })),
     promoPeriod: v('f-promo-period'),
-    promoItems: promos.map(pm=>({ brand:pm.brand, body:pm.body, note:pm.note }))
+    promoItems: promos.map(pm=>({ brand:pm.brand, body:pm.body, note:pm.note })),
+    events: evts.map(evt=>({ title:evt.title, body:evt.body, note:evt.note }))
   };
 }
 
@@ -842,6 +1053,10 @@ function restoreFormData(data) {
   promos=[]; promoIdx=0;
   (data.promoItems||[]).forEach(pm=>{ const id=++promoIdx; promos.push({id,brand:pm.brand,body:pm.body,note:pm.note}); });
   rebuildPromo();
+  // Special Event
+  evts=[]; evtIdx=0;
+  (data.events||[]).forEach(evt=>{ const id=++evtIdx; evts.push({id,img:null,imgRaw:null,imgCropX:50,imgCropY:50,title:evt.title,body:evt.body,note:evt.note}); });
+  rebuildEvts();
   render();
 }
 
@@ -877,7 +1092,9 @@ async function doTempSave() {
 // ─── EXPORT ──────────────────────────────────────────────────
 async function doExport() {
   const missingBn = bns.some(bn=>!bn.img);
+  const missingEvt = evts.some(evt=>!evt.img);
   if (missingBn) { alert('혜택 이미지를 모두 등록하세요'); return; }
+  if (missingEvt) { alert('이벤트 이미지를 모두 등록하세요'); return; }
 
   const btn = document.getElementById('expbtn');
   btn.disabled=true;
@@ -888,15 +1105,20 @@ async function doExport() {
     // 내보내기 전 각 혜택 이미지를 16:9 크롭본으로 교체
     const croppedMap = {};
     for (const bn of bns) {
-      if (bn.imgRaw) croppedMap[bn.id] = await getCroppedBnCanvas(bn);
+      if (bn.imgRaw) croppedMap['bn-'+bn.id] = await getCroppedBnCanvas(bn);
     }
-    const bnImgEls = document.querySelectorAll('#output .o-bn-img');
+    for (const evt of evts) {
+      if (evt.imgRaw) croppedMap['evt-'+evt.id] = await getCroppedEvtCanvas(evt);
+    }
+    const imgEls = document.querySelectorAll('#output .o-bn-img');
     const origSrcs = [];
-    bnImgEls.forEach((el, i) => {
+    imgEls.forEach((el, i) => {
       origSrcs.push({ el, src: el.src, style: el.getAttribute('style') });
-      const bnId = bns[i] && bns[i].id;
-      if (bnId && croppedMap[bnId]) {
-        el.src = croppedMap[bnId];
+      let mapKey = null;
+      if (i < bns.length) mapKey = 'bn-'+bns[i].id;
+      else if (i < bns.length + evts.length) mapKey = 'evt-'+evts[i - bns.length].id;
+      if (mapKey && croppedMap[mapKey]) {
+        el.src = croppedMap[mapKey];
         el.style.objectPosition = 'center center';
       }
     });
@@ -936,6 +1158,7 @@ function resetAll() {
   bns=[]; bIdx=0; rebuildBns();
   bds=[]; bdIdx=0; rebuildBrandDay();
   promos=[]; promoIdx=0; rebuildPromo();
+  evts=[]; evtIdx=0; rebuildEvts();
   applyColor('#FDE8F0', 0, '핑크');
   render();
 }
