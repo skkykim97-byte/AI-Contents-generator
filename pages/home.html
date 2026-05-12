@@ -243,10 +243,19 @@
     if (!v.template) { document.getElementById('templateError').classList.add('show');     err = true; }
     if (err) return false;
 
-    document.getElementById('mainForm').action = '/' + v.template;
+    const TEMPLATE_PAGES = {
+      popup:       'branch popup.html',
+      anniversary: 'branch anniversary.html',
+      newopen:     null,
+      sale:        null
+    };
+
+    const page = TEMPLATE_PAGES[v.template];
+    if (!page) { alert('준비 중인 콘텐츠입니다.'); return false; }
 
     try { navigator.sendBeacon(APPS_SCRIPT_URL, JSON.stringify({ dept: v.dept, reason: v.reason, template: v.template })); } catch(e) {}
 
+    document.getElementById('mainForm').action = page;
     return true;
   }
 
