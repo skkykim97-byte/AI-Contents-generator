@@ -1213,8 +1213,8 @@ function render() {
   const brand = v('f-brand'), title = v('f-title');
   const period = v('f-period'), loc = v('f-loc');
   const intro = v('f-intro'), notes = v('f-notes');
-  const lum = getLuminance(headerBg);
-  const valColor = lum > 0.42 ? '#333' : 'rgba(255,255,255,.82)';
+  // headerTx는 applyColor에서 이미 프리셋/luminance 판단 완료된 값 사용
+  const valColor = (headerTx === '#FFFFFF') ? 'rgba(255,255,255,.82)' : '#333';
 
   let h = '';
 
@@ -1378,7 +1378,8 @@ async function doLoad() {
         restoreFormData(data);
         showToast('✓ 불러오기 완료');
       } catch(e) {
-        showToast('⚠ 데이터 형식 오류');
+        console.error('restoreFormData error:', e);
+        showToast('⚠ 데이터 형식 오류: ' + e.message);
       }
     } else if (result.status === 'not_found') {
       showToast('해당 코드의 저장 데이터가 없습니다');
