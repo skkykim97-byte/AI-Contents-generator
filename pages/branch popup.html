@@ -893,9 +893,17 @@ function getLuminance(hex) {
 
 function applyColor(hex, idx, name) {
   headerBg = hex;
-  const lum = getLuminance(hex);
-  headerTx = lum > 0.42 ? '#18181A' : '#FFFFFF';
-  headerMuted = lum > 0.42 ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.5)';
+  // 고정 컬러칩 8개는 항상 흰 글씨, RGB 직접 입력은 luminance 자동 판단
+  const PRESET_HEXES = new Set(['#4d6c46','#1b2664','#f4858e','#6f4898','#59789f','#ff9548','#67434a','#000000']);
+  const isPreset = PRESET_HEXES.has(hex.toLowerCase());
+  if (isPreset) {
+    headerTx = '#FFFFFF';
+    headerMuted = 'rgba(255,255,255,0.5)';
+  } else {
+    const lum = getLuminance(hex);
+    headerTx = lum > 0.42 ? '#18181A' : '#FFFFFF';
+    headerMuted = lum > 0.42 ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.5)';
+  }
   // 피커 업데이트
   const dot = document.getElementById('cdot-preview');
   if (dot) {
