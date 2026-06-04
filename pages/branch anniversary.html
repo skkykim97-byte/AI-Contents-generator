@@ -387,18 +387,20 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZnJ_SrTV6YGFZ
 
 // ─── COLOR ───────────────────────────────────────────────────
 // storeAccent: 밝은 배경일 때 점포명에 쓸 진한 유사 컬러 (직접 지정)
+// titleDark: true → 타이틀 어두운 색(#222), false → 흰색
 const PRESETS = [
-  { h:'#FDE8F0', n:'핑크',   storeAccent:'#9B2550' },
-  { h:'#67434a', n:'다크로즈' },
-  { h:'#000000', n:'블랙' },
-  { h:'#59789f', n:'블루',   storeAccent:'#195AA9' },
-  { h:'#ff9548', n:'오렌지', storeAccent:'#C05200' },
-  { h:'#6f4898', n:'퍼플' },
-  { h:'#4d6c46', n:'그린' },
-  { h:'#1b2664', n:'네이비' },
+  { h:'#FDE8F0', n:'핑크',   storeAccent:'#9B2550', titleDark:true  },
+  { h:'#67434a', n:'다크로즈',                       titleDark:false },
+  { h:'#000000', n:'블랙',                           titleDark:false },
+  { h:'#59789f', n:'블루',   storeAccent:'#195AA9', titleDark:false },
+  { h:'#ff9548', n:'오렌지', storeAccent:'#C05200', titleDark:false },
+  { h:'#6f4898', n:'퍼플',                           titleDark:false },
+  { h:'#4d6c46', n:'그린',                           titleDark:false },
+  { h:'#1b2664', n:'네이비',                         titleDark:false },
 ];
 let headerBg = '#FDE8F0';
 let headerStoreAccent = '#9B2550'; // 현재 배경에 대응하는 점포명 강조색
+let headerTitleDark = true;        // true → 타이틀 #222, false → 흰색
 
 // 밝은 배경의 커스텀 컬러일 때 자동으로 진한 유사 컬러 계산
 function darkenColor(hex, amount = 0.45) {
@@ -440,16 +442,19 @@ function getLuminance(hex) {
 
 function applyColor(hex, idx, name) {
   headerBg = hex;
-  // 점포명 강조색 결정
   const lum = getLuminance(hex);
-  if (lum <= 0.42) {
-    // 어두운 배경 → 흰색
-    headerStoreAccent = '#FFFFFF';
-  } else {
-    // 밝은 배경 → 프리셋에 storeAccent가 있으면 사용, 없으면 자동 계산
-    const preset = (idx !== '') ? PRESETS[idx] : null;
+  const preset = (idx !== '') ? PRESETS[idx] : null;
+
+  // 타이틀 색 결정: 프리셋은 titleDark 명시값, 커스텀은 luminance 0.55 기준
+  headerTitleDark = preset ? preset.titleDark : (lum > 0.55);
+
+  // 점포명 색 결정: 타이틀이 어두우면(밝은 배경) → storeAccent, 흰색 타이틀이면 → 흰색
+  if (headerTitleDark) {
     headerStoreAccent = (preset && preset.storeAccent) ? preset.storeAccent : darkenColor(hex, 0.45);
+  } else {
+    headerStoreAccent = '#FFFFFF';
   }
+
   const dot = document.getElementById('cdot-preview');
   if (dot) { dot.style.background = hex; dot.style.border = getLuminance(hex)>0.85?'1.5px solid #DDD':'1px solid rgba(0,0,0,.06)'; }
   const hexEl = document.getElementById('chex'); if (hexEl) hexEl.textContent = hex.toUpperCase();
@@ -864,11 +869,10 @@ function render() {
   const store=v('f-store'), title1=v('f-title1'), title2=v('f-title2');
   const period=v('f-period'), notes=v('f-notes');
   const lum = getLuminance(headerBg);
-  const isDark      = lum <= 0.42;
   // 점포명은 applyColor에서 결정된 headerStoreAccent 사용
   const storeColor  = headerStoreAccent;
-  const titleColor  = isDark ? '#FFFFFF' : '#222222';
-  const periodColor = isDark ? 'rgba(255,255,255,0.75)' : '#555555';
+  const titleColor  = headerTitleDark ? '#222222' : '#FFFFFF';
+  const periodColor = headerTitleDark ? '#555555' : 'rgba(255,255,255,0.75)';
 
   let h = '';
 
