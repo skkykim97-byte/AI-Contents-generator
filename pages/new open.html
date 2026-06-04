@@ -107,7 +107,7 @@ input[type=file]{display:none}
 .o-hd{padding:40px 24px 36px;position:relative;}
 .o-hd-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-hd-title{font-size:22px;font-weight:500;letter-spacing:-.5px;line-height:1.35;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
-.o-hd-desc{font-size:13px;font-weight:300;line-height:1.85;margin-top:14px;word-break:keep-all;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-hd-desc{font-size:15px;font-weight:300;line-height:1.85;margin-top:14px;word-break:keep-all;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 
 /* 섹션 타이틀 */
 .o-sec{padding:28px 20px 12px;display:flex;align-items:center;gap:12px;}
@@ -115,12 +115,14 @@ input[type=file]{display:none}
 .o-sec-line{flex:1;height:1px;background:#E2E0D9}
 
 /* Brand New Drop */
-.o-brand{padding:0 20px 32px;}
+.o-brand{padding:0 0 8px;}
+.o-brand-item{padding:0 20px 32px;}
 .o-brand-img-wrap{width:100%;margin-bottom:16px;line-height:0;}
 .o-brand-img{width:350px;height:350px;object-fit:cover;display:block;}
 .o-brand-img-ph{width:350px;height:350px;background:#EDECEA;display:flex;align-items:center;justify-content:center;font-size:12px;color:#C0BFB8;font-weight:300;}
 .o-brand-name{font-size:17px;font-weight:700;color:#111;letter-spacing:-.2px;margin-bottom:8px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-brand-desc{font-size:13px;font-weight:300;color:#444;line-height:1.85;white-space:pre-wrap;word-break:keep-all;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-brand-divider{height:1px;background:#EDECEA;margin:0 20px 32px;}
 
 /* Open SALE */
 .o-sale{padding:0 0 8px;}
@@ -136,9 +138,9 @@ input[type=file]{display:none}
 .o-evt{padding:0 0 8px;}
 .o-evt-item{display:flex;flex-direction:column;padding:0 20px 32px;}
 .o-evt-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.o-evt-num{width:26px;height:26px;border-radius:50%;background:#18181A;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-evt-num{width:20px;height:20px;border-radius:50%;background:#18181A;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-evt-name{font-size:15px;font-weight:700;color:#111;letter-spacing:-.2px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
-.o-evt-img-wrap{width:100%;margin-bottom:14px;line-height:0;}
+.o-evt-img-wrap{width:100%;line-height:0;}
 .o-evt-img{width:350px;height:197px;object-fit:cover;display:block;}
 .o-evt-img-ph{width:350px;height:197px;background:#EDECEA;display:flex;align-items:center;justify-content:center;font-size:12px;color:#C0BFB8;font-weight:300;}
 .o-evt-desc{font-size:13px;font-weight:300;color:#444;line-height:1.85;white-space:pre-wrap;word-break:keep-all;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
@@ -265,31 +267,18 @@ input[type=file]{display:none}
           <div class="sec-num" style="background:#E8EAF6;color:#1b2664">2</div>
           <span class="sec-title">Brand New Drop</span>
           <span style="font-size:10px;color:var(--tx-hint);font-weight:300;font-family:var(--fn)">섹션 타이틀 수정 가능</span>
+          <span class="sec-tag" id="brand-cnt">0개</span>
         </div>
         <div class="sec-body">
           <div class="field">
             <span class="field-label-ko">섹션 타이틀 <span class="byte-counter" id="cnt-sec-brand">0자/20자</span></span>
             <input type="text" id="f-sec-brand" placeholder="Brand New Drop" oninput="updateCharCount(this,'cnt-sec-brand',20);render()"/>
           </div>
-          <div class="field">
-            <span class="field-label-ko">브랜드 이미지 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 정방형 권장</span></span>
-            <div class="uploader" id="brand-zone" onclick="document.getElementById('brand-file').click()">
-              <div class="upl-empty">
-                <div class="upl-icon">🖼</div>
-                <div class="upl-title">정방형 이미지 업로드</div>
-                <div class="upl-sub">JPG · PNG · WEBP</div>
-              </div>
-            </div>
-            <input type="file" id="brand-file" accept="image/*" onchange="loadBrandImg(this)"/>
-          </div>
-          <div class="field">
-            <span class="field-label-ko">브랜드명 <span class="byte-counter" id="cnt-brand-name">0자/30자</span></span>
-            <input type="text" id="f-brand-name" placeholder="브랜드명을 입력하세요" oninput="updateCharCount(this,'cnt-brand-name',30);render()"/>
-          </div>
-          <div class="field">
-            <span class="field-label-ko">브랜드 설명</span>
-            <textarea id="f-brand-desc" rows="4" placeholder="브랜드 소개 문구를 입력하세요." oninput="render()"></textarea>
-          </div>
+          <div class="vcard-list" id="brand-list"></div>
+          <button class="add-card-btn" onclick="addBrand()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            브랜드 추가
+          </button>
         </div>
       </div>
 
@@ -382,7 +371,7 @@ input[type=file]{display:none}
       <button class="ex-modal-close" onclick="closeExample()">✕</button>
     </div>
     <div class="ex-modal-body">
-      <img src="../examples/ex_new open.jpg" alt="예시 이미지" class="ex-modal-img"/>
+      <img src="../examples/ex_newopen.jpg" alt="예시 이미지" class="ex-modal-img"/>
     </div>
   </div>
 </div>
@@ -446,28 +435,77 @@ function buildSwatches() {
   applyColor('#1b2664', 0, '네이비');
 }
 
-// ─── IMAGE ───────────────────────────────────────────────────
-const imgStore = { brand: null };
+// ─── BRAND NEW DROP ──────────────────────────────────────────
+let brands = [], brandIdx = 0;
 
-function loadBrandImg(input) {
+function addBrand() {
+  const id = ++brandIdx;
+  brands.push({ id, img:null, name:'', desc:'' });
+  rebuildBrands(); render();
+}
+
+function delBrand(id) {
+  brands = brands.filter(b=>b.id!==id);
+  rebuildBrands(); render();
+}
+
+function loadBrandImg(input, id) {
   const file = input.files[0]; if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    imgStore.brand = e.target.result;
-    const zone = document.getElementById('brand-zone');
+    const b = brands.find(b=>b.id===id); if(!b) return;
+    b.img = e.target.result;
+    const zone = document.getElementById('zone-brand'+id);
     zone.onclick = null;
-    zone.innerHTML = `<div class="upl-filled"><img src="${e.target.result}" style="max-height:160px;object-fit:contain;"/><button class="upl-remove" onclick="clearBrandImg();event.stopPropagation()">✕</button></div>`;
+    zone.innerHTML = `<div class="upl-filled"><img src="${e.target.result}" style="max-height:160px;object-fit:contain;"/><button class="upl-remove" onclick="clearBrandImg(${id});event.stopPropagation()">✕</button></div>`;
     render();
   };
   reader.readAsDataURL(file);
 }
 
-function clearBrandImg() {
-  imgStore.brand = null;
-  const zone = document.getElementById('brand-zone');
+function clearBrandImg(id) {
+  const b = brands.find(b=>b.id===id); if(b) b.img = null;
+  const zone = document.getElementById('zone-brand'+id);
   zone.innerHTML = `<div class="upl-empty"><div class="upl-icon">🖼</div><div class="upl-title">정방형 이미지 업로드</div><div class="upl-sub">JPG · PNG · WEBP</div></div>`;
-  zone.onclick = () => document.getElementById('brand-file').click();
+  zone.onclick = () => document.getElementById('file-brand'+id).click();
   render();
+}
+
+function rebuildBrands() {
+  const list = document.getElementById('brand-list');
+  list.innerHTML = '';
+  brands.forEach((b, idx) => {
+    const card = document.createElement('div');
+    card.className = 'vcard';
+    card.innerHTML = `
+      <div class="vcard-head">
+        <span class="vcard-label" style="background:#E8EAF6;color:#1b2664">브랜드 ${idx+1}</span>
+        <button class="vcard-del" onclick="delBrand(${b.id})">✕</button>
+      </div>
+      <div class="vcard-body">
+        <div class="field">
+          <span class="field-label-ko">브랜드 이미지 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 정방형 권장</span></span>
+          <div class="uploader" id="zone-brand${b.id}" onclick="document.getElementById('file-brand${b.id}').click()">
+            ${b.img
+              ? `<div class="upl-filled"><img src="${b.img}" style="max-height:160px;object-fit:contain;"/><button class="upl-remove" onclick="clearBrandImg(${b.id});event.stopPropagation()">✕</button></div>`
+              : `<div class="upl-empty"><div class="upl-icon">🖼</div><div class="upl-title">정방형 이미지 업로드</div><div class="upl-sub">JPG · PNG · WEBP</div></div>`}
+          </div>
+          <input type="file" id="file-brand${b.id}" accept="image/*" onchange="loadBrandImg(this,${b.id})"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">브랜드명 <span class="byte-counter" id="cnt-bname-${b.id}">0자/30자</span></span>
+          <input type="text" id="bname-${b.id}" value="${b.name}" placeholder="브랜드명을 입력하세요"
+            oninput="brands.find(b=>b.id===${b.id}).name=this.value;updateCharCount(this,'cnt-bname-${b.id}',30);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">브랜드 설명</span>
+          <textarea rows="4" id="bdesc-${b.id}" placeholder="브랜드 소개 문구를 입력하세요."
+            oninput="brands.find(b=>b.id===${b.id}).desc=this.value;render()">${b.desc}</textarea>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+  document.getElementById('brand-cnt').textContent = brands.length + '개';
 }
 
 // ─── OPEN SALE ───────────────────────────────────────────────
@@ -753,7 +791,6 @@ function render() {
   const secBrand=v('f-sec-brand')||'Brand New Drop';
   const secSale=v('f-sec-sale')||'Open SALE';
   const secEvt=v('f-sec-evt')||'Special Event';
-  const brandName=v('f-brand-name'), brandDesc=v('f-brand-desc');
   const notes=v('f-notes');
   const titleColor = headerTitleDark ? '#222222' : '#FFFFFF';
   const subColor   = headerTitleDark ? '#555555' : 'rgba(255,255,255,0.75)';
@@ -771,10 +808,17 @@ function render() {
   // Brand New Drop
   h += `<div class="o-sec"><span class="o-sec-txt">${secBrand}</span><div class="o-sec-line"></div></div>`;
   h += `<div class="o-brand">`;
-  if (imgStore.brand) h += `<div class="o-brand-img-wrap"><img src="${imgStore.brand}" class="o-brand-img"/></div>`;
-  else h += `<div class="o-brand-img-wrap"><div class="o-brand-img-ph">이미지를 업로드하세요</div></div>`;
-  if (brandName) h += `<div class="o-brand-name">${brandName}</div>`;
-  if (brandDesc) h += `<div class="o-brand-desc">${brandDesc.replace(/\n/g,'<br>')}</div>`;
+  brands.forEach((b, idx) => {
+    if (idx > 0) h += `<div class="o-brand-divider"></div>`;
+    h += `<div class="o-brand-item">`;
+    if (b.img) h += `<div class="o-brand-img-wrap"><img src="${b.img}" class="o-brand-img"/></div>`;
+    if (b.name) h += `<div class="o-brand-name">${b.name}</div>`;
+    if (b.desc) h += `<div class="o-brand-desc">${b.desc.replace(/\n/g,'<br>')}</div>`;
+    h += `</div>`;
+  });
+  if (brands.length === 0) {
+    h += `<div class="o-brand-item"><div class="o-brand-img-ph">브랜드를 추가하세요</div></div>`;
+  }
   h += `</div>`;
 
   // Open SALE
@@ -807,7 +851,7 @@ function render() {
       h += `<div class="o-evt-num">${idx+1}</div>`;
       if (evt.name) h += `<div class="o-evt-name">${evt.name}</div>`;
       h += `</div>`;
-      h += `<div class="o-evt-img-wrap">`;
+      h += `<div class="o-evt-img-wrap" style="margin-bottom:${evt.img?'14px':'6px'}">`;
       h += evt.img
         ? `<img src="${evt.img}" class="o-evt-img" style="object-position:${evt.imgCropX||50}% ${evt.imgCropY||50}%"/>`
         : ``;
@@ -853,8 +897,8 @@ function collectFormData() {
   return {
     label: v('f-label'), title: v('f-title'), desc: v('f-desc'),
     secBrand: v('f-sec-brand'), secSale: v('f-sec-sale'), secEvt: v('f-sec-evt'),
-    brandName: v('f-brand-name'), brandDesc: v('f-brand-desc'),
     headerBg: headerBg, notes: v('f-notes'),
+    brands: brands.map(b=>({ name:b.name, desc:b.desc })),
     sales: sales.map(s=>({ title:s.title, desc:s.desc })),
     events: evts.map(e=>({ name:e.name, desc:e.desc, note:e.note }))
   };
@@ -864,9 +908,11 @@ function restoreFormData(data) {
   const set = (id, val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
   set('f-label', data.label); set('f-title', data.title); set('f-desc', data.desc);
   set('f-sec-brand', data.secBrand); set('f-sec-sale', data.secSale); set('f-sec-evt', data.secEvt);
-  set('f-brand-name', data.brandName); set('f-brand-desc', data.brandDesc);
   set('f-notes', data.notes);
   if (data.headerBg) applyColor(data.headerBg, '', '');
+  brands=[]; brandIdx=0;
+  (data.brands||[]).forEach(b=>{ const id=++brandIdx; brands.push({id,img:null,name:b.name,desc:b.desc}); });
+  rebuildBrands();
   sales=[]; saleIdx=0;
   (data.sales||[]).forEach(s=>{ const id=++saleIdx; sales.push({id,img:null,imgRaw:null,imgCropX:50,imgCropY:50,title:s.title,desc:s.desc}); });
   rebuildSales();
@@ -927,7 +973,7 @@ async function doExport() {
     origSrcs.forEach(({el,src,style})=>{ el.src=src; if(style) el.setAttribute('style',style); else el.removeAttribute('style'); });
 
     const code=generateSaveCode();
-    const name=v('f-brand-name')||'뉴오픈';
+    const name = (brands[0]?.name) || '뉴오픈';
     const fname=`[뉴오픈] ${name}_${code}`.replace(/[<>:"/\\|?*]/g,'_').slice(0,60)+'.jpg';
     canvas.toBlob(blob=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; a.click(); },'image/jpeg',0.95);
     try {
@@ -951,8 +997,8 @@ function closeExample(e){ if(e&&e.target!==e.currentTarget)return; document.getE
 
 // ─── RESET ───────────────────────────────────────────────────
 function resetAll() {
-  ['f-label','f-title','f-desc','f-sec-brand','f-sec-sale','f-sec-evt','f-brand-name','f-brand-desc','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-  clearBrandImg();
+  ['f-label','f-title','f-desc','f-sec-brand','f-sec-sale','f-sec-evt','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  brands=[]; brandIdx=0; rebuildBrands();
   sales=[]; saleIdx=0; rebuildSales();
   evts=[]; evtIdx=0; rebuildEvts();
   applyColor('#1b2664', 0, '네이비');
@@ -961,7 +1007,6 @@ function resetAll() {
 
 // ─── INIT ────────────────────────────────────────────────────
 buildSwatches();
-document.getElementById('brand-zone').onclick = () => document.getElementById('brand-file').click();
 render();
 </script>
 </body>
