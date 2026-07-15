@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════
-//  롯데백화점 콘텐츠 생성기 — Google Apps Script
+//  콘텐츠 생성기 — Google Apps Script
 //  시트 ID : 1PX8tFrDVpHciruGL-m06Bs0pkfoU4wtQ47SEP3eqxmg
 //  시트명  : DATA
 //

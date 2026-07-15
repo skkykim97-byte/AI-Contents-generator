@@ -2,11 +2,11 @@
 
 ## Introduction
 
-롯데백화점 콘텐츠 생성기의 "저장/불러오기" 기능이다. 유저가 점별 팝업 행사 페이지에서 폼을 채우고 JPG 내보내기를 하면, 고유 코드가 생성되고 모든 입력값이 Google Sheets에 저장된다. 나중에 같은 페이지에서 코드를 입력하면 이전 데이터를 불러와 수정할 수 있다. 추가로 branch popup.html의 인라인 Base64 폰트를 외부 파일로 분리하여 경량화한다.
+콘텐츠 생성기의 "저장/불러오기" 기능이다. 유저가 점별 팝업 행사 페이지에서 폼을 채우고 JPG 내보내기를 하면, 고유 코드가 생성되고 모든 입력값이 Google Sheets에 저장된다. 나중에 같은 페이지에서 코드를 입력하면 이전 데이터를 불러와 수정할 수 있다. 추가로 branch popup.html의 인라인 Base64 폰트를 외부 파일로 분리하여 경량화한다.
 
 ## Glossary
 
-- **Content_Generator**: 롯데백화점 콘텐츠 생성기 웹 애플리케이션 전체
+- **Content_Generator**: 콘텐츠 생성기 웹 애플리케이션 전체
 - **Popup_Page**: 점별 팝업 행사 생성기 페이지 (`pages/branch popup.html`)
 - **Form_Panel**: Popup_Page 좌측의 입력 폼 영역 (행사 기본정보, 브랜드 소개, Item 섹션, Special Benefit, 참고사항)
 - **Save_Code**: JPG 내보내기 시 생성되는 유저별 고유 식별 코드 (형식: `POP-XXXXXX`, X는 대문자 영문 또는 숫자)

@@ -242,7 +242,7 @@ input[type=file]{display:none}
           </div>
           <div class="field">
             <span class="field-label-ko">타이틀 첫째줄 <span class="byte-counter" id="cnt-title1">0자/18자</span></span>
-            <input type="text" id="f-title1" placeholder="롯데백화점 OO점" oninput="updateCharCount(this,'cnt-title1',18);render()"/>
+            <input type="text" id="f-title1" placeholder="OO백화점 OO점" oninput="updateCharCount(this,'cnt-title1',18);render()"/>
           </div>
           <div class="field">
             <span class="field-label-ko">타이틀 둘째줄 <span class="byte-counter" id="cnt-title2">0자/18자</span></span>
@@ -907,7 +907,7 @@ function render() {
   h += `<div class="o-hd" style="background:${headerBg}">`;
   if (store) h += `<div class="o-hd-store" style="color:${storeColor}">${store}</div>`;
   h += `<div style="padding-right:${imgStore.logo?'96px':'0'}">`;
-  h += `<div class="o-hd-title1" style="color:${titleColor}">${title1||'롯데백화점 OO점'}</div>`;
+  h += `<div class="o-hd-title1" style="color:${titleColor}">${title1||'OO백화점 OO점'}</div>`;
   h += `<div class="o-hd-title2" style="color:${titleColor}">${title2||'개점 OO주년'}</div>`;
   h += `</div>`;
   if (period) h += `<div class="o-hd-period" style="color:${periodColor}">${period}</div>`;
