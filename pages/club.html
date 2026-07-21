@@ -88,14 +88,21 @@ textarea{resize:vertical;min-height:72px}
 .preview-frame{width:390px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 24px 80px rgba(0,0,0,.22),0 8px 24px rgba(0,0,0,.12);border-radius:2px;}
 
 /* OUTPUT */
-#output{width:390px;background:#EEF1F8;font-family:'MaisonNeue','Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;word-break:break-all;overflow-wrap:break-word;}
+#output{width:390px;background:#B3CFEB;font-family:'MaisonNeue','Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;word-break:break-all;overflow-wrap:break-word;}
 
 /* 헤더 */
-.o-hd{padding:24px 20px;}
-.o-hd-card{border-radius:18px;padding:28px 24px;position:relative;}
-.o-hd-badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:-.2px;padding:5px 14px;border-radius:20px;background:rgba(255,255,255,0.22);color:#fff;margin-bottom:14px;font-family:'Noto Sans KR',sans-serif;}
-.o-hd-title{font-size:22px;font-weight:700;letter-spacing:-.5px;line-height:1.4;color:#fff;word-break:keep-all;margin-bottom:12px;font-family:'Noto Sans KR',sans-serif;}
-.o-hd-intro{font-size:13px;font-weight:300;line-height:1.85;color:rgba(255,255,255,0.92);white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-hd{padding:34px 20px 24px;position:relative;}
+.o-hd-badge{position:relative;z-index:2;display:block;width:fit-content;margin:0 auto -18px;font-size:15px;font-weight:800;font-style:italic;letter-spacing:-.3px;padding:9px 26px;border-radius:22px;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.12);font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-hd-card{background:#fff;border-radius:24px;padding:44px 24px 40px;text-align:center;}
+.o-hd-title{font-size:24px;font-weight:700;letter-spacing:-.6px;line-height:1.4;color:#2B3A5B;word-break:keep-all;margin-bottom:18px;font-family:'Noto Sans KR',sans-serif;}
+.o-hd-intro{font-size:15px;font-weight:400;line-height:1.75;color:#5E6E86;white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-hd-pill{display:inline-block;font-size:13px;font-weight:700;letter-spacing:-.2px;padding:6px 20px;border-radius:20px;color:#fff;font-family:'Noto Sans KR',sans-serif;}
+.o-hd-period{font-size:19px;font-weight:700;color:#2B3A5B;letter-spacing:-.3px;margin-top:14px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-hd-period-note{font-size:13px;font-weight:400;color:#9AA6BA;margin-top:6px;font-family:'Noto Sans KR',sans-serif;}
+.o-hd-block{margin-top:34px;}
+.o-hd-targets{margin-top:18px;display:flex;flex-direction:column;gap:14px;}
+.o-hd-target-nm{font-size:15px;font-weight:700;color:#2B3A5B;letter-spacing:-.3px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-hd-target-loc{font-size:12px;font-weight:400;color:#9AA6BA;margin-left:4px;font-family:'Noto Sans KR',sans-serif;}
 
 /* 공통 섹션 타이틀 (가운데) */
 .o-sec{padding:30px 20px 4px;text-align:center;}
@@ -221,27 +228,51 @@ textarea{resize:vertical;min-height:72px}
         </div>
         <div class="sec-body">
           <div class="field">
-            <span class="field-label-ko">뱃지 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span><span class="byte-counter" id="cnt-badge">0자/16자</span></span>
-            <input type="text" id="f-badge" placeholder="롯백클럽?" oninput="updateCharCount(this,'cnt-badge',16);render()"/>
+            <span class="field-label-ko">중앙 뱃지 <span class="byte-counter" id="cnt-badge">0자/16자</span></span>
+            <input type="text" id="f-badge" placeholder="What is?" oninput="updateCharCount(this,'cnt-badge',16);render()"/>
           </div>
           <div class="field">
-            <span class="field-label-ko">타이틀 <span class="byte-counter" id="cnt-title">0자/40자</span></span>
-            <input type="text" id="f-title" placeholder="상무님만의 혜택 준비!" oninput="updateCharCount(this,'cnt-title',40);render()"/>
+            <span class="field-label-ko">클럽 명칭 <span class="byte-counter" id="cnt-title">0자/40자</span></span>
+            <input type="text" id="f-title" placeholder="신규아파트 웰컴 클럽은?" oninput="updateCharCount(this,'cnt-title',40);render()"/>
           </div>
           <div class="field">
-            <span class="field-label-ko">소개 문구 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
-            <textarea id="f-intro" rows="4" placeholder="롯백클럽 회원이 되시면&#10;다양한 혜택을 누리실 수 있습니다." oninput="render()"></textarea>
+            <span class="field-label-ko">클럽 설명</span>
+            <textarea id="f-intro" rows="4" placeholder="입주 고객님을 위한 다양한 리빙&라이프&#10;쇼핑 혜택을 제공해 드리기 위해&#10;마련된 멤버십 클럽입니다" oninput="render()"></textarea>
           </div>
           <div class="field">
-            <span class="field-label-ko">헤더 배경색</span>
+            <span class="field-label-ko">기간 뱃지 <span class="byte-counter" id="cnt-period-label">0자/12자</span></span>
+            <input type="text" id="f-period-label" placeholder="기간" oninput="updateCharCount(this,'cnt-period-label',12);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">기간 <span class="byte-counter" id="cnt-period">0자/30자</span></span>
+            <input type="text" id="f-period" placeholder="2026년 8월 - 2027년 2월" oninput="updateCharCount(this,'cnt-period',30);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">기간 단서조항 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span><span class="byte-counter" id="cnt-period-note">0자/30자</span></span>
+            <input type="text" id="f-period-note" placeholder="(기간 변경/조기종료 가능)" oninput="updateCharCount(this,'cnt-period-note',30);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">대상 뱃지 <span class="byte-counter" id="cnt-target-label">0자/12자</span></span>
+            <input type="text" id="f-target-label" placeholder="대상 APT" oninput="updateCharCount(this,'cnt-target-label',12);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">대상 목록 <span class="byte-counter" id="tg-cnt">0개</span></span>
+            <div class="vcard-list" id="tg-list"></div>
+            <button class="add-card-btn" onclick="addTarget()">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              대상 추가
+            </button>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">테마 색상</span>
             <div style="display:flex;gap:8px;flex-wrap:wrap" id="swatch-row"></div>
             <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--page);border-radius:var(--radius-sm);border:1.5px solid var(--border);cursor:pointer;" onclick="document.getElementById('cpicker').click()">
-              <div id="cdot-preview" style="width:22px;height:22px;border-radius:6px;background:#4E5FE0;border:1px solid rgba(0,0,0,.08);flex-shrink:0;"></div>
-              <span id="chex" style="font-size:12px;font-family:monospace;font-weight:500;color:var(--tx-mid);flex:1;letter-spacing:.5px;">#4E5FE0</span>
+              <div id="cdot-preview" style="width:22px;height:22px;border-radius:6px;background:#8AA6C2;border:1px solid rgba(0,0,0,.08);flex-shrink:0;"></div>
+              <span id="chex" style="font-size:12px;font-family:monospace;font-weight:500;color:var(--tx-mid);flex:1;letter-spacing:.5px;">#8AA6C2</span>
               <svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="color:var(--tx-hint)"><path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
-              <input type="color" id="cpicker" value="#4E5FE0" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none" oninput="applyColor(this.value,'','')"/>
+              <input type="color" id="cpicker" value="#8AA6C2" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none" oninput="applyColor(this.value,'','')"/>
             </div>
-            <span style="font-size:11px;color:var(--tx-hint);font-weight:300">헤더는 선택한 색상의 그라데이션으로 표현됩니다.</span>
+            <span style="font-size:11px;color:var(--tx-hint);font-weight:300">배경·뱃지 색상이 선택한 색을 기준으로 조정됩니다.</span>
           </div>
         </div>
       </div>
@@ -396,17 +427,17 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZnJ_SrTV6YGFZ
 
 // ─── COLOR ───────────────────────────────────────────────────
 const PRESETS = [
-  { h:'#4E5FE0', n:'블루' },
-  { h:'#5B6EE1', n:'퍼플블루' },
-  { h:'#1b2664', n:'네이비' },
-  { h:'#6f4898', n:'퍼플' },
-  { h:'#2E8B8B', n:'틸' },
-  { h:'#4d6c46', n:'그린' },
-  { h:'#E60012', n:'레드' },
-  { h:'#000000', n:'블랙' },
+  { h:'#8AA6C2', n:'스틸블루' },
+  { h:'#9DB8D4', n:'라이트블루' },
+  { h:'#7FA8CE', n:'블루' },
+  { h:'#8E9BC7', n:'퍼플블루' },
+  { h:'#7FB0AE', n:'세이지' },
+  { h:'#C29BA6', n:'로즈' },
+  { h:'#B0A48C', n:'베이지' },
+  { h:'#9A9AA6', n:'그레이' },
 ];
 
-let headerBg = '#4E5FE0';
+let headerBg = '#8AA6C2';
 
 function getLuminance(hex) {
   const r=parseInt(hex.slice(1,3),16)/255, g=parseInt(hex.slice(3,5),16)/255, b=parseInt(hex.slice(5,7),16)/255;
@@ -452,7 +483,41 @@ function buildSwatches() {
   const style = document.createElement('style');
   style.textContent = `.cswatch.active::after{content:'';position:absolute;inset:-3px;border-radius:11px;border:2px solid var(--tx-dark);}`;
   document.head.appendChild(style);
-  applyColor('#4E5FE0', 0, '블루');
+  applyColor('#8AA6C2', 0, '스틸블루');
+}
+
+// ─── 대상 APT 목록 ──────────────────────────────────────────
+let tgs = [], tgIdx = 0;
+function addTarget() { const id=++tgIdx; tgs.push({id,name:'',loc:''}); rebuildTgs(); render(); }
+function delTg(id) { tgs=tgs.filter(t=>t.id!==id); rebuildTgs(); render(); }
+function setTg(id,key,val){ const t=tgs.find(t=>t.id===id); if(t) t[key]=val; }
+
+function rebuildTgs() {
+  const list = document.getElementById('tg-list');
+  list.innerHTML = '';
+  tgs.forEach((t, idx) => {
+    const card = document.createElement('div');
+    card.className = 'vcard';
+    card.innerHTML = `
+      <div class="vcard-head">
+        <span class="vcard-label" style="background:#EEF1FF;color:#4E5FE0">대상 ${idx+1}</span>
+        <button class="vcard-del" onclick="delTg(${t.id})">✕</button>
+      </div>
+      <div class="vcard-body">
+        <div class="field">
+          <span class="field-label-ko">단지명 <span class="byte-counter" id="cnt-tgnm-${t.id}">0자/40자</span></span>
+          <input type="text" id="tgnm-${t.id}" value="${t.name}" placeholder="E편한세상신곡시그니처뷰 1&2단지"
+            oninput="setTg(${t.id},'name',this.value);updateCharCount(this,'cnt-tgnm-${t.id}',40);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">지역 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span><span class="byte-counter" id="cnt-tgloc-${t.id}">0자/24자</span></span>
+          <input type="text" id="tgloc-${t.id}" value="${t.loc}" placeholder="의정부시 신곡동"
+            oninput="setTg(${t.id},'loc',this.value);updateCharCount(this,'cnt-tgloc-${t.id}',24);render()"/>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+  document.getElementById('tg-cnt').textContent = tgs.length + '개';
 }
 
 // ─── 회원 전용 혜택 ──────────────────────────────────────────
@@ -606,6 +671,8 @@ function v(id) { const el=document.getElementById(id); return el?el.value.trim()
 
 function render() {
   const badge=v('f-badge'), title=v('f-title'), intro=v('f-intro');
+  const periodLabel=v('f-period-label'), period=v('f-period'), periodNote=v('f-period-note');
+  const targetLabel=v('f-target-label');
   const secBn=v('f-sec-bn')||'회원 전용 혜택 모아보기';
   const secWc=v('f-sec-wc')||'특별한 웰컴 혜택';
   const secSs=v('f-sec-ss')||'시즌 혜택', secSsSub=v('f-sec-ss-sub');
@@ -613,13 +680,42 @@ function render() {
   const notes=v('f-notes');
   const tint = shade(headerBg, 0.36);
 
+  // 페이지 배경 = 테마색의 밝은 톤
+  const pageBg = shade(headerBg, 0.18);
+  const badgeBg = headerBg;
+  const pillBg = shade(headerBg, 0.06);
+  document.getElementById('output').style.background = pageBg;
+
   let h = '';
 
   // 헤더
-  h += `<div class="o-hd"><div class="o-hd-card" style="background:${headerGradient(headerBg)}">`;
-  if (badge) h += `<span class="o-hd-badge">${badge}</span>`;
-  h += `<div class="o-hd-title">${title||'상무님만의 혜택 준비!'}</div>`;
+  h += `<div class="o-hd">`;
+  h += `<span class="o-hd-badge" style="background:${badgeBg}">${badge||'What is?'}</span>`;
+  h += `<div class="o-hd-card">`;
+  h += `<div class="o-hd-title">${title||'신규아파트 웰컴 클럽은?'}</div>`;
   if (intro) h += `<div class="o-hd-intro">${intro.replace(/\n/g,'<br>')}</div>`;
+  // 기간
+  if (period || periodNote) {
+    h += `<div class="o-hd-block">`;
+    h += `<span class="o-hd-pill" style="background:${pillBg}">${periodLabel||'기간'}</span>`;
+    if (period)     h += `<div class="o-hd-period">${period}</div>`;
+    if (periodNote) h += `<div class="o-hd-period-note">${periodNote}</div>`;
+    h += `</div>`;
+  }
+  // 대상
+  if (tgs.length > 0) {
+    h += `<div class="o-hd-block">`;
+    h += `<span class="o-hd-pill" style="background:${pillBg}">${targetLabel||'대상 APT'}</span>`;
+    h += `<div class="o-hd-targets">`;
+    tgs.forEach(t => {
+      if (!t.name && !t.loc) return;
+      h += `<div>`;
+      if (t.name) h += `<span class="o-hd-target-nm">${t.name}</span>`;
+      if (t.loc)  h += `<span class="o-hd-target-loc">(${t.loc})</span>`;
+      h += `</div>`;
+    });
+    h += `</div></div>`;
+  }
   h += `</div></div>`;
 
   // 회원 전용 혜택
@@ -717,6 +813,9 @@ function generateSaveCode() {
 function collectFormData() {
   return {
     badge: v('f-badge'), title: v('f-title'), intro: v('f-intro'),
+    periodLabel: v('f-period-label'), period: v('f-period'), periodNote: v('f-period-note'),
+    targetLabel: v('f-target-label'),
+    targets: tgs.map(t=>({ name:t.name, loc:t.loc })),
     secBn: v('f-sec-bn'), secWc: v('f-sec-wc'),
     secSs: v('f-sec-ss'), secSsSub: v('f-sec-ss-sub'),
     secSt: v('f-sec-st'), secStSub: v('f-sec-st-sub'),
@@ -731,11 +830,16 @@ function collectFormData() {
 function restoreFormData(data) {
   const set = (id, val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
   set('f-badge', data.badge); set('f-title', data.title); set('f-intro', data.intro);
+  set('f-period-label', data.periodLabel); set('f-period', data.period); set('f-period-note', data.periodNote);
+  set('f-target-label', data.targetLabel);
   set('f-sec-bn', data.secBn); set('f-sec-wc', data.secWc);
   set('f-sec-ss', data.secSs); set('f-sec-ss-sub', data.secSsSub);
   set('f-sec-st', data.secSt); set('f-sec-st-sub', data.secStSub);
   set('f-notes', data.notes);
   if (data.headerBg) applyColor(data.headerBg, '', '');
+  tgs=[]; tgIdx=0;
+  (data.targets||[]).forEach(t=>{ const id=++tgIdx; tgs.push({id,name:t.name||'',loc:t.loc||''}); });
+  rebuildTgs();
   bns=[]; bnIdx=0;
   (data.benefits||[]).forEach(b=>{ const id=++bnIdx; bns.push({id,icon:b.icon||'🎁',title:b.title||'',desc:b.desc||''}); });
   rebuildBns();
@@ -812,12 +916,13 @@ function closeExample(e){ if(e&&e.target!==e.currentTarget)return; document.getE
 
 // ─── RESET ───────────────────────────────────────────────────
 function resetAll() {
-  ['f-badge','f-title','f-intro','f-sec-bn','f-sec-wc','f-sec-ss','f-sec-ss-sub','f-sec-st','f-sec-st-sub','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-wc','f-sec-ss','f-sec-ss-sub','f-sec-st','f-sec-st-sub','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  tgs=[]; tgIdx=0; rebuildTgs();
   bns=[]; bnIdx=0; rebuildBns();
   wcs=[]; wcIdx=0; rebuildWcs();
   sss=[]; ssIdx=0; rebuildSss();
   sts=[]; stIdx=0; rebuildSts();
-  applyColor('#4E5FE0', 0, '블루');
+  applyColor('#8AA6C2', 0, '스틸블루');
   render();
 }
 
