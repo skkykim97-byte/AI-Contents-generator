@@ -166,6 +166,12 @@
               <div class="template-name">SALE 브랜드 안내</div>
               <span class="template-tag">JPG</span>
             </div>
+            <div class="template-card" data-value="club" onclick="selectTemplate(this)">
+              <div class="check-badge"><svg viewBox="0 0 10 10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,5 4,8 8,2"/></svg></div>
+              <div class="template-icon">💳</div>
+              <div class="template-name">롯백클럽 페이지</div>
+              <span class="template-tag">JPG</span>
+            </div>
           </div>
           <div class="template-error" id="templateError">콘텐츠 유형을 선택해 주세요.</div>
         </div>
@@ -228,7 +234,8 @@
       popup:       'branch popup.html',
       anniversary: 'branch anniversary.html',
       newopen:     'new open.html',
-      sale:        null
+      sale:        'sale.html',
+      club:        'club.html'
     };
 
     const page = TEMPLATE_PAGES[v.template];
