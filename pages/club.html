@@ -105,16 +105,24 @@ textarea{resize:vertical;min-height:72px}
 .o-hd-target-loc{font-size:12px;font-weight:400;color:#9AA6BA;margin-left:4px;font-family:'Noto Sans KR',sans-serif;}
 
 /* 공통 섹션 타이틀 (가운데) */
-.o-sec{padding:30px 20px 4px;text-align:center;}
-.o-sec-txt{font-size:19px;font-weight:700;color:#1D2433;letter-spacing:-.4px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
-.o-sec-sub{font-size:12px;font-weight:300;color:#7A8194;margin-top:8px;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-sec{padding:36px 20px 4px;text-align:center;}
+.o-sec-txt{font-size:23px;font-weight:700;color:#2B3A5B;letter-spacing:-.5px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-sec-sub{font-size:13px;font-weight:400;color:#8A93A6;margin-top:10px;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 
 /* 회원 전용 혜택 그리드 */
-.o-benefits{padding:16px 20px 8px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.o-bn-card{background:#fff;border-radius:14px;padding:18px 14px;text-align:center;box-shadow:0 2px 8px rgba(29,36,51,.05);}
-.o-bn-icon{font-size:30px;line-height:1;margin-bottom:10px;}
-.o-bn-ttl{font-size:14px;font-weight:700;color:#1D2433;letter-spacing:-.3px;margin-bottom:6px;line-height:1.35;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
-.o-bn-desc{font-size:11.5px;font-weight:300;color:#7A8194;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-benefits{padding:22px 20px 8px;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch;}
+.o-bn-card{background:#F4F6F9;border:1px solid #E7EBF1;border-radius:20px;padding:24px 14px 28px;text-align:center;display:flex;flex-direction:column;align-items:center;}
+.o-bn-iconbox{height:132px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;}
+.o-bn-iconbox img{max-width:118px;max-height:118px;object-fit:contain;display:block;}
+.o-bn-icon-emoji{font-size:58px;line-height:1;}
+.o-bn-pill{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.2px;padding:5px 16px;border-radius:16px;color:#fff;margin-bottom:14px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-bn-ttl{font-size:18px;font-weight:700;color:#2B3A5B;letter-spacing:-.3px;margin-bottom:14px;line-height:1.35;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-bn-lines{display:flex;flex-direction:column;gap:5px;width:100%;}
+.o-bn-line{font-size:14px;font-weight:400;color:#3A4557;line-height:1.55;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-bn-line b{font-weight:700;color:#2B3A5B;}
+.o-bn-plus{display:flex;align-items:center;justify-content:center;gap:5px;font-size:13.5px;font-weight:700;color:#4E7FD0;line-height:1.5;font-family:'Noto Sans KR',sans-serif;}
+.o-bn-plus .pic{width:15px;height:15px;border-radius:50%;background:#4E7FD0;color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;}
+.o-bn-note{font-size:11.5px;font-weight:300;color:#9AA6BA;line-height:1.55;margin-top:5px;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 
 /* 웰컴 혜택 밴드 */
 .o-welcome{margin:16px 20px 8px;background:#fff;border-radius:16px;padding:8px 4px;box-shadow:0 2px 8px rgba(29,36,51,.05);}
@@ -289,7 +297,11 @@ textarea{resize:vertical;min-height:72px}
         <div class="sec-body">
           <div class="field">
             <span class="field-label-ko">섹션 타이틀 <span class="byte-counter" id="cnt-sec-bn">0자/24자</span></span>
-            <input type="text" id="f-sec-bn" placeholder="회원 전용 혜택 모아보기" oninput="updateCharCount(this,'cnt-sec-bn',24);render()"/>
+            <input type="text" id="f-sec-bn" placeholder="회원전용 혜택 모아보기" oninput="updateCharCount(this,'cnt-sec-bn',24);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">섹션 설명 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
+            <input type="text" id="f-sec-bn-sub" placeholder="아래 상세 혜택 및 가입방법을 확인해주세요" oninput="render()"/>
           </div>
           <div class="vcard-list" id="bn-list"></div>
           <button class="add-card-btn" onclick="addBenefit()">
@@ -527,41 +539,123 @@ function rebuildTgs() {
 
 // ─── 회원 전용 혜택 ──────────────────────────────────────────
 let bns = [], bnIdx = 0;
-function addBenefit() { const id=++bnIdx; bns.push({id,icon:'🎁',title:'',desc:''}); rebuildBns(); render(); }
+function addBenefit() {
+  const id=++bnIdx;
+  const b={id,emoji:'🎁',img:null,title:'',lineIdx:0,lines:[]};
+  const lid=++b.lineIdx; b.lines.push({lid,type:'normal',text:''});
+  bns.push(b); rebuildBns(); render();
+}
 function delBn(id) { bns=bns.filter(b=>b.id!==id); rebuildBns(); render(); }
 function setBn(id,key,val){ const b=bns.find(b=>b.id===id); if(b) b[key]=val; }
+
+function loadBnIcon(input, id) {
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const b=bns.find(b=>b.id===id); if(!b) return;
+    b.img=e.target.result;
+    const zone=document.getElementById('zone-bnimg'+id);
+    zone.onclick=null;
+    zone.innerHTML=`<div class="upl-filled"><img src="${e.target.result}" style="max-height:100px;object-fit:contain;"/><button class="upl-remove" onclick="clearBnIcon(${id});event.stopPropagation()">✕</button></div>`;
+    render();
+  };
+  reader.readAsDataURL(file);
+}
+function clearBnIcon(id) {
+  const b=bns.find(b=>b.id===id); if(b) b.img=null;
+  const zone=document.getElementById('zone-bnimg'+id);
+  zone.innerHTML=`<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">아이콘 이미지 업로드</div><div class="upl-sub">미등록 시 이모지 사용</div></div>`;
+  zone.onclick=()=>document.getElementById('file-bnimg'+id).click();
+  render();
+}
+
+function addBnLine(bnId) {
+  const b=bns.find(b=>b.id===bnId); if(!b) return;
+  const lid=++b.lineIdx; b.lines.push({lid,type:'normal',text:''});
+  rebuildBns(); render();
+}
+function delBnLine(bnId, lid) {
+  const b=bns.find(b=>b.id===bnId); if(!b) return;
+  b.lines=b.lines.filter(l=>l.lid!==lid);
+  rebuildBns(); render();
+}
+function setBnLine(bnId, lid, key, val) {
+  const b=bns.find(b=>b.id===bnId); if(!b) return;
+  const l=b.lines.find(l=>l.lid===lid); if(!l) return;
+  l[key]=val;
+}
+
+function buildBnLines(b) {
+  return b.lines.map((l, li) => `
+    <div class="vcard" style="background:#fff">
+      <div class="vcard-head" style="background:#fff;padding:8px 12px">
+        <span class="vcard-label" style="background:#EDEDED;color:#555;flex:0 0 auto">라인 ${li+1}</span>
+        <select onchange="setBnLine(${b.id},${l.lid},'type',this.value);render()" style="flex:1;padding:5px 8px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-family:var(--fn);color:var(--tx-dark);background:#fff;outline:none">
+          <option value="normal" ${l.type==='normal'?'selected':''}>일반 (**굵게** 지원)</option>
+          <option value="plus" ${l.type==='plus'?'selected':''}>추가할인 (⊕ 파란색)</option>
+          <option value="note" ${l.type==='note'?'selected':''}>단서 (작은 회색)</option>
+        </select>
+        <button class="vcard-del" onclick="delBnLine(${b.id},${l.lid})">✕</button>
+      </div>
+      <div class="vcard-body" style="padding:10px 12px">
+        <input type="text" id="bnline-${b.id}-${l.lid}" value="${(l.text||'').replace(/"/g,'&quot;')}"
+          placeholder="${l.type==='plus'?'추가할인 : 3%':l.type==='note'?'알레르망·아이리스 제외':'[삼성/LG] **6%**'}"
+          oninput="setBnLine(${b.id},${l.lid},'text',this.value);render()"/>
+      </div>
+    </div>`).join('');
+}
 
 function rebuildBns() {
   const list = document.getElementById('bn-list');
   list.innerHTML = '';
   bns.forEach((b, idx) => {
+    const num = String(idx+1).padStart(2,'0');
     const card = document.createElement('div');
     card.className = 'vcard';
     card.innerHTML = `
       <div class="vcard-head">
-        <span class="vcard-label" style="background:#EEF1FF;color:#4E5FE0">혜택 ${idx+1}</span>
+        <span class="vcard-label" style="background:#EEF1FF;color:#4E5FE0">Benefit ${num}</span>
         <button class="vcard-del" onclick="delBn(${b.id})">✕</button>
       </div>
       <div class="vcard-body">
         <div class="field">
-          <span class="field-label-ko">아이콘 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 이모지</span></span>
-          <input type="text" id="bnicon-${b.id}" value="${b.icon}" placeholder="🎁" maxlength="4"
-            oninput="setBn(${b.id},'icon',this.value);render()"/>
+          <span class="field-label-ko">아이콘 이미지 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택 · 미등록 시 이모지</span></span>
+          <div class="uploader" id="zone-bnimg${b.id}" onclick="document.getElementById('file-bnimg${b.id}').click()">
+            ${b.img
+              ? `<div class="upl-filled"><img src="${b.img}" style="max-height:100px;object-fit:contain;"/><button class="upl-remove" onclick="clearBnIcon(${b.id});event.stopPropagation()">✕</button></div>`
+              : `<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">아이콘 이미지 업로드</div><div class="upl-sub">미등록 시 이모지 사용</div></div>`}
+          </div>
+          <input type="file" id="file-bnimg${b.id}" accept="image/*" onchange="loadBnIcon(this,${b.id})"/>
         </div>
         <div class="field">
-          <span class="field-label-ko">혜택 타이틀 <span class="byte-counter" id="cnt-bnttl-${b.id}">0자/20자</span></span>
-          <input type="text" id="bnttl-${b.id}" value="${b.title}" placeholder="무료 반품 배송"
-            oninput="setBn(${b.id},'title',this.value);updateCharCount(this,'cnt-bnttl-${b.id}',20);render()"/>
+          <span class="field-label-ko">이모지 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 이미지 없을 때 표시</span></span>
+          <input type="text" id="bnicon-${b.id}" value="${b.emoji}" placeholder="🎁" maxlength="4"
+            oninput="setBn(${b.id},'emoji',this.value);render()"/>
         </div>
         <div class="field">
-          <span class="field-label-ko">혜택 설명 <span class="byte-counter" id="cnt-bndesc-${b.id}">0자/50자</span></span>
-          <textarea rows="2" maxlength="50" id="bndesc-${b.id}" placeholder="구매 상품 무료 반품 배송 지원"
-            oninput="setBn(${b.id},'desc',this.value);updateCharCount(this,'cnt-bndesc-${b.id}',50);render()">${b.desc}</textarea>
+          <span class="field-label-ko">혜택 타이틀 <span class="byte-counter" id="cnt-bnttl-${b.id}">0자/24자</span></span>
+          <input type="text" id="bnttl-${b.id}" value="${b.title}" placeholder="무료 주차 쿠폰"
+            oninput="setBn(${b.id},'title',this.value);updateCharCount(this,'cnt-bnttl-${b.id}',24);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">혜택 내용 <span class="byte-counter">${b.lines.length}줄</span></span>
+          <div class="vcard-list">${buildBnLines(b)}</div>
+          <button class="add-card-btn" style="margin-top:8px" onclick="addBnLine(${b.id})">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            줄 추가
+          </button>
         </div>
       </div>`;
     list.appendChild(card);
   });
   document.getElementById('bn-cnt').textContent = bns.length + '개';
+}
+
+// **굵게** 마크업 처리 + HTML 이스케이프
+function fmtLine(text) {
+  let t = (text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t = t.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  return t;
 }
 
 // ─── 웰컴 혜택 ───────────────────────────────────────────────
@@ -678,7 +772,7 @@ function render() {
   const badge=v('f-badge'), title=v('f-title'), intro=v('f-intro');
   const periodLabel=v('f-period-label'), period=v('f-period'), periodNote=v('f-period-note');
   const targetLabel=v('f-target-label');
-  const secBn=v('f-sec-bn')||'회원 전용 혜택 모아보기';
+  const secBn=v('f-sec-bn')||'회원전용 혜택 모아보기', secBnSub=v('f-sec-bn-sub');
   const secWc=v('f-sec-wc')||'특별한 웰컴 혜택';
   const secSs=v('f-sec-ss')||'시즌 혜택', secSsSub=v('f-sec-ss-sub');
   const secSt=v('f-sec-st')||'가입방법', secStSub=v('f-sec-st-sub');
@@ -725,13 +819,33 @@ function render() {
 
   // 회원 전용 혜택
   if (bns.length > 0) {
-    h += `<div class="o-sec"><div class="o-sec-txt">${secBn}</div></div>`;
+    h += `<div class="o-sec"><div class="o-sec-txt">${secBn}</div>`;
+    if (secBnSub) h += `<div class="o-sec-sub">${secBnSub}</div>`;
+    h += `</div>`;
     h += `<div class="o-benefits">`;
-    bns.forEach(b => {
+    bns.forEach((b, idx) => {
+      const num = String(idx+1).padStart(2,'0');
       h += `<div class="o-bn-card">`;
-      h += `<div class="o-bn-icon">${b.icon||'🎁'}</div>`;
+      h += `<div class="o-bn-iconbox">`;
+      h += b.img ? `<img src="${b.img}"/>` : `<span class="o-bn-icon-emoji">${b.emoji||'🎁'}</span>`;
+      h += `</div>`;
+      h += `<span class="o-bn-pill" style="background:${pillBg}">Benefit ${num}</span>`;
       if (b.title) h += `<div class="o-bn-ttl">${b.title}</div>`;
-      if (b.desc)  h += `<div class="o-bn-desc">${b.desc.replace(/\n/g,'<br>')}</div>`;
+      if (b.lines && b.lines.length) {
+        h += `<div class="o-bn-lines">`;
+        b.lines.forEach(l => {
+          if (!l.text) return;
+          if (l.type==='plus') {
+            h += `<div class="o-bn-plus"><span class="pic">+</span><span>${fmtLine(l.text)}</span></div>`;
+          } else if (l.type==='note') {
+            const txt = l.text.trim().startsWith('·') ? l.text : '· '+l.text;
+            h += `<div class="o-bn-note">${fmtLine(txt)}</div>`;
+          } else {
+            h += `<div class="o-bn-line">${fmtLine(l.text)}</div>`;
+          }
+        });
+        h += `</div>`;
+      }
       h += `</div>`;
     });
     h += `</div>`;
@@ -821,11 +935,11 @@ function collectFormData() {
     periodLabel: v('f-period-label'), period: v('f-period'), periodNote: v('f-period-note'),
     targetLabel: v('f-target-label'),
     targets: tgs.map(t=>({ name:t.name, loc:t.loc })),
-    secBn: v('f-sec-bn'), secWc: v('f-sec-wc'),
+    secBn: v('f-sec-bn'), secBnSub: v('f-sec-bn-sub'), secWc: v('f-sec-wc'),
     secSs: v('f-sec-ss'), secSsSub: v('f-sec-ss-sub'),
     secSt: v('f-sec-st'), secStSub: v('f-sec-st-sub'),
     headerBg: headerBg, notes: v('f-notes'),
-    benefits: bns.map(b=>({ icon:b.icon, title:b.title, desc:b.desc })),
+    benefits: bns.map(b=>({ emoji:b.emoji, title:b.title, lines:b.lines.map(l=>({ type:l.type, text:l.text })) })),
     welcomes: wcs.map(w=>({ icon:w.icon, title:w.title, desc:w.desc })),
     seasons:  sss.map(s=>({ title:s.title, code:s.code, note:s.note })),
     steps:    sts.map(s=>({ desc:s.desc }))
@@ -837,7 +951,7 @@ function restoreFormData(data) {
   set('f-badge', data.badge); set('f-title', data.title); set('f-intro', data.intro);
   set('f-period-label', data.periodLabel); set('f-period', data.period); set('f-period-note', data.periodNote);
   set('f-target-label', data.targetLabel);
-  set('f-sec-bn', data.secBn); set('f-sec-wc', data.secWc);
+  set('f-sec-bn', data.secBn); set('f-sec-bn-sub', data.secBnSub); set('f-sec-wc', data.secWc);
   set('f-sec-ss', data.secSs); set('f-sec-ss-sub', data.secSsSub);
   set('f-sec-st', data.secSt); set('f-sec-st-sub', data.secStSub);
   set('f-notes', data.notes);
@@ -846,7 +960,14 @@ function restoreFormData(data) {
   (data.targets||[]).forEach(t=>{ const id=++tgIdx; tgs.push({id,name:t.name||'',loc:t.loc||''}); });
   rebuildTgs();
   bns=[]; bnIdx=0;
-  (data.benefits||[]).forEach(b=>{ const id=++bnIdx; bns.push({id,icon:b.icon||'🎁',title:b.title||'',desc:b.desc||''}); });
+  (data.benefits||[]).forEach(b=>{
+    const id=++bnIdx;
+    const nb={id,emoji:b.emoji||'🎁',img:null,title:b.title||'',lineIdx:0,lines:[]};
+    // 구버전 호환: desc 단일 필드
+    const lines = b.lines || (b.desc!==undefined ? [{type:'normal',text:b.desc}] : []);
+    (lines.length?lines:[{type:'normal',text:''}]).forEach(l=>{ const lid=++nb.lineIdx; nb.lines.push({lid,type:l.type||'normal',text:l.text||''}); });
+    bns.push(nb);
+  });
   rebuildBns();
   wcs=[]; wcIdx=0;
   (data.welcomes||[]).forEach(w=>{ const id=++wcIdx; wcs.push({id,icon:w.icon||'🎟️',title:w.title||'',desc:w.desc||''}); });
@@ -921,7 +1042,7 @@ function closeExample(e){ if(e&&e.target!==e.currentTarget)return; document.getE
 
 // ─── RESET ───────────────────────────────────────────────────
 function resetAll() {
-  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-wc','f-sec-ss','f-sec-ss-sub','f-sec-st','f-sec-st-sub','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-bn-sub','f-sec-wc','f-sec-ss','f-sec-ss-sub','f-sec-st','f-sec-st-sub','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('f-intro').value = DEFAULT_INTRO;
   tgs=[]; tgIdx=0; rebuildTgs();
   bns=[]; bnIdx=0; rebuildBns();
