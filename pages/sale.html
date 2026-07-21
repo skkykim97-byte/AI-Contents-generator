@@ -114,7 +114,7 @@ input[type=file]{display:none}
 .o-hd-val{flex:1;line-height:1.5;word-break:keep-all;font-weight:500;}
 
 /* SALE 항목 */
-.o-sale{padding:0;}
+.o-sale{padding:0 0 8px;}
 .o-sale-item{padding:28px 0 8px;}
 .o-sale-rate{font-size:30px;font-weight:800;color:#111;letter-spacing:-.5px;padding:0 24px;margin-bottom:20px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-sale-img-wrap{width:100%;line-height:0;margin-bottom:24px;}
@@ -122,7 +122,7 @@ input[type=file]{display:none}
 .o-sale-img-ph{width:390px;height:220px;background:#EDECEA;display:flex;align-items:center;justify-content:center;font-size:12px;color:#C0BFB8;font-weight:300;}
 .o-sale-cat{padding:0 24px;margin-bottom:22px;}
 .o-sale-cat:last-child{margin-bottom:8px;}
-.o-sale-cat-title{font-size:22px;font-weight:700;color:#111;letter-spacing:-.3px;margin-bottom:12px;line-height:1.3;word-break:keep-all;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-sale-cat-title{font-size:22px;font-weight:500;color:#111;letter-spacing:-.3px;margin-bottom:12px;line-height:1.3;word-break:keep-all;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-sale-cat-brands{font-size:14px;font-weight:400;color:#8A8A84;line-height:1.9;white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 .o-sale-divider{height:1px;background:#EDECEA;margin:24px 24px 0;}
 
@@ -623,6 +623,9 @@ function render() {
     h += `<div class="o-notes-ttl">참고사항</div>`;
     h += `<div class="o-notes-txt">${notes.replace(/\n/g,'<br>')}</div>`;
     h += `</div>`;
+  } else {
+    // 참고사항이 없어도 하단이 넉넉해 보이도록 여백 확보
+    h += `<div style="height:56px"></div>`;
   }
 
   document.getElementById('output').innerHTML = h;
