@@ -110,6 +110,7 @@ textarea{resize:vertical;min-height:72px}
 .o-sec-sub{font-size:13px;font-weight:400;color:#8A93A6;margin-top:10px;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 
 /* 회원 전용 혜택 그리드 */
+.o-benefit-band{background:#fff;padding-bottom:36px;}
 .o-benefits{padding:22px 20px 8px;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch;}
 .o-bn-card{background:#F4F6F9;border:1px solid #E7EBF1;border-radius:20px;padding:24px 14px 28px;text-align:center;display:flex;flex-direction:column;align-items:center;}
 .o-bn-iconbox{height:132px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;}
@@ -541,7 +542,7 @@ function rebuildTgs() {
 let bns = [], bnIdx = 0;
 function addBenefit() {
   const id=++bnIdx;
-  const b={id,emoji:'🎁',img:null,title:'',lineIdx:0,lines:[]};
+  const b={id,img:null,title:'',lineIdx:0,lines:[]};
   const lid=++b.lineIdx; b.lines.push({lid,type:'normal',text:''});
   bns.push(b); rebuildBns(); render();
 }
@@ -564,7 +565,7 @@ function loadBnIcon(input, id) {
 function clearBnIcon(id) {
   const b=bns.find(b=>b.id===id); if(b) b.img=null;
   const zone=document.getElementById('zone-bnimg'+id);
-  zone.innerHTML=`<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">아이콘 이미지 업로드</div><div class="upl-sub">미등록 시 이모지 사용</div></div>`;
+  zone.innerHTML=`<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">아이콘 이미지 업로드</div><div class="upl-sub">미등록 시 표시 안 함</div></div>`;
   zone.onclick=()=>document.getElementById('file-bnimg'+id).click();
   render();
 }
@@ -619,18 +620,13 @@ function rebuildBns() {
       </div>
       <div class="vcard-body">
         <div class="field">
-          <span class="field-label-ko">아이콘 이미지 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택 · 미등록 시 이모지</span></span>
+          <span class="field-label-ko">아이콘 이미지 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
           <div class="uploader" id="zone-bnimg${b.id}" onclick="document.getElementById('file-bnimg${b.id}').click()">
             ${b.img
               ? `<div class="upl-filled"><img src="${b.img}" style="max-height:100px;object-fit:contain;"/><button class="upl-remove" onclick="clearBnIcon(${b.id});event.stopPropagation()">✕</button></div>`
-              : `<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">아이콘 이미지 업로드</div><div class="upl-sub">미등록 시 이모지 사용</div></div>`}
+              : `<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">아이콘 이미지 업로드</div><div class="upl-sub">미등록 시 표시 안 함</div></div>`}
           </div>
           <input type="file" id="file-bnimg${b.id}" accept="image/*" onchange="loadBnIcon(this,${b.id})"/>
-        </div>
-        <div class="field">
-          <span class="field-label-ko">이모지 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 이미지 없을 때 표시</span></span>
-          <input type="text" id="bnicon-${b.id}" value="${b.emoji}" placeholder="🎁" maxlength="4"
-            oninput="setBn(${b.id},'emoji',this.value);render()"/>
         </div>
         <div class="field">
           <span class="field-label-ko">혜택 타이틀 <span class="byte-counter" id="cnt-bnttl-${b.id}">0자/24자</span></span>
@@ -819,6 +815,7 @@ function render() {
 
   // 회원 전용 혜택
   if (bns.length > 0) {
+    h += `<div class="o-benefit-band">`;
     h += `<div class="o-sec"><div class="o-sec-txt">${secBn}</div>`;
     if (secBnSub) h += `<div class="o-sec-sub">${secBnSub}</div>`;
     h += `</div>`;
@@ -826,9 +823,7 @@ function render() {
     bns.forEach((b, idx) => {
       const num = String(idx+1).padStart(2,'0');
       h += `<div class="o-bn-card">`;
-      h += `<div class="o-bn-iconbox">`;
-      h += b.img ? `<img src="${b.img}"/>` : `<span class="o-bn-icon-emoji">${b.emoji||'🎁'}</span>`;
-      h += `</div>`;
+      if (b.img) h += `<div class="o-bn-iconbox"><img src="${b.img}"/></div>`;
       h += `<span class="o-bn-pill" style="background:${pillBg}">Benefit ${num}</span>`;
       if (b.title) h += `<div class="o-bn-ttl">${b.title}</div>`;
       if (b.lines && b.lines.length) {
@@ -848,6 +843,7 @@ function render() {
       }
       h += `</div>`;
     });
+    h += `</div>`;
     h += `</div>`;
   }
 
@@ -939,7 +935,7 @@ function collectFormData() {
     secSs: v('f-sec-ss'), secSsSub: v('f-sec-ss-sub'),
     secSt: v('f-sec-st'), secStSub: v('f-sec-st-sub'),
     headerBg: headerBg, notes: v('f-notes'),
-    benefits: bns.map(b=>({ emoji:b.emoji, title:b.title, lines:b.lines.map(l=>({ type:l.type, text:l.text })) })),
+    benefits: bns.map(b=>({ title:b.title, lines:b.lines.map(l=>({ type:l.type, text:l.text })) })),
     welcomes: wcs.map(w=>({ icon:w.icon, title:w.title, desc:w.desc })),
     seasons:  sss.map(s=>({ title:s.title, code:s.code, note:s.note })),
     steps:    sts.map(s=>({ desc:s.desc }))
@@ -962,7 +958,7 @@ function restoreFormData(data) {
   bns=[]; bnIdx=0;
   (data.benefits||[]).forEach(b=>{
     const id=++bnIdx;
-    const nb={id,emoji:b.emoji||'🎁',img:null,title:b.title||'',lineIdx:0,lines:[]};
+    const nb={id,img:null,title:b.title||'',lineIdx:0,lines:[]};
     // 구버전 호환: desc 단일 필드
     const lines = b.lines || (b.desc!==undefined ? [{type:'normal',text:b.desc}] : []);
     (lines.length?lines:[{type:'normal',text:''}]).forEach(l=>{ const lid=++nb.lineIdx; nb.lines.push({lid,type:l.type||'normal',text:l.text||''}); });
