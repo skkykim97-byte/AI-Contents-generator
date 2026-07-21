@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>롯백클럽 페이지 생성기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../static/css/fonts.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#4E5FE0;
+  --accent-bg:#EEF1FF;
+  --page:#F2F1EC;
+  --white:#FFFFFF;
+  --border:#DDDBD3;
+  --border-md:#C9C7BF;
+  --tx-dark:#181816;
+  --tx-mid:#6B6B66;
+  --tx-light:#AEADA7;
+  --tx-hint:#C8C7C0;
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:14px;
+  --fn:'MaisonNeue','Noto Sans KR',sans-serif;
+  --form-w:420px;
+}
+body{font-family:var(--fn);background:var(--page);color:var(--tx-dark);font-size:14px;height:100vh;overflow:hidden;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
+
+/* TOPBAR */
+.topbar{height:54px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:14px;flex-shrink:0;z-index:100;}
+.tb-logo{display:flex;align-items:center;gap:10px}
+.tb-badge{font-size:10px;font-weight:700;letter-spacing:.6px;padding:4px 9px;border-radius:5px;background:#4E5FE0;color:#fff;text-transform:uppercase;}
+.tb-name{font-size:14px;font-weight:700;color:var(--tx-dark);letter-spacing:-.3px}
+.tb-desc{font-size:12px;color:var(--tx-light);flex:1;letter-spacing:-.1px}
+.tb-divider{width:1px;height:22px;background:var(--border)}
+.tb-btn{height:34px;padding:0 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;font-family:var(--fn);cursor:pointer;border:none;display:flex;align-items:center;gap:6px;transition:all .15s;letter-spacing:-.1px;}
+.tb-btn-ghost{background:transparent;border:1px solid var(--border);color:var(--tx-mid)}
+.tb-btn-ghost:hover{border-color:var(--border-md);color:var(--tx-dark);background:#FAFAF7}
+.tb-btn-fill{background:var(--tx-dark);color:#fff}
+.tb-btn-fill:hover{background:#2A2A28}
+.tb-btn-fill:disabled{background:#C0BFB8;cursor:not-allowed}
+
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden}
+
+/* FORM PANEL */
+.form-panel{width:var(--form-w);min-width:var(--form-w);background:var(--page);border-right:1px solid var(--border);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.form-panel::-webkit-scrollbar{width:4px}
+.form-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.form-body{padding:20px;display:flex;flex-direction:column;gap:6px}
+
+/* 섹션 카드 */
+.sec{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;}
+.sec-header{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:var(--white);}
+.sec-num{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.sec-title{flex:1;font-size:13px;font-weight:700;color:var(--tx-dark);letter-spacing:-.2px}
+.sec-tag{font-size:10px;font-weight:700;color:var(--tx-light);background:var(--page);border:1px solid var(--border);padding:3px 8px;border-radius:20px;letter-spacing:.2px;}
+.sec-body{padding:18px;display:flex;flex-direction:column;gap:14px}
+
+/* 폼 필드 */
+.field{display:flex;flex-direction:column;gap:6px}
+.field-label-ko{font-size:12px;font-weight:500;color:var(--tx-mid);display:flex;align-items:center;justify-content:space-between;}
+.byte-counter{font-size:11px;font-weight:400;color:var(--tx-hint);margin-left:auto;}
+.byte-counter.over{color:#E03030;font-weight:600;}
+
+input[type=text],textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--fn);font-weight:400;color:var(--tx-dark);background:#fff;outline:none;transition:border-color .15s,box-shadow .15s;line-height:1.6;letter-spacing:-.1px;}
+input[type=text]:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(78,95,224,.10);}
+input::placeholder,textarea::placeholder{color:var(--tx-hint);font-weight:300}
+textarea{resize:vertical;min-height:72px}
+
+/* 가변 카드 */
+.vcard-list{display:flex;flex-direction:column;gap:8px}
+.vcard{background:var(--page);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;}
+.vcard-head{padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:#FAFAF7;}
+.vcard-label{font-size:11px;font-weight:700;letter-spacing:.3px;padding:3px 9px;border-radius:20px;flex:1;}
+.vcard-del{width:26px;height:26px;border-radius:6px;background:transparent;border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tx-light);font-size:11px;font-weight:700;transition:all .12s;line-height:1;}
+.vcard-del:hover{border-color:#E55;color:#E55;background:#FFF2F2}
+.vcard-body{padding:14px;display:flex;flex-direction:column;gap:11px}
+.add-card-btn{width:100%;padding:10px;border:1.5px dashed var(--border);border-radius:var(--radius-md);background:transparent;cursor:pointer;font-size:12px;font-weight:700;color:var(--tx-light);font-family:var(--fn);transition:all .15s;letter-spacing:-.1px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.add-card-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+
+/* PREVIEW PANEL */
+.preview-panel{flex:1;overflow-y:auto;background:#B8B6AD;display:flex;flex-direction:column;align-items:center;padding:32px 24px 48px;gap:0;}
+.preview-chip{font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:16px;font-family:var(--fn);}
+.preview-frame{width:390px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 24px 80px rgba(0,0,0,.22),0 8px 24px rgba(0,0,0,.12);border-radius:2px;}
+
+/* OUTPUT */
+#output{width:390px;background:#EEF1F8;font-family:'MaisonNeue','Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;word-break:break-all;overflow-wrap:break-word;}
+
+/* 헤더 */
+.o-hd{padding:24px 20px;}
+.o-hd-card{border-radius:18px;padding:28px 24px;position:relative;}
+.o-hd-badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:-.2px;padding:5px 14px;border-radius:20px;background:rgba(255,255,255,0.22);color:#fff;margin-bottom:14px;font-family:'Noto Sans KR',sans-serif;}
+.o-hd-title{font-size:22px;font-weight:700;letter-spacing:-.5px;line-height:1.4;color:#fff;word-break:keep-all;margin-bottom:12px;font-family:'Noto Sans KR',sans-serif;}
+.o-hd-intro{font-size:13px;font-weight:300;line-height:1.85;color:rgba(255,255,255,0.92);white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+
+/* 공통 섹션 타이틀 (가운데) */
+.o-sec{padding:30px 20px 4px;text-align:center;}
+.o-sec-txt{font-size:19px;font-weight:700;color:#1D2433;letter-spacing:-.4px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-sec-sub{font-size:12px;font-weight:300;color:#7A8194;margin-top:8px;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+
+/* 회원 전용 혜택 그리드 */
+.o-benefits{padding:16px 20px 8px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.o-bn-card{background:#fff;border-radius:14px;padding:18px 14px;text-align:center;box-shadow:0 2px 8px rgba(29,36,51,.05);}
+.o-bn-icon{font-size:30px;line-height:1;margin-bottom:10px;}
+.o-bn-ttl{font-size:14px;font-weight:700;color:#1D2433;letter-spacing:-.3px;margin-bottom:6px;line-height:1.35;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-bn-desc{font-size:11.5px;font-weight:300;color:#7A8194;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+
+/* 웰컴 혜택 밴드 */
+.o-welcome{margin:16px 20px 8px;background:#fff;border-radius:16px;padding:8px 4px;box-shadow:0 2px 8px rgba(29,36,51,.05);}
+.o-wc-row{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid #EEF1F5;}
+.o-wc-row:last-child{border-bottom:none;}
+.o-wc-icon{width:40px;height:40px;border-radius:11px;background:var(--wc-tint,#EEF1FF);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.o-wc-info{flex:1;min-width:0;}
+.o-wc-ttl{font-size:14px;font-weight:700;color:#1D2433;letter-spacing:-.3px;margin-bottom:3px;line-height:1.35;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-wc-desc{font-size:12px;font-weight:300;color:#7A8194;line-height:1.55;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+
+/* 시즌 혜택 쿠폰 */
+.o-season{padding:16px 20px 8px;display:flex;flex-direction:column;gap:12px;}
+.o-cp{background:#fff;border:1.5px dashed #C3CBE8;border-radius:14px;padding:20px 18px;text-align:center;}
+.o-cp-ttl{font-size:16px;font-weight:700;color:var(--accent);letter-spacing:-.3px;margin-bottom:10px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-cp-code{display:inline-block;font-size:14px;font-weight:700;font-family:monospace;letter-spacing:1px;color:#1D2433;background:#EEF1FF;padding:8px 18px;border-radius:8px;margin-bottom:10px;}
+.o-cp-note{font-size:11px;font-weight:300;color:#9AA0AE;line-height:1.6;white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+
+/* 가입방법 스텝 */
+.o-join{padding:16px 20px 8px;display:flex;flex-direction:column;gap:10px;}
+.o-step{display:flex;align-items:flex-start;gap:14px;background:#fff;border-radius:14px;padding:16px 18px;box-shadow:0 2px 8px rgba(29,36,51,.05);}
+.o-step-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-step-desc{flex:1;font-size:13px;font-weight:400;color:#1D2433;line-height:1.6;white-space:pre-wrap;word-break:keep-all;padding-top:3px;font-family:'Noto Sans KR',sans-serif;}
+
+/* 유의사항 */
+.o-notes{padding:22px 24px 34px;margin-top:16px;background:#E4E8F0;}
+.o-notes-ttl{font-size:14px;font-weight:700;color:#5A6172;letter-spacing:-.2px;margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+.o-notes-txt{font-size:11.5px;font-weight:300;color:#8A90A0;line-height:1.85;white-space:pre-wrap;word-break:keep-all;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#18181A;color:#fff;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:500;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20000;white-space:nowrap;font-family:var(--fn);box-shadow:0 4px 20px rgba(0,0,0,.25);}
+.toast.show{opacity:1}
+
+/* EXAMPLE MODAL */
+.ex-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000;align-items:flex-start;justify-content:center;backdrop-filter:blur(3px);padding:32px 24px;}
+.ex-modal-overlay.show{display:flex}
+.ex-modal{background:#fff;border-radius:16px;width:440px;max-width:100%;max-height:calc(100vh - 64px);display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.35);animation:modalIn .2s ease;overflow:hidden;}
+.ex-modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.ex-modal-title{font-size:13px;font-weight:700;color:var(--tx-dark);letter-spacing:-.1px;}
+.ex-modal-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--tx-mid);transition:all .15s;font-family:var(--fn);}
+.ex-modal-close:hover{background:var(--page);color:var(--tx-dark);}
+.ex-modal-body{overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.ex-modal-body::-webkit-scrollbar{width:4px}
+.ex-modal-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.ex-modal-img{width:100%;display:block;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.1);}
+
+/* LOAD BAR */
+.load-bar{display:flex;gap:8px;align-items:center;padding:14px 16px;background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);}
+.load-bar input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--fn);font-weight:500;color:var(--tx-dark);letter-spacing:.5px;outline:none;transition:border-color .15s;}
+.load-bar input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(78,95,224,.10);}
+.load-bar input::placeholder{color:var(--tx-hint);font-weight:300}
+.load-bar button{height:38px;padding:0 18px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;font-family:var(--fn);cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--tx-mid);transition:all .15s;white-space:nowrap;}
+.load-bar button:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+.load-bar button:disabled{opacity:.5;cursor:not-allowed;}
+
+/* SAVE MODAL */
+.save-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10000;align-items:center;justify-content:center;backdrop-filter:blur(2px);}
+.save-modal-overlay.show{display:flex}
+.save-modal{background:#fff;border-radius:16px;padding:36px 32px 28px;width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:modalIn .2s ease;}
+@keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.save-modal-icon{font-size:36px;margin-bottom:12px;color:#2A8847;}
+.save-modal-title{font-size:18px;font-weight:700;color:var(--tx-dark);margin-bottom:16px;}
+.save-modal-code{font-size:22px;font-weight:700;font-family:monospace;letter-spacing:2px;color:var(--accent);background:var(--accent-bg);padding:12px 20px;border-radius:10px;margin-bottom:16px;user-select:all;}
+.save-modal-msg{font-size:12px;color:var(--tx-mid);line-height:1.7;margin-bottom:20px;}
+.save-modal-copy{width:100%;padding:11px;border:none;border-radius:var(--radius-sm);background:var(--tx-dark);color:#fff;font-size:13px;font-weight:700;font-family:var(--fn);cursor:pointer;margin-bottom:8px;transition:background .15s;}
+.save-modal-copy:hover{background:#2A2A28}
+.save-modal-close{width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--tx-mid);font-size:12px;font-weight:500;font-family:var(--fn);cursor:pointer;transition:all .15s;}
+.save-modal-close:hover{background:var(--page)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html" class="tb-btn tb-btn-ghost" style="text-decoration:none;margin-right:4px">← 홈</a>
+  <div class="tb-divider"></div>
+  <div class="tb-logo">
+    <span class="tb-badge">CLUB</span>
+    <span class="tb-name">롯백클럽 페이지 생성기</span>
+  </div>
+  <div class="tb-divider"></div>
+  <span class="tb-desc">JPG 내보내기</span>
+  <button class="tb-btn tb-btn-ghost" onclick="openExample()">예시</button>
+  <button class="tb-btn tb-btn-ghost" onclick="resetAll()">초기화</button>
+  <button class="tb-btn tb-btn-ghost" id="tmpbtn" onclick="doTempSave()">임시저장</button>
+  <button class="tb-btn tb-btn-fill" id="expbtn" onclick="doExport()">
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+      <path d="M7 1v8M3.5 5.5L7 9l3.5-3.5M1 11.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    JPG 내보내기
+  </button>
+</div>
+
+<!-- MAIN -->
+<div class="layout">
+
+  <!-- FORM -->
+  <div class="form-panel">
+    <div class="form-body">
+
+      <!-- Load -->
+      <div class="load-bar">
+        <input type="text" id="load-code" placeholder="CLUB-XXXXXX" maxlength="11"/>
+        <button id="load-btn" onclick="doLoad()">불러오기</button>
+      </div>
+
+      <!-- 1. 헤더 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#EEF1FF;color:#4E5FE0">1</div>
+          <span class="sec-title">헤더</span>
+        </div>
+        <div class="sec-body">
+          <div class="field">
+            <span class="field-label-ko">뱃지 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span><span class="byte-counter" id="cnt-badge">0자/16자</span></span>
+            <input type="text" id="f-badge" placeholder="롯백클럽?" oninput="updateCharCount(this,'cnt-badge',16);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">타이틀 <span class="byte-counter" id="cnt-title">0자/40자</span></span>
+            <input type="text" id="f-title" placeholder="상무님만의 혜택 준비!" oninput="updateCharCount(this,'cnt-title',40);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">소개 문구 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
+            <textarea id="f-intro" rows="4" placeholder="롯백클럽 회원이 되시면&#10;다양한 혜택을 누리실 수 있습니다." oninput="render()"></textarea>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">헤더 배경색</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap" id="swatch-row"></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--page);border-radius:var(--radius-sm);border:1.5px solid var(--border);cursor:pointer;" onclick="document.getElementById('cpicker').click()">
+              <div id="cdot-preview" style="width:22px;height:22px;border-radius:6px;background:#4E5FE0;border:1px solid rgba(0,0,0,.08);flex-shrink:0;"></div>
+              <span id="chex" style="font-size:12px;font-family:monospace;font-weight:500;color:var(--tx-mid);flex:1;letter-spacing:.5px;">#4E5FE0</span>
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="color:var(--tx-hint)"><path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              <input type="color" id="cpicker" value="#4E5FE0" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none" oninput="applyColor(this.value,'','')"/>
+            </div>
+            <span style="font-size:11px;color:var(--tx-hint);font-weight:300">헤더는 선택한 색상의 그라데이션으로 표현됩니다.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 회원 전용 혜택 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#EEF1FF;color:#4E5FE0">2</div>
+          <span class="sec-title">회원 전용 혜택</span>
+          <span class="sec-tag" id="bn-cnt">0개</span>
+        </div>
+        <div class="sec-body">
+          <div class="field">
+            <span class="field-label-ko">섹션 타이틀 <span class="byte-counter" id="cnt-sec-bn">0자/24자</span></span>
+            <input type="text" id="f-sec-bn" placeholder="회원 전용 혜택 모아보기" oninput="updateCharCount(this,'cnt-sec-bn',24);render()"/>
+          </div>
+          <div class="vcard-list" id="bn-list"></div>
+          <button class="add-card-btn" onclick="addBenefit()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            혜택 추가
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. 웰컴 혜택 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#EEF1FF;color:#4E5FE0">3</div>
+          <span class="sec-title">웰컴 혜택</span>
+          <span class="sec-tag" id="wc-cnt">0개</span>
+        </div>
+        <div class="sec-body">
+          <div class="field">
+            <span class="field-label-ko">섹션 타이틀 <span class="byte-counter" id="cnt-sec-wc">0자/30자</span></span>
+            <input type="text" id="f-sec-wc" placeholder="가입 후 제공되는 특별한 웰컴 혜택" oninput="updateCharCount(this,'cnt-sec-wc',30);render()"/>
+          </div>
+          <div class="vcard-list" id="wc-list"></div>
+          <button class="add-card-btn" onclick="addWelcome()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            웰컴 혜택 추가
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. 시즌 혜택 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#EEF1FF;color:#4E5FE0">4</div>
+          <span class="sec-title">시즌 혜택</span>
+          <span class="sec-tag" id="ss-cnt">0개</span>
+        </div>
+        <div class="sec-body">
+          <div class="field">
+            <span class="field-label-ko">섹션 타이틀 <span class="byte-counter" id="cnt-sec-ss">0자/30자</span></span>
+            <input type="text" id="f-sec-ss" placeholder="최대 10%까지 즉시받는 시즌 혜택" oninput="updateCharCount(this,'cnt-sec-ss',30);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">섹션 설명 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
+            <input type="text" id="f-sec-ss-sub" placeholder="시즌마다 제공되는 상품권 혜택을 확인하세요" oninput="render()"/>
+          </div>
+          <div class="vcard-list" id="ss-list"></div>
+          <button class="add-card-btn" onclick="addSeason()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            시즌 혜택 추가
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. 가입방법 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#EEF1FF;color:#4E5FE0">5</div>
+          <span class="sec-title">가입방법</span>
+          <span class="sec-tag" id="st-cnt">0개</span>
+        </div>
+        <div class="sec-body">
+          <div class="field">
+            <span class="field-label-ko">섹션 타이틀 <span class="byte-counter" id="cnt-sec-st">0자/24자</span></span>
+            <input type="text" id="f-sec-st" placeholder="가입방법" oninput="updateCharCount(this,'cnt-sec-st',24);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">섹션 설명 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
+            <input type="text" id="f-sec-st-sub" placeholder="아래 순서대로 간편하게 가입하세요" oninput="render()"/>
+          </div>
+          <div class="vcard-list" id="st-list"></div>
+          <button class="add-card-btn" onclick="addStep()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            단계 추가
+          </button>
+        </div>
+      </div>
+
+      <!-- 6. 참고사항 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#F2F1EC;color:#888">6</div>
+          <span class="sec-title">유의사항</span>
+          <span class="sec-tag">선택</span>
+        </div>
+        <div class="sec-body">
+          <textarea id="f-notes" rows="5"
+            placeholder="· 본 혜택은 롯백클럽 회원에 한해 제공됩니다&#10;· 혜택 내용은 사전 예고 없이 변경될 수 있습니다"
+            oninput="render()"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-panel">
+    <div class="preview-chip">Preview · 390px</div>
+    <div class="preview-frame">
+      <div id="output"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 저장 완료 팝업 -->
+<div class="save-modal-overlay" id="save-modal" onclick="closeSaveModal(event)">
+  <div class="save-modal">
+    <div class="save-modal-icon">✓</div>
+    <div class="save-modal-title">저장 완료</div>
+    <div class="save-modal-code" id="save-modal-code">CLUB-XXXXXX</div>
+    <div class="save-modal-msg">콘텐츠 수정시 해당 코드를 활용해<br>콘텐츠 불러오기할 수 있습니다.<br>코드를 별도로 보관해주세요.</div>
+    <button class="save-modal-copy" onclick="copySaveCode()">코드 복사</button>
+    <button class="save-modal-close" onclick="closeSaveModal()">닫기</button>
+  </div>
+</div>
+
+<!-- 예시 이미지 팝업 -->
+<div class="ex-modal-overlay" id="ex-modal" onclick="closeExample(event)">
+  <div class="ex-modal">
+    <div class="ex-modal-header">
+      <span class="ex-modal-title">✦ 예시 이미지</span>
+      <button class="ex-modal-close" onclick="closeExample()">✕</button>
+    </div>
+    <div class="ex-modal-body">
+      <img src="../examples/ex_club.jpg" alt="예시 이미지" class="ex-modal-img"/>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+
+// ─── APPS SCRIPT ─────────────────────────────────────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZnJ_SrTV6YGFZNadBjghIiQwepHgDGRdwDNW__VdPLm1oywONwX9KGsPPJErCqKLYvQ/exec';
+
+// ─── COLOR ───────────────────────────────────────────────────
+const PRESETS = [
+  { h:'#4E5FE0', n:'블루' },
+  { h:'#5B6EE1', n:'퍼플블루' },
+  { h:'#1b2664', n:'네이비' },
+  { h:'#6f4898', n:'퍼플' },
+  { h:'#2E8B8B', n:'틸' },
+  { h:'#4d6c46', n:'그린' },
+  { h:'#E60012', n:'레드' },
+  { h:'#000000', n:'블랙' },
+];
+
+let headerBg = '#4E5FE0';
+
+function getLuminance(hex) {
+  const r=parseInt(hex.slice(1,3),16)/255, g=parseInt(hex.slice(3,5),16)/255, b=parseInt(hex.slice(5,7),16)/255;
+  return 0.299*r+0.587*g+0.114*b;
+}
+
+function shade(hex, amt) {
+  let r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  r=Math.max(0,Math.min(255,Math.round(r+255*amt)));
+  g=Math.max(0,Math.min(255,Math.round(g+255*amt)));
+  b=Math.max(0,Math.min(255,Math.round(b+255*amt)));
+  const toHex=x=>x.toString(16).padStart(2,'0');
+  return '#'+toHex(r)+toHex(g)+toHex(b);
+}
+
+function headerGradient(hex) {
+  return `linear-gradient(150deg, ${shade(hex,0.14)} 0%, ${hex} 60%, ${shade(hex,-0.10)} 100%)`;
+}
+
+function applyColor(hex, idx, name) {
+  headerBg = hex;
+  const dot = document.getElementById('cdot-preview');
+  if (dot) { dot.style.background = hex; dot.style.border = getLuminance(hex)>0.85?'1.5px solid #DDD':'1px solid rgba(0,0,0,.06)'; }
+  const hexEl = document.getElementById('chex'); if (hexEl) hexEl.textContent = hex.toUpperCase();
+  const picker = document.getElementById('cpicker'); if (picker) picker.value = hex;
+  document.querySelectorAll('.cswatch').forEach(s=>s.classList.remove('active'));
+  if (idx !== '') { const sw=document.getElementById('sw-'+idx); if(sw) sw.classList.add('active'); }
+  render();
+}
+
+function buildSwatches() {
+  const row = document.getElementById('swatch-row');
+  PRESETS.forEach((p,i) => {
+    const lum = getLuminance(p.h);
+    const d = document.createElement('div');
+    d.className = 'cswatch' + (i===0?' active':'');
+    d.id = 'sw-'+i;
+    d.style.cssText = `width:32px;height:32px;border-radius:8px;cursor:pointer;position:relative;transition:transform .12s;flex-shrink:0;background:${p.h};${lum>0.85?'border:1.5px solid var(--border)':''}`;
+    d.title = p.n;
+    d.onclick = () => applyColor(p.h, i, p.n);
+    row.appendChild(d);
+  });
+  const style = document.createElement('style');
+  style.textContent = `.cswatch.active::after{content:'';position:absolute;inset:-3px;border-radius:11px;border:2px solid var(--tx-dark);}`;
+  document.head.appendChild(style);
+  applyColor('#4E5FE0', 0, '블루');
+}
+
+// ─── 회원 전용 혜택 ──────────────────────────────────────────
+let bns = [], bnIdx = 0;
+function addBenefit() { const id=++bnIdx; bns.push({id,icon:'🎁',title:'',desc:''}); rebuildBns(); render(); }
+function delBn(id) { bns=bns.filter(b=>b.id!==id); rebuildBns(); render(); }
+function setBn(id,key,val){ const b=bns.find(b=>b.id===id); if(b) b[key]=val; }
+
+function rebuildBns() {
+  const list = document.getElementById('bn-list');
+  list.innerHTML = '';
+  bns.forEach((b, idx) => {
+    const card = document.createElement('div');
+    card.className = 'vcard';
+    card.innerHTML = `
+      <div class="vcard-head">
+        <span class="vcard-label" style="background:#EEF1FF;color:#4E5FE0">혜택 ${idx+1}</span>
+        <button class="vcard-del" onclick="delBn(${b.id})">✕</button>
+      </div>
+      <div class="vcard-body">
+        <div class="field">
+          <span class="field-label-ko">아이콘 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 이모지</span></span>
+          <input type="text" id="bnicon-${b.id}" value="${b.icon}" placeholder="🎁" maxlength="4"
+            oninput="setBn(${b.id},'icon',this.value);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">혜택 타이틀 <span class="byte-counter" id="cnt-bnttl-${b.id}">0자/20자</span></span>
+          <input type="text" id="bnttl-${b.id}" value="${b.title}" placeholder="무료 반품 배송"
+            oninput="setBn(${b.id},'title',this.value);updateCharCount(this,'cnt-bnttl-${b.id}',20);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">혜택 설명 <span class="byte-counter" id="cnt-bndesc-${b.id}">0자/50자</span></span>
+          <textarea rows="2" maxlength="50" id="bndesc-${b.id}" placeholder="구매 상품 무료 반품 배송 지원"
+            oninput="setBn(${b.id},'desc',this.value);updateCharCount(this,'cnt-bndesc-${b.id}',50);render()">${b.desc}</textarea>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+  document.getElementById('bn-cnt').textContent = bns.length + '개';
+}
+
+// ─── 웰컴 혜택 ───────────────────────────────────────────────
+let wcs = [], wcIdx = 0;
+function addWelcome() { const id=++wcIdx; wcs.push({id,icon:'🎟️',title:'',desc:''}); rebuildWcs(); render(); }
+function delWc(id) { wcs=wcs.filter(w=>w.id!==id); rebuildWcs(); render(); }
+function setWc(id,key,val){ const w=wcs.find(w=>w.id===id); if(w) w[key]=val; }
+
+function rebuildWcs() {
+  const list = document.getElementById('wc-list');
+  list.innerHTML = '';
+  wcs.forEach((w, idx) => {
+    const card = document.createElement('div');
+    card.className = 'vcard';
+    card.innerHTML = `
+      <div class="vcard-head">
+        <span class="vcard-label" style="background:#EEF1FF;color:#4E5FE0">웰컴 ${idx+1}</span>
+        <button class="vcard-del" onclick="delWc(${w.id})">✕</button>
+      </div>
+      <div class="vcard-body">
+        <div class="field">
+          <span class="field-label-ko">아이콘 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 이모지</span></span>
+          <input type="text" id="wcicon-${w.id}" value="${w.icon}" placeholder="🎟️" maxlength="4"
+            oninput="setWc(${w.id},'icon',this.value);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">타이틀 <span class="byte-counter" id="cnt-wcttl-${w.id}">0자/20자</span></span>
+          <input type="text" id="wcttl-${w.id}" value="${w.title}" placeholder="쿠폰 주머니 증정"
+            oninput="setWc(${w.id},'title',this.value);updateCharCount(this,'cnt-wcttl-${w.id}',20);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">설명 <span class="byte-counter" id="cnt-wcdesc-${w.id}">0자/50자</span></span>
+          <textarea rows="2" maxlength="50" id="wcdesc-${w.id}" placeholder="가입 즉시 사용 가능한 할인 쿠폰"
+            oninput="setWc(${w.id},'desc',this.value);updateCharCount(this,'cnt-wcdesc-${w.id}',50);render()">${w.desc}</textarea>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+  document.getElementById('wc-cnt').textContent = wcs.length + '개';
+}
+
+// ─── 시즌 혜택 (쿠폰) ────────────────────────────────────────
+let sss = [], ssIdx = 0;
+function addSeason() { const id=++ssIdx; sss.push({id,title:'',code:'',note:''}); rebuildSss(); render(); }
+function delSs(id) { sss=sss.filter(s=>s.id!==id); rebuildSss(); render(); }
+function setSs(id,key,val){ const s=sss.find(s=>s.id===id); if(s) s[key]=val; }
+
+function rebuildSss() {
+  const list = document.getElementById('ss-list');
+  list.innerHTML = '';
+  sss.forEach((s, idx) => {
+    const card = document.createElement('div');
+    card.className = 'vcard';
+    card.innerHTML = `
+      <div class="vcard-head">
+        <span class="vcard-label" style="background:#EEF1FF;color:#4E5FE0">시즌 ${idx+1}</span>
+        <button class="vcard-del" onclick="delSs(${s.id})">✕</button>
+      </div>
+      <div class="vcard-body">
+        <div class="field">
+          <span class="field-label-ko">타이틀 <span class="byte-counter" id="cnt-ssttl-${s.id}">0자/30자</span></span>
+          <input type="text" id="ssttl-${s.id}" value="${s.title}" placeholder="5만원 상품권 증정"
+            oninput="setSs(${s.id},'title',this.value);updateCharCount(this,'cnt-ssttl-${s.id}',30);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">코드 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span><span class="byte-counter" id="cnt-sscode-${s.id}">0자/20자</span></span>
+          <input type="text" id="sscode-${s.id}" value="${s.code}" placeholder="CLUB-2025"
+            oninput="setSs(${s.id},'code',this.value);updateCharCount(this,'cnt-sscode-${s.id}',20);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">유의사항 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
+          <textarea rows="2" id="ssnote-${s.id}" placeholder="· 일부 품목 제외&#10;· 기간 내 1회 사용 가능"
+            oninput="setSs(${s.id},'note',this.value);render()">${s.note}</textarea>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+  document.getElementById('ss-cnt').textContent = sss.length + '개';
+}
+
+// ─── 가입방법 (스텝) ─────────────────────────────────────────
+let sts = [], stIdx = 0;
+function addStep() { const id=++stIdx; sts.push({id,desc:''}); rebuildSts(); render(); }
+function delSt(id) { sts=sts.filter(s=>s.id!==id); rebuildSts(); render(); }
+function setSt(id,val){ const s=sts.find(s=>s.id===id); if(s) s.desc=val; }
+
+function rebuildSts() {
+  const list = document.getElementById('st-list');
+  list.innerHTML = '';
+  sts.forEach((s, idx) => {
+    const card = document.createElement('div');
+    card.className = 'vcard';
+    card.innerHTML = `
+      <div class="vcard-head">
+        <span class="vcard-label" style="background:#EEF1FF;color:#4E5FE0">STEP ${idx+1}</span>
+        <button class="vcard-del" onclick="delSt(${s.id})">✕</button>
+      </div>
+      <div class="vcard-body">
+        <div class="field">
+          <span class="field-label-ko">단계 설명</span>
+          <textarea rows="2" id="stdesc-${s.id}" placeholder="앱 하단 [클럽] 메뉴에서 가입하기 선택"
+            oninput="setSt(${s.id},this.value);render()">${s.desc}</textarea>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+  document.getElementById('st-cnt').textContent = sts.length + '개';
+}
+
+// ─── RENDER ──────────────────────────────────────────────────
+function v(id) { const el=document.getElementById(id); return el?el.value.trim():''; }
+
+function render() {
+  const badge=v('f-badge'), title=v('f-title'), intro=v('f-intro');
+  const secBn=v('f-sec-bn')||'회원 전용 혜택 모아보기';
+  const secWc=v('f-sec-wc')||'특별한 웰컴 혜택';
+  const secSs=v('f-sec-ss')||'시즌 혜택', secSsSub=v('f-sec-ss-sub');
+  const secSt=v('f-sec-st')||'가입방법', secStSub=v('f-sec-st-sub');
+  const notes=v('f-notes');
+  const tint = shade(headerBg, 0.36);
+
+  let h = '';
+
+  // 헤더
+  h += `<div class="o-hd"><div class="o-hd-card" style="background:${headerGradient(headerBg)}">`;
+  if (badge) h += `<span class="o-hd-badge">${badge}</span>`;
+  h += `<div class="o-hd-title">${title||'상무님만의 혜택 준비!'}</div>`;
+  if (intro) h += `<div class="o-hd-intro">${intro.replace(/\n/g,'<br>')}</div>`;
+  h += `</div></div>`;
+
+  // 회원 전용 혜택
+  if (bns.length > 0) {
+    h += `<div class="o-sec"><div class="o-sec-txt">${secBn}</div></div>`;
+    h += `<div class="o-benefits">`;
+    bns.forEach(b => {
+      h += `<div class="o-bn-card">`;
+      h += `<div class="o-bn-icon">${b.icon||'🎁'}</div>`;
+      if (b.title) h += `<div class="o-bn-ttl">${b.title}</div>`;
+      if (b.desc)  h += `<div class="o-bn-desc">${b.desc.replace(/\n/g,'<br>')}</div>`;
+      h += `</div>`;
+    });
+    h += `</div>`;
+  }
+
+  // 웰컴 혜택
+  if (wcs.length > 0) {
+    h += `<div class="o-sec"><div class="o-sec-txt">${secWc}</div></div>`;
+    h += `<div class="o-welcome">`;
+    wcs.forEach(w => {
+      h += `<div class="o-wc-row">`;
+      h += `<div class="o-wc-icon" style="--wc-tint:${tint}">${w.icon||'🎟️'}</div>`;
+      h += `<div class="o-wc-info">`;
+      if (w.title) h += `<div class="o-wc-ttl">${w.title}</div>`;
+      if (w.desc)  h += `<div class="o-wc-desc">${w.desc.replace(/\n/g,'<br>')}</div>`;
+      h += `</div></div>`;
+    });
+    h += `</div>`;
+  }
+
+  // 시즌 혜택
+  if (sss.length > 0) {
+    h += `<div class="o-sec"><div class="o-sec-txt">${secSs}</div>`;
+    if (secSsSub) h += `<div class="o-sec-sub">${secSsSub}</div>`;
+    h += `</div>`;
+    h += `<div class="o-season">`;
+    sss.forEach(s => {
+      h += `<div class="o-cp">`;
+      if (s.title) h += `<div class="o-cp-ttl" style="color:${headerBg}">${s.title}</div>`;
+      if (s.code)  h += `<div class="o-cp-code">${s.code}</div>`;
+      if (s.note)  h += `<div class="o-cp-note">${s.note.replace(/\n/g,'<br>')}</div>`;
+      h += `</div>`;
+    });
+    h += `</div>`;
+  }
+
+  // 가입방법
+  if (sts.length > 0) {
+    h += `<div class="o-sec"><div class="o-sec-txt">${secSt}</div>`;
+    if (secStSub) h += `<div class="o-sec-sub">${secStSub}</div>`;
+    h += `</div>`;
+    h += `<div class="o-join">`;
+    sts.forEach((s, idx) => {
+      h += `<div class="o-step">`;
+      h += `<div class="o-step-num" style="background:${headerBg}">${idx+1}</div>`;
+      h += `<div class="o-step-desc">${(s.desc||'').replace(/\n/g,'<br>')}</div>`;
+      h += `</div>`;
+    });
+    h += `</div>`;
+  }
+
+  // 유의사항
+  if (notes) {
+    h += `<div class="o-notes">`;
+    h += `<div class="o-notes-ttl">유의사항</div>`;
+    h += `<div class="o-notes-txt">${notes.replace(/\n/g,'<br>')}</div>`;
+    h += `</div>`;
+  } else {
+    h += `<div style="height:48px"></div>`;
+  }
+
+  document.getElementById('output').innerHTML = h;
+}
+
+// ─── CHAR COUNTER ────────────────────────────────────────────
+function updateCharCount(input, counterId, max) {
+  const counter = document.getElementById(counterId); if (!counter) return;
+  if (input.value.length > max) input.value = input.value.slice(0, max);
+  const len = input.value.length;
+  counter.textContent = `${len}자/${max}자`;
+  counter.classList.toggle('over', len >= max);
+}
+
+// ─── SAVE CODE ───────────────────────────────────────────────
+function generateSaveCode() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const arr = new Uint8Array(6); crypto.getRandomValues(arr);
+  let code = 'CLUB-';
+  for (let i=0;i<6;i++) code += chars[arr[i]%36];
+  return code;
+}
+
+// ─── COLLECT / RESTORE ───────────────────────────────────────
+function collectFormData() {
+  return {
+    badge: v('f-badge'), title: v('f-title'), intro: v('f-intro'),
+    secBn: v('f-sec-bn'), secWc: v('f-sec-wc'),
+    secSs: v('f-sec-ss'), secSsSub: v('f-sec-ss-sub'),
+    secSt: v('f-sec-st'), secStSub: v('f-sec-st-sub'),
+    headerBg: headerBg, notes: v('f-notes'),
+    benefits: bns.map(b=>({ icon:b.icon, title:b.title, desc:b.desc })),
+    welcomes: wcs.map(w=>({ icon:w.icon, title:w.title, desc:w.desc })),
+    seasons:  sss.map(s=>({ title:s.title, code:s.code, note:s.note })),
+    steps:    sts.map(s=>({ desc:s.desc }))
+  };
+}
+
+function restoreFormData(data) {
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
+  set('f-badge', data.badge); set('f-title', data.title); set('f-intro', data.intro);
+  set('f-sec-bn', data.secBn); set('f-sec-wc', data.secWc);
+  set('f-sec-ss', data.secSs); set('f-sec-ss-sub', data.secSsSub);
+  set('f-sec-st', data.secSt); set('f-sec-st-sub', data.secStSub);
+  set('f-notes', data.notes);
+  if (data.headerBg) applyColor(data.headerBg, '', '');
+  bns=[]; bnIdx=0;
+  (data.benefits||[]).forEach(b=>{ const id=++bnIdx; bns.push({id,icon:b.icon||'🎁',title:b.title||'',desc:b.desc||''}); });
+  rebuildBns();
+  wcs=[]; wcIdx=0;
+  (data.welcomes||[]).forEach(w=>{ const id=++wcIdx; wcs.push({id,icon:w.icon||'🎟️',title:w.title||'',desc:w.desc||''}); });
+  rebuildWcs();
+  sss=[]; ssIdx=0;
+  (data.seasons||[]).forEach(s=>{ const id=++ssIdx; sss.push({id,title:s.title||'',code:s.code||'',note:s.note||''}); });
+  rebuildSss();
+  sts=[]; stIdx=0;
+  (data.steps||[]).forEach(s=>{ const id=++stIdx; sts.push({id,desc:s.desc||''}); });
+  rebuildSts();
+  render();
+}
+
+// ─── LOAD ────────────────────────────────────────────────────
+async function doLoad() {
+  const codeInput=document.getElementById('load-code'), btn=document.getElementById('load-btn');
+  const code=codeInput.value.trim(); if(!code) return;
+  btn.textContent='불러오는 중...'; btn.disabled=true;
+  try {
+    const res=await fetch(APPS_SCRIPT_URL+'?action=load&code='+encodeURIComponent(code));
+    const result=await res.json();
+    if(result.status==='ok'){ try{ restoreFormData(JSON.parse(result.data)); showToast('✓ 불러오기 완료'); }catch(e){ showToast('⚠ 데이터 형식 오류'); } }
+    else if(result.status==='not_found') showToast('해당 코드의 저장 데이터가 없습니다');
+    else showToast('⚠ 불러오기 실패');
+  } catch(e){ showToast('불러오기 실패. 네트워크를 확인해 주세요'); }
+  btn.textContent='불러오기'; btn.disabled=false;
+}
+
+// ─── TEMP SAVE ───────────────────────────────────────────────
+async function doTempSave() {
+  const btn=document.getElementById('tmpbtn');
+  btn.disabled=true; btn.textContent='저장 중...';
+  const code=generateSaveCode();
+  try {
+    const res=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'save',code,type:'club',data:JSON.stringify(collectFormData())})});
+    const result=await res.json();
+    if(result.status==='ok') showSaveModal(code); else showToast('⚠ 임시저장 실패');
+  } catch(e){ showToast('⚠ 임시저장 실패'); }
+  btn.disabled=false; btn.textContent='임시저장';
+}
+
+// ─── EXPORT ──────────────────────────────────────────────────
+async function doExport() {
+  const btn=document.getElementById('expbtn');
+  btn.disabled=true;
+  btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M3.5 5.5L7 9l3.5-3.5M1 11.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> 생성 중...`;
+  try {
+    await document.fonts.ready;
+    const canvas=await html2canvas(document.getElementById('output'),{scale:3,useCORS:true,allowTaint:true,backgroundColor:'#EEF1F8',scrollX:0,scrollY:0,width:390,windowWidth:390,logging:false});
+    const code=generateSaveCode();
+    const name=v('f-title')||'롯백클럽';
+    const fname=`[클럽] ${name}_${code}`.replace(/[<>:"/\\|?*]/g,'_').slice(0,60)+'.jpg';
+    canvas.toBlob(blob=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; a.click(); },'image/jpeg',0.95);
+    try {
+      const res=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'save',code,type:'club',data:JSON.stringify(collectFormData())})});
+      const result=await res.json();
+      if(result.status==='ok') showSaveModal(code); else showToast('⚠ 저장 실패');
+    } catch(e){ showToast('⚠ 저장 실패'); }
+  } catch(e){ showToast('⚠ 내보내기 실패: '+e.message); }
+  btn.disabled=false;
+  btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M3.5 5.5L7 9l3.5-3.5M1 11.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> JPG 내보내기`;
+}
+
+// ─── MODAL / TOAST ───────────────────────────────────────────
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+let lastSavedCode='';
+function showSaveModal(code){ lastSavedCode=code; document.getElementById('save-modal-code').textContent=code; document.getElementById('save-modal').classList.add('show'); }
+function closeSaveModal(e){ if(e&&e.target!==e.currentTarget)return; document.getElementById('save-modal').classList.remove('show'); }
+async function copySaveCode(){ try{ await navigator.clipboard.writeText(lastSavedCode); showToast('✓ 코드가 클립보드에 복사되었습니다'); }catch(e){ showToast('⚠ 복사 실패'); } }
+function openExample(){ document.getElementById('ex-modal').classList.add('show'); }
+function closeExample(e){ if(e&&e.target!==e.currentTarget)return; document.getElementById('ex-modal').classList.remove('show'); }
+
+// ─── RESET ───────────────────────────────────────────────────
+function resetAll() {
+  ['f-badge','f-title','f-intro','f-sec-bn','f-sec-wc','f-sec-ss','f-sec-ss-sub','f-sec-st','f-sec-st-sub','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  bns=[]; bnIdx=0; rebuildBns();
+  wcs=[]; wcIdx=0; rebuildWcs();
+  sss=[]; ssIdx=0; rebuildSss();
+  sts=[]; stIdx=0; rebuildSts();
+  applyColor('#4E5FE0', 0, '블루');
+  render();
+}
+
+// ─── INIT ────────────────────────────────────────────────────
+buildSwatches();
+render();
+</script>
+</body>
+</html>
