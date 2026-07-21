@@ -100,7 +100,7 @@ textarea{resize:vertical;min-height:72px}
 .o-hd-period{font-size:19px;font-weight:700;color:#2B3A5B;letter-spacing:-.3px;margin-top:14px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-hd-period-note{font-size:13px;font-weight:400;color:#9AA6BA;margin-top:6px;font-family:'Noto Sans KR',sans-serif;}
 .o-hd-block{margin-top:34px;}
-.o-hd-targets{margin-top:18px;display:flex;flex-direction:column;gap:14px;}
+.o-hd-targets{margin-top:18px;display:flex;flex-direction:column;gap:12px;}
 .o-hd-target-nm{font-size:15px;font-weight:700;color:#2B3A5B;letter-spacing:-.3px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 .o-hd-target-loc{font-size:12px;font-weight:400;color:#9AA6BA;margin-left:4px;font-family:'Noto Sans KR',sans-serif;}
 
@@ -237,7 +237,9 @@ textarea{resize:vertical;min-height:72px}
           </div>
           <div class="field">
             <span class="field-label-ko">클럽 설명</span>
-            <textarea id="f-intro" rows="4" placeholder="입주 고객님을 위한 다양한 리빙&라이프&#10;쇼핑 혜택을 제공해 드리기 위해&#10;마련된 멤버십 클럽입니다" oninput="render()"></textarea>
+            <textarea id="f-intro" rows="4" oninput="render()">입주 고객님을 위한 다양한 리빙&라이프
+쇼핑 혜택을 제공해 드리기 위해
+마련된 멤버십 클럽입니다.</textarea>
           </div>
           <div class="field">
             <span class="field-label-ko">기간 뱃지 <span class="byte-counter" id="cnt-period-label">0자/12자</span></span>
@@ -424,6 +426,9 @@ textarea{resize:vertical;min-height:72px}
 
 // ─── APPS SCRIPT ─────────────────────────────────────────────
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZnJ_SrTV6YGFZNadBjghIiQwepHgDGRdwDNW__VdPLm1oywONwX9KGsPPJErCqKLYvQ/exec';
+
+// 클럽 설명 기본 문안
+const DEFAULT_INTRO = '입주 고객님을 위한 다양한 리빙&라이프\n쇼핑 혜택을 제공해 드리기 위해\n마련된 멤버십 클럽입니다.';
 
 // ─── COLOR ───────────────────────────────────────────────────
 const PRESETS = [
@@ -917,6 +922,7 @@ function closeExample(e){ if(e&&e.target!==e.currentTarget)return; document.getE
 // ─── RESET ───────────────────────────────────────────────────
 function resetAll() {
   ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-wc','f-sec-ss','f-sec-ss-sub','f-sec-st','f-sec-st-sub','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('f-intro').value = DEFAULT_INTRO;
   tgs=[]; tgIdx=0; rebuildTgs();
   bns=[]; bnIdx=0; rebuildBns();
   wcs=[]; wcIdx=0; rebuildWcs();
