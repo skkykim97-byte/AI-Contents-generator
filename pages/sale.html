@@ -120,7 +120,10 @@ input[type=file]{display:none}
 .o-sale-img-wrap{width:100%;line-height:0;margin-bottom:24px;}
 .o-sale-img{width:390px;height:220px;object-fit:cover;display:block;}
 .o-sale-img-ph{width:390px;height:220px;background:#EDECEA;display:flex;align-items:center;justify-content:center;font-size:12px;color:#C0BFB8;font-weight:300;}
-.o-sale-brands{font-size:14px;font-weight:400;color:#8A8A84;line-height:1.9;padding:0 24px 8px;white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-sale-cat{padding:0 24px;margin-bottom:22px;}
+.o-sale-cat:last-child{margin-bottom:8px;}
+.o-sale-cat-title{font-size:22px;font-weight:700;color:#111;letter-spacing:-.3px;margin-bottom:12px;line-height:1.3;word-break:keep-all;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-sale-cat-brands{font-size:14px;font-weight:400;color:#8A8A84;line-height:1.9;white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 .o-sale-divider{height:1px;background:#EDECEA;margin:24px 24px 0;}
 
 /* 참고사항 */
@@ -390,12 +393,28 @@ let sales = [], saleIdx = 0;
 
 function addSale() {
   const id = ++saleIdx;
-  sales.push({ id, img:null, imgRaw:null, imgCropX:50, imgCropY:50, rate:'', brands:'' });
+  sales.push({ id, img:null, imgRaw:null, imgCropX:50, imgCropY:50, rate:'', catIdx:0, cats:[] });
+  const s = sales.find(s=>s.id===id);
+  const cid = ++s.catIdx;
+  s.cats.push({ cid, title:'', brands:'' });
   rebuildSales(); render();
 }
 
 function delSale(id) {
   sales = sales.filter(s=>s.id!==id);
+  rebuildSales(); render();
+}
+
+function addCat(saleId) {
+  const s = sales.find(s=>s.id===saleId); if(!s) return;
+  const cid = ++s.catIdx;
+  s.cats.push({ cid, title:'', brands:'' });
+  rebuildSales(); render();
+}
+
+function delCat(saleId, cid) {
+  const s = sales.find(s=>s.id===saleId); if(!s) return;
+  s.cats = s.cats.filter(c=>c.cid!==cid);
   rebuildSales(); render();
 }
 
@@ -513,14 +532,45 @@ function rebuildSales() {
           </div>
         </div>
         <div class="field">
-          <span class="field-label-ko">브랜드 목록 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 회색 텍스트</span></span>
-          <textarea rows="5" id="sbrands-${s.id}" placeholder="가이거, 겐조(~40%), 꼼데가르송컬렉션(6.19~), 끌로에(~40%), 릭오웬스, 마이클코어스(~50%)..."
-            oninput="sales.find(s=>s.id===${s.id}).brands=this.value;render()">${s.brands}</textarea>
+          <span class="field-label-ko">카테고리 <span class="byte-counter">${s.cats.length}개</span></span>
+          <div class="vcard-list" id="cat-list-${s.id}">${buildCatCards(s)}</div>
+          <button class="add-card-btn" style="margin-top:8px" onclick="addCat(${s.id})">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            카테고리 추가
+          </button>
         </div>
       </div>`;
     list.appendChild(card);
   });
   document.getElementById('sale-cnt').textContent = sales.length + '개';
+}
+
+function buildCatCards(s) {
+  return s.cats.map((c, ci) => `
+    <div class="vcard" style="background:#fff">
+      <div class="vcard-head" style="background:#fff">
+        <span class="vcard-label" style="background:#EDEDED;color:#555">카테고리 ${ci+1}</span>
+        <button class="vcard-del" onclick="delCat(${s.id},${c.cid})">✕</button>
+      </div>
+      <div class="vcard-body">
+        <div class="field">
+          <span class="field-label-ko">카테고리 타이틀 <span class="byte-counter" id="cnt-ctitle-${s.id}-${c.cid}">0자/30자</span></span>
+          <input type="text" id="ctitle-${s.id}-${c.cid}" value="${c.title}" placeholder="Women's Fashion"
+            oninput="setCat(${s.id},${c.cid},'title',this.value);updateCharCount(this,'cnt-ctitle-${s.id}-${c.cid}',30);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">브랜드 목록 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 회색 텍스트</span></span>
+          <textarea rows="4" id="cbrands-${s.id}-${c.cid}" placeholder="라코스테우먼, 로렌랄프로렌, 빈폴레이디스(6.19~), 타미힐피거 여성"
+            oninput="setCat(${s.id},${c.cid},'brands',this.value);render()">${c.brands}</textarea>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function setCat(saleId, cid, key, val) {
+  const s = sales.find(s=>s.id===saleId); if(!s) return;
+  const c = s.cats.find(c=>c.cid===cid); if(!c) return;
+  c[key] = val;
 }
 
 // ─── RENDER ──────────────────────────────────────────────────
@@ -555,7 +605,13 @@ function render() {
       if (s.img) {
         h += `<div class="o-sale-img-wrap"><img src="${s.img}" class="o-sale-img" style="object-position:${s.imgCropX||50}% ${s.imgCropY||50}%"/></div>`;
       }
-      if (s.brands) h += `<div class="o-sale-brands">${s.brands.replace(/\n/g,'<br>')}</div>`;
+      (s.cats||[]).forEach(c => {
+        if (!c.title && !c.brands) return;
+        h += `<div class="o-sale-cat">`;
+        if (c.title)  h += `<div class="o-sale-cat-title">${c.title}</div>`;
+        if (c.brands) h += `<div class="o-sale-cat-brands">${c.brands.replace(/\n/g,'<br>')}</div>`;
+        h += `</div>`;
+      });
       h += `</div>`;
     });
     h += `</div>`;
@@ -596,7 +652,7 @@ function collectFormData() {
     t1: v('f-t1'), t2: v('f-t2'), desc: v('f-desc'),
     period: v('f-period'), loc: v('f-loc'),
     headerBg: headerBg, notes: v('f-notes'),
-    sales: sales.map(s=>({ rate:s.rate, brands:s.brands }))
+    sales: sales.map(s=>({ rate:s.rate, cats:(s.cats||[]).map(c=>({ title:c.title, brands:c.brands })) }))
   };
 }
 
@@ -606,7 +662,14 @@ function restoreFormData(data) {
   set('f-period', data.period); set('f-loc', data.loc); set('f-notes', data.notes);
   if (data.headerBg) applyColor(data.headerBg, '', '');
   sales=[]; saleIdx=0;
-  (data.sales||[]).forEach(s=>{ const id=++saleIdx; sales.push({id,img:null,imgRaw:null,imgCropX:50,imgCropY:50,rate:s.rate,brands:s.brands}); });
+  (data.sales||[]).forEach(s=>{
+    const id=++saleIdx;
+    const sale={id,img:null,imgRaw:null,imgCropX:50,imgCropY:50,rate:s.rate,catIdx:0,cats:[]};
+    // 구버전 호환: brands 단일 필드
+    const cats = s.cats || (s.brands!==undefined ? [{title:'',brands:s.brands}] : []);
+    (cats.length?cats:[{title:'',brands:''}]).forEach(c=>{ const cid=++sale.catIdx; sale.cats.push({cid,title:c.title||'',brands:c.brands||''}); });
+    sales.push(sale);
+  });
   rebuildSales();
   render();
 }
