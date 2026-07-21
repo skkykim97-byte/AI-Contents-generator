@@ -126,13 +126,19 @@ textarea{resize:vertical;min-height:72px}
 .o-bn-note{font-size:11.5px;font-weight:300;color:#9AA6BA;line-height:1.55;margin-top:5px;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 
 /* 웰컴 혜택 밴드 */
-.o-welcome{margin:16px 20px 8px;background:#fff;border-radius:16px;padding:8px 4px;box-shadow:0 2px 8px rgba(29,36,51,.05);}
-.o-wc-row{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid #EEF1F5;}
-.o-wc-row:last-child{border-bottom:none;}
-.o-wc-icon{width:40px;height:40px;border-radius:11px;background:var(--wc-tint,#EEF1FF);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.o-wc-info{flex:1;min-width:0;}
-.o-wc-ttl{font-size:14px;font-weight:700;color:#1D2433;letter-spacing:-.3px;margin-bottom:3px;line-height:1.35;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
-.o-wc-desc{font-size:12px;font-weight:300;color:#7A8194;line-height:1.55;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-welcome-band{padding:36px 20px 38px;}
+.o-wc-head{text-align:center;margin-bottom:24px;}
+.o-wc-badge{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.2px;padding:5px 16px;border-radius:16px;color:#fff;margin-bottom:16px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-wc-title1{font-size:20px;font-weight:400;color:#2B3A5B;letter-spacing:-.4px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-wc-title2{font-size:23px;font-weight:700;color:#2B3A5B;letter-spacing:-.5px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-wc-sub{font-size:13px;font-weight:400;color:#7A8194;margin-top:12px;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-wc-cards{display:flex;flex-direction:column;gap:14px;}
+.o-wc-card{background:#fff;border-radius:18px;padding:24px 22px;display:flex;align-items:center;gap:14px;min-height:118px;box-shadow:0 2px 10px rgba(29,36,51,.05);}
+.o-wc-card-info{flex:1;min-width:0;}
+.o-wc-card-ttl{font-size:20px;font-weight:700;color:#2B3A5B;letter-spacing:-.4px;margin-bottom:10px;line-height:1.35;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-wc-card-desc{font-size:14px;font-weight:400;color:#8A93A6;line-height:1.7;white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-wc-card-img{width:112px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.o-wc-card-img img{max-width:112px;max-height:92px;object-fit:contain;display:block;}
 
 /* 시즌 혜택 쿠폰 */
 .o-season{padding:16px 20px 8px;display:flex;flex-direction:column;gap:12px;}
@@ -321,8 +327,20 @@ textarea{resize:vertical;min-height:72px}
         </div>
         <div class="sec-body">
           <div class="field">
-            <span class="field-label-ko">섹션 타이틀 <span class="byte-counter" id="cnt-sec-wc">0자/30자</span></span>
-            <input type="text" id="f-sec-wc" placeholder="가입 후 제공되는 특별한 웰컴 혜택" oninput="updateCharCount(this,'cnt-sec-wc',30);render()"/>
+            <span class="field-label-ko">뱃지 <span class="byte-counter" id="cnt-wc-badge">0자/16자</span></span>
+            <input type="text" id="f-wc-badge" placeholder="Benefit 01" oninput="updateCharCount(this,'cnt-wc-badge',16);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">타이틀 첫째줄 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 일반</span><span class="byte-counter" id="cnt-wc-t1">0자/24자</span></span>
+            <input type="text" id="f-wc-title1" placeholder="입주 고객님들에게 제공되는" oninput="updateCharCount(this,'cnt-wc-t1',24);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">타이틀 둘째줄 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 굵게</span><span class="byte-counter" id="cnt-wc-t2">0자/24자</span></span>
+            <input type="text" id="f-wc-title2" placeholder="특별한 웰컴 혜택" oninput="updateCharCount(this,'cnt-wc-t2',24);render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">섹션 설명 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
+            <input type="text" id="f-wc-sub" placeholder="반가운 마음을 담아 무료 주차권 혜택을 준비했어요" oninput="render()"/>
           </div>
           <div class="vcard-list" id="wc-list"></div>
           <button class="add-card-btn" onclick="addWelcome()">
@@ -656,9 +674,30 @@ function fmtLine(text) {
 
 // ─── 웰컴 혜택 ───────────────────────────────────────────────
 let wcs = [], wcIdx = 0;
-function addWelcome() { const id=++wcIdx; wcs.push({id,icon:'🎟️',title:'',desc:''}); rebuildWcs(); render(); }
+function addWelcome() { const id=++wcIdx; wcs.push({id,img:null,title:'',desc:''}); rebuildWcs(); render(); }
 function delWc(id) { wcs=wcs.filter(w=>w.id!==id); rebuildWcs(); render(); }
 function setWc(id,key,val){ const w=wcs.find(w=>w.id===id); if(w) w[key]=val; }
+
+function loadWcImg(input, id) {
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const w=wcs.find(w=>w.id===id); if(!w) return;
+    w.img=e.target.result;
+    const zone=document.getElementById('zone-wcimg'+id);
+    zone.onclick=null;
+    zone.innerHTML=`<div class="upl-filled"><img src="${e.target.result}" style="max-height:100px;object-fit:contain;"/><button class="upl-remove" onclick="clearWcImg(${id});event.stopPropagation()">✕</button></div>`;
+    render();
+  };
+  reader.readAsDataURL(file);
+}
+function clearWcImg(id) {
+  const w=wcs.find(w=>w.id===id); if(w) w.img=null;
+  const zone=document.getElementById('zone-wcimg'+id);
+  zone.innerHTML=`<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">이미지 업로드</div><div class="upl-sub">미등록 시 표시 안 함</div></div>`;
+  zone.onclick=()=>document.getElementById('file-wcimg'+id).click();
+  render();
+}
 
 function rebuildWcs() {
   const list = document.getElementById('wc-list');
@@ -673,24 +712,35 @@ function rebuildWcs() {
       </div>
       <div class="vcard-body">
         <div class="field">
-          <span class="field-label-ko">아이콘 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 이모지</span></span>
-          <input type="text" id="wcicon-${w.id}" value="${w.icon}" placeholder="🎟️" maxlength="4"
-            oninput="setWc(${w.id},'icon',this.value);render()"/>
-        </div>
-        <div class="field">
           <span class="field-label-ko">타이틀 <span class="byte-counter" id="cnt-wcttl-${w.id}">0자/20자</span></span>
-          <input type="text" id="wcttl-${w.id}" value="${w.title}" placeholder="쿠폰 주머니 증정"
+          <input type="text" id="wcttl-${w.id}" value="${w.title}" placeholder="무료 주차권"
             oninput="setWc(${w.id},'title',this.value);updateCharCount(this,'cnt-wcttl-${w.id}',20);render()"/>
         </div>
         <div class="field">
-          <span class="field-label-ko">설명 <span class="byte-counter" id="cnt-wcdesc-${w.id}">0자/50자</span></span>
-          <textarea rows="2" maxlength="50" id="wcdesc-${w.id}" placeholder="가입 즉시 사용 가능한 할인 쿠폰"
-            oninput="setWc(${w.id},'desc',this.value);updateCharCount(this,'cnt-wcdesc-${w.id}',50);render()">${w.desc}</textarea>
+          <span class="field-label-ko">설명 <span class="byte-counter" id="cnt-wcdesc-${w.id}">0자/60자</span></span>
+          <textarea rows="2" maxlength="60" id="wcdesc-${w.id}" placeholder="3시간 무료 주차권&#10;(월 2매)"
+            oninput="setWc(${w.id},'desc',this.value);updateCharCount(this,'cnt-wcdesc-${w.id}',60);render()">${w.desc}</textarea>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">이미지 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택 · 우측 표시</span></span>
+          <div class="uploader" id="zone-wcimg${w.id}" onclick="document.getElementById('file-wcimg${w.id}').click()">
+            ${w.img
+              ? `<div class="upl-filled"><img src="${w.img}" style="max-height:100px;object-fit:contain;"/><button class="upl-remove" onclick="clearWcImg(${w.id});event.stopPropagation()">✕</button></div>`
+              : `<div class="upl-empty" style="padding:12px 10px"><div class="upl-icon">🖼</div><div class="upl-title">이미지 업로드</div><div class="upl-sub">미등록 시 표시 안 함</div></div>`}
+          </div>
+          <input type="file" id="file-wcimg${w.id}" accept="image/*" onchange="loadWcImg(this,${w.id})"/>
         </div>
       </div>`;
     list.appendChild(card);
   });
   document.getElementById('wc-cnt').textContent = wcs.length + '개';
+}
+
+// 웰컴 밴드 배경: 선택색의 G+15 + 투명도로 밝게
+function tintBg(hex, alpha) {
+  let r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  g=Math.min(255,g+15);
+  return `rgba(${r},${g},${b},${alpha!=null?alpha:0.35})`;
 }
 
 // ─── 시즌 혜택 (쿠폰) ────────────────────────────────────────
@@ -769,7 +819,7 @@ function render() {
   const periodLabel=v('f-period-label'), period=v('f-period'), periodNote=v('f-period-note');
   const targetLabel=v('f-target-label');
   const secBn=v('f-sec-bn')||'회원전용 혜택 모아보기', secBnSub=v('f-sec-bn-sub');
-  const secWc=v('f-sec-wc')||'특별한 웰컴 혜택';
+  const wcBadge=v('f-wc-badge'), wcTitle1=v('f-wc-title1'), wcTitle2=v('f-wc-title2')||'특별한 웰컴 혜택', wcSub=v('f-wc-sub');
   const secSs=v('f-sec-ss')||'시즌 혜택', secSsSub=v('f-sec-ss-sub');
   const secSt=v('f-sec-st')||'가입방법', secStSub=v('f-sec-st-sub');
   const notes=v('f-notes');
@@ -849,17 +899,24 @@ function render() {
 
   // 웰컴 혜택
   if (wcs.length > 0) {
-    h += `<div class="o-sec"><div class="o-sec-txt">${secWc}</div></div>`;
-    h += `<div class="o-welcome">`;
-    wcs.forEach(w => {
-      h += `<div class="o-wc-row">`;
-      h += `<div class="o-wc-icon" style="--wc-tint:${tint}">${w.icon||'🎟️'}</div>`;
-      h += `<div class="o-wc-info">`;
-      if (w.title) h += `<div class="o-wc-ttl">${w.title}</div>`;
-      if (w.desc)  h += `<div class="o-wc-desc">${w.desc.replace(/\n/g,'<br>')}</div>`;
-      h += `</div></div>`;
-    });
+    h += `<div class="o-welcome-band" style="background:${tintBg(headerBg)}">`;
+    h += `<div class="o-wc-head">`;
+    if (wcBadge) h += `<span class="o-wc-badge" style="background:${badgeBg}">${wcBadge}</span>`;
+    if (wcTitle1) h += `<div class="o-wc-title1">${wcTitle1}</div>`;
+    h += `<div class="o-wc-title2">${wcTitle2}</div>`;
+    if (wcSub) h += `<div class="o-wc-sub">${wcSub}</div>`;
     h += `</div>`;
+    h += `<div class="o-wc-cards">`;
+    wcs.forEach(w => {
+      h += `<div class="o-wc-card">`;
+      h += `<div class="o-wc-card-info">`;
+      if (w.title) h += `<div class="o-wc-card-ttl">${w.title}</div>`;
+      if (w.desc)  h += `<div class="o-wc-card-desc">${w.desc.replace(/\n/g,'<br>')}</div>`;
+      h += `</div>`;
+      if (w.img) h += `<div class="o-wc-card-img"><img src="${w.img}"/></div>`;
+      h += `</div>`;
+    });
+    h += `</div></div>`;
   }
 
   // 시즌 혜택
@@ -931,12 +988,13 @@ function collectFormData() {
     periodLabel: v('f-period-label'), period: v('f-period'), periodNote: v('f-period-note'),
     targetLabel: v('f-target-label'),
     targets: tgs.map(t=>({ name:t.name, loc:t.loc })),
-    secBn: v('f-sec-bn'), secBnSub: v('f-sec-bn-sub'), secWc: v('f-sec-wc'),
+    secBn: v('f-sec-bn'), secBnSub: v('f-sec-bn-sub'),
+    wcBadge: v('f-wc-badge'), wcTitle1: v('f-wc-title1'), wcTitle2: v('f-wc-title2'), wcSub: v('f-wc-sub'),
     secSs: v('f-sec-ss'), secSsSub: v('f-sec-ss-sub'),
     secSt: v('f-sec-st'), secStSub: v('f-sec-st-sub'),
     headerBg: headerBg, notes: v('f-notes'),
     benefits: bns.map(b=>({ title:b.title, lines:b.lines.map(l=>({ type:l.type, text:l.text })) })),
-    welcomes: wcs.map(w=>({ icon:w.icon, title:w.title, desc:w.desc })),
+    welcomes: wcs.map(w=>({ title:w.title, desc:w.desc })),
     seasons:  sss.map(s=>({ title:s.title, code:s.code, note:s.note })),
     steps:    sts.map(s=>({ desc:s.desc }))
   };
@@ -947,7 +1005,8 @@ function restoreFormData(data) {
   set('f-badge', data.badge); set('f-title', data.title); set('f-intro', data.intro);
   set('f-period-label', data.periodLabel); set('f-period', data.period); set('f-period-note', data.periodNote);
   set('f-target-label', data.targetLabel);
-  set('f-sec-bn', data.secBn); set('f-sec-bn-sub', data.secBnSub); set('f-sec-wc', data.secWc);
+  set('f-sec-bn', data.secBn); set('f-sec-bn-sub', data.secBnSub);
+  set('f-wc-badge', data.wcBadge); set('f-wc-title1', data.wcTitle1); set('f-wc-title2', data.wcTitle2); set('f-wc-sub', data.wcSub);
   set('f-sec-ss', data.secSs); set('f-sec-ss-sub', data.secSsSub);
   set('f-sec-st', data.secSt); set('f-sec-st-sub', data.secStSub);
   set('f-notes', data.notes);
@@ -966,7 +1025,7 @@ function restoreFormData(data) {
   });
   rebuildBns();
   wcs=[]; wcIdx=0;
-  (data.welcomes||[]).forEach(w=>{ const id=++wcIdx; wcs.push({id,icon:w.icon||'🎟️',title:w.title||'',desc:w.desc||''}); });
+  (data.welcomes||[]).forEach(w=>{ const id=++wcIdx; wcs.push({id,img:null,title:w.title||'',desc:w.desc||''}); });
   rebuildWcs();
   sss=[]; ssIdx=0;
   (data.seasons||[]).forEach(s=>{ const id=++ssIdx; sss.push({id,title:s.title||'',code:s.code||'',note:s.note||''}); });
@@ -1038,7 +1097,7 @@ function closeExample(e){ if(e&&e.target!==e.currentTarget)return; document.getE
 
 // ─── RESET ───────────────────────────────────────────────────
 function resetAll() {
-  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-bn-sub','f-sec-wc','f-sec-ss','f-sec-ss-sub','f-sec-st','f-sec-st-sub','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-bn-sub','f-wc-badge','f-wc-title1','f-wc-title2','f-wc-sub','f-sec-ss','f-sec-ss-sub','f-sec-st','f-sec-st-sub','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('f-intro').value = DEFAULT_INTRO;
   tgs=[]; tgIdx=0; rebuildTgs();
   bns=[]; bnIdx=0; rebuildBns();
