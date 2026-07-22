@@ -22,7 +22,7 @@
   header .badge { margin-left: 8px; background: var(--primary-light); color: var(--primary); font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
 
   main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 20px; }
-  .card { background: var(--white); border-radius: 16px; box-shadow: var(--shadow-md); width: 100%; max-width: 520px; overflow: hidden; }
+  .card { background: var(--white); border-radius: 16px; box-shadow: var(--shadow-md); width: 100%; max-width: 760px; overflow: hidden; }
 
   .card-header { background: var(--primary); padding: 22px 32px; color: white; }
   .card-header h2 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
@@ -54,7 +54,7 @@
   .divider { border: none; border-top: 1px solid var(--gray-200); }
 
   .template-desc { font-size: 12px; color: var(--gray-400); margin-bottom: 14px; margin-top: -8px; }
-  .template-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .template-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
   .template-card {
     border: 1.5px solid var(--gray-200); border-radius: var(--radius); padding: 16px 14px;
     cursor: pointer; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.12s;
@@ -86,6 +86,9 @@
   .progress-bar { height: 3px; background: rgba(255,255,255,0.25); border-radius: 2px; margin-top: 16px; overflow: hidden; }
   .progress-fill { height: 100%; background: #D4F233; border-radius: 2px; width: 0%; transition: width 0.4s ease; }
 
+  @media (max-width: 640px) {
+    .template-grid { grid-template-columns: 1fr 1fr; }
+  }
   @media (max-width: 480px) {
     .field-row { flex-direction: column; }
     header { padding: 0 20px; }
@@ -97,7 +100,7 @@
 
 <header>
   <img src="logo.png" alt="롯백" class="logo-img" onerror="this.style.display='none'">
-  <h1>Self 콘텐츠 제작 센터</h1>
+  <h1>셀프 콘텐츠 제작</h1>
   <span class="badge">APP</span>
 </header>
 
