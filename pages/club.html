@@ -283,11 +283,11 @@ textarea{resize:vertical;min-height:72px}
           <div class="field">
             <span class="field-label-ko">테마 색상</span>
             <div style="display:flex;gap:8px;flex-wrap:wrap" id="swatch-row"></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--page);border-radius:var(--radius-sm);border:1.5px solid var(--border);cursor:pointer;" onclick="document.getElementById('cpicker').click()">
+            <div style="position:relative;display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--page);border-radius:var(--radius-sm);border:1.5px solid var(--border);cursor:pointer;">
               <div id="cdot-preview" style="width:22px;height:22px;border-radius:6px;background:#8AA6C2;border:1px solid rgba(0,0,0,.08);flex-shrink:0;"></div>
               <span id="chex" style="font-size:12px;font-family:monospace;font-weight:500;color:var(--tx-mid);flex:1;letter-spacing:.5px;">#8AA6C2</span>
               <svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="color:var(--tx-hint)"><path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
-              <input type="color" id="cpicker" value="#8AA6C2" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none" oninput="applyColor(this.value,'','')"/>
+              <input type="color" id="cpicker" value="#8AA6C2" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0;margin:0" oninput="applyColor(this.value,'','')" onchange="applyColor(this.value,'','')"/>
             </div>
             <span style="font-size:11px;color:var(--tx-hint);font-weight:300">배경·뱃지 색상이 선택한 색을 기준으로 조정됩니다.</span>
           </div>
@@ -611,7 +611,7 @@ function buildBnLines(b) {
         <span class="vcard-label" style="background:#EDEDED;color:#555;flex:0 0 auto">라인 ${li+1}</span>
         <select onchange="setBnLine(${b.id},${l.lid},'type',this.value);render()" style="flex:1;padding:5px 8px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-family:var(--fn);color:var(--tx-dark);background:#fff;outline:none">
           <option value="normal" ${l.type==='normal'?'selected':''}>일반 (**굵게** 지원)</option>
-          <option value="plus" ${l.type==='plus'?'selected':''}>추가할인 (⊕ 파란색)</option>
+          <option value="plus" ${l.type==='plus'?'selected':''}>추가할인 (⊕ 테마색)</option>
           <option value="note" ${l.type==='note'?'selected':''}>단서 (작은 회색)</option>
         </select>
         <button class="vcard-del" onclick="delBnLine(${b.id},${l.lid})">✕</button>
@@ -881,7 +881,7 @@ function render() {
         b.lines.forEach(l => {
           if (!l.text) return;
           if (l.type==='plus') {
-            h += `<div class="o-bn-plus"><span class="pic">+</span><span>${fmtLine(l.text)}</span></div>`;
+            h += `<div class="o-bn-plus" style="color:${headerBg}"><span class="pic" style="background:${headerBg}">+</span><span>${fmtLine(l.text)}</span></div>`;
           } else if (l.type==='note') {
             const txt = l.text.trim().startsWith('·') ? l.text : '· '+l.text;
             h += `<div class="o-bn-note">${fmtLine(txt)}</div>`;
