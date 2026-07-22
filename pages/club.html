@@ -92,11 +92,11 @@ textarea{resize:vertical;min-height:72px}
 
 /* 헤더 */
 .o-hd{padding:34px 20px 24px;position:relative;}
-.o-hd-badge{position:relative;z-index:2;display:block;width:fit-content;margin:0 auto -18px;font-size:15px;font-weight:800;font-style:italic;letter-spacing:-.3px;padding:9px 26px;border-radius:22px;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.12);font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-hd-badge{position:relative;z-index:2;display:block;width:fit-content;margin:0 auto -18px;font-size:17px;font-weight:700;font-style:italic;letter-spacing:-.3px;padding:9px 26px;border-radius:22px;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.12);font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-hd-card{background:#fff;border-radius:24px;padding:44px 24px 40px;text-align:center;}
 .o-hd-title{font-size:24px;font-weight:700;letter-spacing:-.6px;line-height:1.4;color:#2B3A5B;word-break:keep-all;margin-bottom:18px;font-family:'Noto Sans KR',sans-serif;}
 .o-hd-intro{font-size:15px;font-weight:400;line-height:1.75;color:#5E6E86;white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
-.o-hd-pill{display:inline-block;font-size:13px;font-weight:700;letter-spacing:-.2px;padding:6px 20px;border-radius:20px;color:#fff;font-family:'Noto Sans KR',sans-serif;}
+.o-hd-pill{display:inline-block;font-size:15px;font-weight:600;letter-spacing:-.2px;padding:6px 20px;border-radius:20px;color:#fff;font-family:'Noto Sans KR',sans-serif;}
 .o-hd-period{font-size:17px;font-weight:500;color:#2B3A5B;letter-spacing:-.3px;margin-top:14px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-hd-period-note{font-size:13px;font-weight:400;color:#9AA6BA;margin-top:6px;font-family:'Noto Sans KR',sans-serif;}
 .o-hd-block{margin-top:34px;}
@@ -116,7 +116,7 @@ textarea{resize:vertical;min-height:72px}
 .o-bn-iconbox{height:132px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;}
 .o-bn-iconbox img{max-width:118px;max-height:118px;object-fit:contain;display:block;}
 .o-bn-icon-emoji{font-size:58px;line-height:1;}
-.o-bn-pill{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.2px;padding:5px 16px;border-radius:16px;color:#fff;margin-bottom:14px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-bn-pill{display:inline-block;font-size:14px;font-weight:500;letter-spacing:.2px;padding:5px 16px;border-radius:16px;color:#fff;margin-bottom:14px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-bn-ttl{font-size:18px;font-weight:700;color:#2B3A5B;letter-spacing:-.3px;margin-bottom:14px;line-height:1.35;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 .o-bn-lines{display:flex;flex-direction:column;gap:5px;width:100%;}
 .o-bn-line{font-size:14px;font-weight:400;color:#3A4557;line-height:1.55;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
@@ -128,7 +128,7 @@ textarea{resize:vertical;min-height:72px}
 /* 웰컴 혜택 밴드 */
 .o-welcome-band{padding:36px 20px 38px;}
 .o-wc-head{text-align:center;margin-bottom:24px;}
-.o-wc-badge{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.2px;padding:5px 16px;border-radius:16px;color:#fff;margin-bottom:16px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-wc-badge{display:inline-block;font-size:14px;font-weight:500;letter-spacing:.2px;padding:5px 16px;border-radius:16px;color:#fff;margin-bottom:16px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
 .o-wc-title1{font-size:20px;font-weight:400;color:#2B3A5B;letter-spacing:-.4px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 .o-wc-title2{font-size:23px;font-weight:700;color:#2B3A5B;letter-spacing:-.5px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 .o-wc-sub{font-size:13px;font-weight:400;color:#7A8194;margin-top:12px;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
@@ -826,7 +826,7 @@ function render() {
   const tint = shade(headerBg, 0.36);
 
   // 페이지 배경 = 테마색의 밝은 톤
-  const pageBg = shade(headerBg, 0.18);
+  const pageBg = shade(headerBg, 0.26);
   const badgeBg = headerBg;
   const pillBg = shade(headerBg, 0.06);
   document.getElementById('output').style.background = pageBg;
