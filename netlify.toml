@@ -1,0 +1,6 @@
+# Netlify 배포 설정 — 정적 사이트 (빌드 불필요)
+[build]
+  # 저장소 루트를 그대로 사이트 루트로 서빙
+  publish = "."
+  # 빌드 단계 없음 (순수 정적 HTML/CSS/JS)
+  command = ""
