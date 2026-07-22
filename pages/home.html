@@ -243,8 +243,9 @@
 
     try { navigator.sendBeacon(APPS_SCRIPT_URL, JSON.stringify({ dept: v.dept, reason: v.reason, template: v.template })); } catch(e) {}
 
-    document.getElementById('mainForm').action = page;
-    return true;
+    // 쿼리스트링(dept/reason) URL 노출 방지: GET 폼 전송 대신 직접 이동
+    window.location.href = page;
+    return false;
   }
 
   function resetForm() {
