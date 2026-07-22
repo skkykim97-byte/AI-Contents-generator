@@ -140,12 +140,25 @@ textarea{resize:vertical;min-height:72px}
 .o-wc-card-img{width:112px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 .o-wc-card-img img{max-width:112px;max-height:92px;object-fit:contain;display:block;}
 
-/* 시즌 혜택 쿠폰 */
-.o-season{padding:16px 20px 8px;display:flex;flex-direction:column;gap:12px;}
-.o-cp{background:#fff;border:1.5px dashed #C3CBE8;border-radius:14px;padding:20px 18px;text-align:center;}
-.o-cp-ttl{font-size:16px;font-weight:700;color:var(--accent);letter-spacing:-.3px;margin-bottom:10px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
-.o-cp-code{display:inline-block;font-size:14px;font-weight:700;font-family:monospace;letter-spacing:1px;color:#1D2433;background:#EEF1FF;padding:8px 18px;border-radius:8px;margin-bottom:10px;}
-.o-cp-note{font-size:11px;font-weight:300;color:#9AA0AE;line-height:1.6;white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+/* 사은 혜택 (배경 흰색) */
+.o-gift-band{background:#fff;padding:36px 20px 40px;}
+.o-gift-head{text-align:center;margin-bottom:24px;}
+.o-gift-badge{display:inline-block;font-size:14px;font-weight:500;letter-spacing:.2px;padding:5px 16px;border-radius:16px;color:#fff;margin-bottom:16px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-gift-title1{font-size:24px;font-weight:700;color:#2B3A5B;letter-spacing:-.5px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-gift-title1 b{font-weight:800;}
+.o-gift-title2{font-size:14px;font-weight:400;color:#7A8194;margin-top:12px;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-gift-cards{display:flex;flex-direction:column;gap:16px;}
+.o-gift-card{border-radius:20px;overflow:hidden;}
+.o-gift-top{background:#F4F6F9;padding:30px 22px 26px;text-align:center;}
+.o-gift-brand{display:inline-block;font-size:14px;font-weight:600;letter-spacing:-.2px;padding:6px 20px;border-radius:20px;background:#fff;margin-bottom:18px;font-family:'Noto Sans KR',sans-serif;}
+.o-gift-gtitle{font-size:20px;font-weight:700;color:#2B3A5B;letter-spacing:-.3px;margin-bottom:10px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-gift-gtitle b{font-weight:800;}
+.o-gift-gdetail{font-size:15px;font-weight:400;color:#3A4557;line-height:1.65;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-gift-gnote{font-size:12px;font-weight:300;color:#9AA6BA;margin-top:16px;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-gift-add{padding:22px;text-align:center;}
+.o-gift-add-label{font-size:15px;font-weight:700;letter-spacing:-.2px;margin-bottom:8px;line-height:1.4;font-family:'Noto Sans KR',sans-serif;}
+.o-gift-add-detail{font-size:14px;font-weight:400;color:#3A4557;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-gift-add-note{font-size:12px;font-weight:300;color:#9AA6BA;margin-top:8px;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 
 /* 가입방법 스텝 */
 .o-join{padding:16px 20px 8px;display:flex;flex-direction:column;gap:10px;}
@@ -350,26 +363,30 @@ textarea{resize:vertical;min-height:72px}
         </div>
       </div>
 
-      <!-- 4. 시즌 혜택 -->
+      <!-- 4. 사은 혜택 -->
       <div class="sec">
         <div class="sec-header">
           <div class="sec-num" style="background:#EEF1FF;color:#4E5FE0">4</div>
-          <span class="sec-title">시즌 혜택</span>
-          <span class="sec-tag" id="ss-cnt">0개</span>
+          <span class="sec-title">사은 혜택</span>
+          <span class="sec-tag" id="gf-cnt">0개</span>
         </div>
         <div class="sec-body">
           <div class="field">
-            <span class="field-label-ko">섹션 타이틀 <span class="byte-counter" id="cnt-sec-ss">0자/30자</span></span>
-            <input type="text" id="f-sec-ss" placeholder="최대 10%까지 즉시받는 시즌 혜택" oninput="updateCharCount(this,'cnt-sec-ss',30);render()"/>
+            <span class="field-label-ko">뱃지 <span class="byte-counter" id="cnt-gf-badge">0자/16자</span></span>
+            <input type="text" id="f-gf-badge" placeholder="Benefit 02" oninput="updateCharCount(this,'cnt-gf-badge',16);render()"/>
           </div>
           <div class="field">
-            <span class="field-label-ko">섹션 설명 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
-            <input type="text" id="f-sec-ss-sub" placeholder="시즌마다 제공되는 상품권 혜택을 확인하세요" oninput="render()"/>
+            <span class="field-label-ko">타이틀 첫째줄 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· **굵게** 지원</span><span class="byte-counter" id="cnt-gf-t1">0자/30자</span></span>
+            <input type="text" id="f-gf-title1" placeholder="최대 **10%**까지 풍성한 사은 혜택" oninput="updateCharCount(this,'cnt-gf-t1',30);render()"/>
           </div>
-          <div class="vcard-list" id="ss-list"></div>
-          <button class="add-card-btn" onclick="addSeason()">
+          <div class="field">
+            <span class="field-label-ko">타이틀 둘째줄 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택 · 회색 설명</span></span>
+            <input type="text" id="f-gf-title2" placeholder="브랜드와 상품별로 제공되는 추가 할인까지 만나보세요" oninput="render()"/>
+          </div>
+          <div class="vcard-list" id="gf-list"></div>
+          <button class="add-card-btn" onclick="addGift()">
             <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-            시즌 혜택 추가
+            사은 혜택 추가
           </button>
         </div>
       </div>
@@ -743,43 +760,58 @@ function tintBg(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha!=null?alpha:0.35})`;
 }
 
-// ─── 시즌 혜택 (쿠폰) ────────────────────────────────────────
-let sss = [], ssIdx = 0;
-function addSeason() { const id=++ssIdx; sss.push({id,title:'',code:'',note:''}); rebuildSss(); render(); }
-function delSs(id) { sss=sss.filter(s=>s.id!==id); rebuildSss(); render(); }
-function setSs(id,key,val){ const s=sss.find(s=>s.id===id); if(s) s[key]=val; }
+// ─── 사은 혜택 ───────────────────────────────────────────────
+let gfs = [], gfIdx = 0;
+function addGift() { const id=++gfIdx; gfs.push({id,brandBadge:'',giftTitle:'',giftDetail:'',giftNote:'',addLabel:'추가 할인',addDetail:''}); rebuildGfs(); render(); }
+function delGf(id) { gfs=gfs.filter(g=>g.id!==id); rebuildGfs(); render(); }
+function setGf(id,key,val){ const g=gfs.find(g=>g.id===id); if(g) g[key]=val; }
 
-function rebuildSss() {
-  const list = document.getElementById('ss-list');
+function rebuildGfs() {
+  const list = document.getElementById('gf-list');
   list.innerHTML = '';
-  sss.forEach((s, idx) => {
+  gfs.forEach((g, idx) => {
     const card = document.createElement('div');
     card.className = 'vcard';
     card.innerHTML = `
       <div class="vcard-head">
-        <span class="vcard-label" style="background:#EEF1FF;color:#4E5FE0">시즌 ${idx+1}</span>
-        <button class="vcard-del" onclick="delSs(${s.id})">✕</button>
+        <span class="vcard-label" style="background:#EEF1FF;color:#4E5FE0">사은 ${idx+1}</span>
+        <button class="vcard-del" onclick="delGf(${g.id})">✕</button>
       </div>
       <div class="vcard-body">
         <div class="field">
-          <span class="field-label-ko">타이틀 <span class="byte-counter" id="cnt-ssttl-${s.id}">0자/30자</span></span>
-          <input type="text" id="ssttl-${s.id}" value="${s.title}" placeholder="5만원 상품권 증정"
-            oninput="setSs(${s.id},'title',this.value);updateCharCount(this,'cnt-ssttl-${s.id}',30);render()"/>
+          <span class="field-label-ko">브랜드 뱃지 <span class="byte-counter" id="cnt-gfbrand-${g.id}">0자/20자</span></span>
+          <input type="text" id="gfbrand-${g.id}" value="${g.brandBadge}" placeholder="LG/삼성"
+            oninput="setGf(${g.id},'brandBadge',this.value);updateCharCount(this,'cnt-gfbrand-${g.id}',20);render()"/>
         </div>
         <div class="field">
-          <span class="field-label-ko">코드 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span><span class="byte-counter" id="cnt-sscode-${s.id}">0자/20자</span></span>
-          <input type="text" id="sscode-${s.id}" value="${s.code}" placeholder="CLUB-2025"
-            oninput="setSs(${s.id},'code',this.value);updateCharCount(this,'cnt-sscode-${s.id}',20);render()"/>
+          <span class="field-label-ko">사은 타이틀 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· **굵게** 지원</span><span class="byte-counter" id="cnt-gftitle-${g.id}">0자/30자</span></span>
+          <input type="text" id="gftitle-${g.id}" value="${g.giftTitle}" placeholder="**6%** 상품권 증정"
+            oninput="setGf(${g.id},'giftTitle',this.value);updateCharCount(this,'cnt-gftitle-${g.id}',30);render()"/>
         </div>
         <div class="field">
-          <span class="field-label-ko">유의사항 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
-          <textarea rows="2" id="ssnote-${s.id}" placeholder="· 일부 품목 제외&#10;· 기간 내 1회 사용 가능"
-            oninput="setSs(${s.id},'note',this.value);render()">${s.note}</textarea>
+          <span class="field-label-ko">사은내역</span>
+          <textarea rows="2" id="gfdetail-${g.id}" placeholder="당일 300/500/1,000&#10;1,500/2,000만원 이상 구매 시"
+            oninput="setGf(${g.id},'giftDetail',this.value);render()">${g.giftDetail}</textarea>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">유의사항 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택 · 회색 작은 글씨</span></span>
+          <textarea rows="2" id="gfnote-${g.id}" placeholder="· 월별 사은율 변동 가능"
+            oninput="setGf(${g.id},'giftNote',this.value);render()">${g.giftNote}</textarea>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">추가 할인 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택 · 비우면 미표시</span><span class="byte-counter" id="cnt-gfadd-${g.id}">0자/16자</span></span>
+          <input type="text" id="gfadd-${g.id}" value="${g.addLabel}" placeholder="추가 할인"
+            oninput="setGf(${g.id},'addLabel',this.value);updateCharCount(this,'cnt-gfadd-${g.id}',16);render()"/>
+        </div>
+        <div class="field">
+          <span class="field-label-ko">추가할인 상세 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· · 로 시작 시 작은 회색</span></span>
+          <textarea rows="2" id="gfadddetail-${g.id}" placeholder="3% 금액할인권 (3매, 300만원 이상 구매 시)&#10;· 최초 가입 시 1회 증정"
+            oninput="setGf(${g.id},'addDetail',this.value);render()">${g.addDetail}</textarea>
         </div>
       </div>`;
     list.appendChild(card);
   });
-  document.getElementById('ss-cnt').textContent = sss.length + '개';
+  document.getElementById('gf-cnt').textContent = gfs.length + '개';
 }
 
 // ─── 가입방법 (스텝) ─────────────────────────────────────────
@@ -820,7 +852,7 @@ function render() {
   const targetLabel=v('f-target-label');
   const secBn=v('f-sec-bn')||'회원전용 혜택 모아보기', secBnSub=v('f-sec-bn-sub');
   const wcBadge=v('f-wc-badge'), wcTitle1=v('f-wc-title1'), wcTitle2=v('f-wc-title2')||'특별한 웰컴 혜택', wcSub=v('f-wc-sub');
-  const secSs=v('f-sec-ss')||'시즌 혜택', secSsSub=v('f-sec-ss-sub');
+  const gfBadge=v('f-gf-badge'), gfTitle1=v('f-gf-title1'), gfTitle2=v('f-gf-title2');
   const secSt=v('f-sec-st')||'가입방법', secStSub=v('f-sec-st-sub');
   const notes=v('f-notes');
   const tint = shade(headerBg, 0.36);
@@ -919,20 +951,37 @@ function render() {
     h += `</div></div>`;
   }
 
-  // 시즌 혜택
-  if (sss.length > 0) {
-    h += `<div class="o-sec"><div class="o-sec-txt">${secSs}</div>`;
-    if (secSsSub) h += `<div class="o-sec-sub">${secSsSub}</div>`;
+  // 사은 혜택 (배경 흰색)
+  if (gfs.length > 0 || gfBadge || gfTitle1 || gfTitle2) {
+    h += `<div class="o-gift-band">`;
+    h += `<div class="o-gift-head">`;
+    if (gfBadge) h += `<span class="o-gift-badge" style="background:${badgeBg}">${gfBadge}</span>`;
+    h += `<div class="o-gift-title1">${fmtLine(gfTitle1||'풍성한 사은 혜택')}</div>`;
+    if (gfTitle2) h += `<div class="o-gift-title2">${gfTitle2}</div>`;
     h += `</div>`;
-    h += `<div class="o-season">`;
-    sss.forEach(s => {
-      h += `<div class="o-cp">`;
-      if (s.title) h += `<div class="o-cp-ttl" style="color:${headerBg}">${s.title}</div>`;
-      if (s.code)  h += `<div class="o-cp-code">${s.code}</div>`;
-      if (s.note)  h += `<div class="o-cp-note">${s.note.replace(/\n/g,'<br>')}</div>`;
+    h += `<div class="o-gift-cards">`;
+    const addBg = shade(headerBg, 0.30);
+    gfs.forEach(g => {
+      h += `<div class="o-gift-card">`;
+      h += `<div class="o-gift-top">`;
+      if (g.brandBadge) h += `<span class="o-gift-brand" style="color:${headerBg};border:1.5px solid ${headerBg}">${g.brandBadge}</span>`;
+      if (g.giftTitle)  h += `<div class="o-gift-gtitle">${fmtLine(g.giftTitle)}</div>`;
+      if (g.giftDetail) h += `<div class="o-gift-gdetail">${fmtLine(g.giftDetail).replace(/\n/g,'<br>')}</div>`;
+      if (g.giftNote) { const t=g.giftNote.trim().startsWith('·')?g.giftNote:'· '+g.giftNote; h += `<div class="o-gift-gnote">${fmtLine(t).replace(/\n/g,'<br>')}</div>`; }
+      h += `</div>`;
+      if (g.addLabel || g.addDetail) {
+        h += `<div class="o-gift-add" style="background:${addBg}">`;
+        if (g.addLabel) h += `<div class="o-gift-add-label" style="color:${headerBg}">${g.addLabel}</div>`;
+        (g.addDetail||'').split('\n').forEach(line => {
+          const t=line.trim(); if(!t) return;
+          if (t.startsWith('·')) h += `<div class="o-gift-add-note">${fmtLine(t)}</div>`;
+          else h += `<div class="o-gift-add-detail">${fmtLine(t)}</div>`;
+        });
+        h += `</div>`;
+      }
       h += `</div>`;
     });
-    h += `</div>`;
+    h += `</div></div>`;
   }
 
   // 가입방법
@@ -990,12 +1039,12 @@ function collectFormData() {
     targets: tgs.map(t=>({ name:t.name, loc:t.loc })),
     secBn: v('f-sec-bn'), secBnSub: v('f-sec-bn-sub'),
     wcBadge: v('f-wc-badge'), wcTitle1: v('f-wc-title1'), wcTitle2: v('f-wc-title2'), wcSub: v('f-wc-sub'),
-    secSs: v('f-sec-ss'), secSsSub: v('f-sec-ss-sub'),
+    gfBadge: v('f-gf-badge'), gfTitle1: v('f-gf-title1'), gfTitle2: v('f-gf-title2'),
     secSt: v('f-sec-st'), secStSub: v('f-sec-st-sub'),
     headerBg: headerBg, notes: v('f-notes'),
     benefits: bns.map(b=>({ title:b.title, lines:b.lines.map(l=>({ type:l.type, text:l.text })) })),
     welcomes: wcs.map(w=>({ title:w.title, desc:w.desc })),
-    seasons:  sss.map(s=>({ title:s.title, code:s.code, note:s.note })),
+    gifts:  gfs.map(g=>({ brandBadge:g.brandBadge, giftTitle:g.giftTitle, giftDetail:g.giftDetail, giftNote:g.giftNote, addLabel:g.addLabel, addDetail:g.addDetail })),
     steps:    sts.map(s=>({ desc:s.desc }))
   };
 }
@@ -1007,7 +1056,7 @@ function restoreFormData(data) {
   set('f-target-label', data.targetLabel);
   set('f-sec-bn', data.secBn); set('f-sec-bn-sub', data.secBnSub);
   set('f-wc-badge', data.wcBadge); set('f-wc-title1', data.wcTitle1); set('f-wc-title2', data.wcTitle2); set('f-wc-sub', data.wcSub);
-  set('f-sec-ss', data.secSs); set('f-sec-ss-sub', data.secSsSub);
+  set('f-gf-badge', data.gfBadge); set('f-gf-title1', data.gfTitle1); set('f-gf-title2', data.gfTitle2);
   set('f-sec-st', data.secSt); set('f-sec-st-sub', data.secStSub);
   set('f-notes', data.notes);
   if (data.headerBg) applyColor(data.headerBg, '', '');
@@ -1027,9 +1076,9 @@ function restoreFormData(data) {
   wcs=[]; wcIdx=0;
   (data.welcomes||[]).forEach(w=>{ const id=++wcIdx; wcs.push({id,img:null,title:w.title||'',desc:w.desc||''}); });
   rebuildWcs();
-  sss=[]; ssIdx=0;
-  (data.seasons||[]).forEach(s=>{ const id=++ssIdx; sss.push({id,title:s.title||'',code:s.code||'',note:s.note||''}); });
-  rebuildSss();
+  gfs=[]; gfIdx=0;
+  (data.gifts||[]).forEach(g=>{ const id=++gfIdx; gfs.push({id,brandBadge:g.brandBadge||'',giftTitle:g.giftTitle||'',giftDetail:g.giftDetail||'',giftNote:g.giftNote||'',addLabel:g.addLabel||'',addDetail:g.addDetail||''}); });
+  rebuildGfs();
   sts=[]; stIdx=0;
   (data.steps||[]).forEach(s=>{ const id=++stIdx; sts.push({id,desc:s.desc||''}); });
   rebuildSts();
@@ -1097,12 +1146,12 @@ function closeExample(e){ if(e&&e.target!==e.currentTarget)return; document.getE
 
 // ─── RESET ───────────────────────────────────────────────────
 function resetAll() {
-  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-bn-sub','f-wc-badge','f-wc-title1','f-wc-title2','f-wc-sub','f-sec-ss','f-sec-ss-sub','f-sec-st','f-sec-st-sub','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-bn-sub','f-wc-badge','f-wc-title1','f-wc-title2','f-wc-sub','f-gf-badge','f-gf-title1','f-gf-title2','f-sec-st','f-sec-st-sub','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('f-intro').value = DEFAULT_INTRO;
   tgs=[]; tgIdx=0; rebuildTgs();
   bns=[]; bnIdx=0; rebuildBns();
   wcs=[]; wcIdx=0; rebuildWcs();
-  sss=[]; ssIdx=0; rebuildSss();
+  gfs=[]; gfIdx=0; rebuildGfs();
   sts=[]; stIdx=0; rebuildSts();
   applyColor('#8AA6C2', 0, '스틸블루');
   render();
