@@ -897,9 +897,9 @@ function render() {
     h += `</div>`;
   }
 
-  // 웰컴 혜택
-  if (wcs.length > 0) {
-    h += `<div class="o-welcome-band" style="background:${tintBg(headerBg)}">`;
+  // 웰컴 혜택 (헤더 입력만 있어도 즉시 표시)
+  if (wcs.length > 0 || wcBadge || wcTitle1 || v('f-wc-title2') || wcSub) {
+    h += `<div class="o-welcome-band" style="background:${pageBg}">`;
     h += `<div class="o-wc-head">`;
     if (wcBadge) h += `<span class="o-wc-badge" style="background:${badgeBg}">${wcBadge}</span>`;
     if (wcTitle1) h += `<div class="o-wc-title1">${wcTitle1}</div>`;
