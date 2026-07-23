@@ -171,6 +171,12 @@ textarea{resize:vertical;min-height:72px}
 .o-notes-ttl{font-size:14px;font-weight:700;color:#5A6172;letter-spacing:-.2px;margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
 .o-notes-txt{font-size:11.5px;font-weight:300;color:#8A90A0;line-height:1.85;white-space:pre-wrap;word-break:keep-all;}
 
+/* 기타 안내 */
+.o-etc{background:#EFEFF1;padding:30px 24px 40px;}
+.o-etc-block + .o-etc-block{margin-top:24px;}
+.o-etc-ttl{font-size:15px;font-weight:700;color:#5A6172;letter-spacing:-.2px;margin-bottom:12px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-etc-txt{font-size:12px;font-weight:300;color:#8A90A0;line-height:1.95;white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#18181A;color:#fff;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:500;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20000;white-space:nowrap;font-family:var(--fn);box-shadow:0 4px 20px rgba(0,0,0,.25);}
 .toast.show{opacity:1}
@@ -391,10 +397,57 @@ textarea{resize:vertical;min-height:72px}
         </div>
       </div>
 
-      <!-- 5. 가입방법 -->
+      <!-- 5. 기타 안내 -->
       <div class="sec">
         <div class="sec-header">
-          <div class="sec-num" style="background:#EEF1FF;color:#4E5FE0">5</div>
+          <div class="sec-num" style="background:#F2F1EC;color:#888">5</div>
+          <span class="sec-title">기타 안내</span>
+          <span class="sec-tag">기본 입력됨</span>
+        </div>
+        <div class="sec-body">
+          <div class="field">
+            <span class="field-label-ko">기타 안내 타이틀</span>
+            <input type="text" id="f-etc-t1" value="기타 안내" oninput="render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">기타 안내 내용 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 한 줄에 한 항목</span></span>
+            <textarea id="f-etc-l1" rows="12" oninput="render()">· 점별 참여브랜드 및 사은률이 상이할 수 있습니다
+· 당일 본인 L.POINT 적립 영수증에 한하여 증정합니다
+· 점간/브랜드간 합산 불가, 타 사은행사와 중복 참여 불가합니다
+· 영수증을 분할하여 증정하지 않습니다
+· 가족카드로 결제 시, 가족 대표회원에게 전자영수증이 발급됩니다
+· 점별 세부 내용은 점내 고지물을 참고하시기 바랍니다
+· 금액할인권은 상품권/L.POINT 결제가 불가합니다
+· 특정 혜택의 경우 백화점 내점 및 인증을 요구할 수 있습니다
+· 클럽 회원 조건 미충족 시 자동 탈퇴될 수 있습니다
+· 고객 인증이 필요한 클럽의 경우 롯데백화점 노원점 내점 및 인증 후 가입 완료됩니다
+· 상기 혜택은 정책에 따라 변경될 수 있습니다
+· L.POINT 개인정보 제3자 제공 동의의 고객에 한해 혜택이 제공됩니다
+· L.POINT 개인정보 제3자 제공 미동의로 전환 시 혜택을 받아볼 수 없으며, SMS/APP 수신 동의를 하셔야 원활한 혜택을 받을 수 있습니다</textarea>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">소제목 2</span>
+            <input type="text" id="f-etc-t2" value="제3자 정보제공 동의 방법" oninput="render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">내용 2</span>
+            <textarea id="f-etc-l2" rows="2" oninput="render()">· L.POINT APP 또는 고객센터(1899-8900)</textarea>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">소제목 3</span>
+            <input type="text" id="f-etc-t3" value="문의 사항" oninput="render()"/>
+          </div>
+          <div class="field">
+            <span class="field-label-ko">내용 3</span>
+            <textarea id="f-etc-l3" rows="2" oninput="render()">· 1577-0001로 연락바랍니다</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. 가입방법 -->
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-num" style="background:#EEF1FF;color:#4E5FE0">6</div>
           <span class="sec-title">가입방법</span>
           <span class="sec-tag" id="st-cnt">0개</span>
         </div>
@@ -412,20 +465,6 @@ textarea{resize:vertical;min-height:72px}
             <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             단계 추가
           </button>
-        </div>
-      </div>
-
-      <!-- 6. 참고사항 -->
-      <div class="sec">
-        <div class="sec-header">
-          <div class="sec-num" style="background:#F2F1EC;color:#888">6</div>
-          <span class="sec-title">유의사항</span>
-          <span class="sec-tag">선택</span>
-        </div>
-        <div class="sec-body">
-          <textarea id="f-notes" rows="5"
-            placeholder="· 본 혜택은 롯백클럽 회원에 한해 제공됩니다&#10;· 혜택 내용은 사전 예고 없이 변경될 수 있습니다"
-            oninput="render()"></textarea>
         </div>
       </div>
 
@@ -477,6 +516,25 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZnJ_SrTV6YGFZ
 
 // 클럽 설명 기본 문안
 const DEFAULT_INTRO = '입주 고객님을 위한 다양한 리빙&라이프\n쇼핑 혜택을 제공해 드리기 위해\n마련된 멤버십 클럽입니다.';
+
+// 기타 안내 기본 문안
+const DEFAULT_ETC_L1 = `· 점별 참여브랜드 및 사은률이 상이할 수 있습니다
+· 당일 본인 L.POINT 적립 영수증에 한하여 증정합니다
+· 점간/브랜드간 합산 불가, 타 사은행사와 중복 참여 불가합니다
+· 영수증을 분할하여 증정하지 않습니다
+· 가족카드로 결제 시, 가족 대표회원에게 전자영수증이 발급됩니다
+· 점별 세부 내용은 점내 고지물을 참고하시기 바랍니다
+· 금액할인권은 상품권/L.POINT 결제가 불가합니다
+· 특정 혜택의 경우 백화점 내점 및 인증을 요구할 수 있습니다
+· 클럽 회원 조건 미충족 시 자동 탈퇴될 수 있습니다
+· 고객 인증이 필요한 클럽의 경우 롯데백화점 노원점 내점 및 인증 후 가입 완료됩니다
+· 상기 혜택은 정책에 따라 변경될 수 있습니다
+· L.POINT 개인정보 제3자 제공 동의의 고객에 한해 혜택이 제공됩니다
+· L.POINT 개인정보 제3자 제공 미동의로 전환 시 혜택을 받아볼 수 없으며, SMS/APP 수신 동의를 하셔야 원활한 혜택을 받을 수 있습니다`;
+const DEFAULT_ETC_T2 = '제3자 정보제공 동의 방법';
+const DEFAULT_ETC_L2 = '· L.POINT APP 또는 고객센터(1899-8900)';
+const DEFAULT_ETC_T3 = '문의 사항';
+const DEFAULT_ETC_L3 = '· 1577-0001로 연락바랍니다';
 
 // ─── COLOR ───────────────────────────────────────────────────
 const PRESETS = [
@@ -862,7 +920,7 @@ function render() {
   const wcBadge=v('f-wc-badge'), wcTitle1=v('f-wc-title1'), wcTitle2=v('f-wc-title2')||'특별한 웰컴 혜택', wcSub=v('f-wc-sub');
   const gfBadge=v('f-gf-badge'), gfTitle1=v('f-gf-title1'), gfTitle2=v('f-gf-title2');
   const secSt=v('f-sec-st')||'가입방법', secStSub=v('f-sec-st-sub');
-  const notes=v('f-notes');
+  const etcT1=v('f-etc-t1'), etcL1=v('f-etc-l1'), etcT2=v('f-etc-t2'), etcL2=v('f-etc-l2'), etcT3=v('f-etc-t3'), etcL3=v('f-etc-l3');
   const tint = shade(headerBg, 0.36);
 
   // 페이지 배경 = 테마색의 밝은 톤
@@ -994,6 +1052,21 @@ function render() {
     h += `</div></div>`;
   }
 
+  // 기타 안내
+  if (etcT1||etcL1||etcT2||etcL2||etcT3||etcL3) {
+    const etcBlock = (t,l) => {
+      let s='';
+      if (t) s += `<div class="o-etc-ttl">${t}</div>`;
+      if (l) s += `<div class="o-etc-txt">${l.replace(/\n/g,'<br>')}</div>`;
+      return s ? `<div class="o-etc-block">${s}</div>` : '';
+    };
+    h += `<div class="o-etc">`;
+    h += etcBlock(etcT1, etcL1);
+    h += etcBlock(etcT2, etcL2);
+    h += etcBlock(etcT3, etcL3);
+    h += `</div>`;
+  }
+
   // 가입방법
   if (sts.length > 0) {
     h += `<div class="o-sec"><div class="o-sec-txt">${secSt}</div>`;
@@ -1009,15 +1082,7 @@ function render() {
     h += `</div>`;
   }
 
-  // 유의사항
-  if (notes) {
-    h += `<div class="o-notes">`;
-    h += `<div class="o-notes-ttl">유의사항</div>`;
-    h += `<div class="o-notes-txt">${notes.replace(/\n/g,'<br>')}</div>`;
-    h += `</div>`;
-  } else {
-    h += `<div style="height:48px"></div>`;
-  }
+  h += `<div style="height:40px"></div>`;
 
   document.getElementById('output').innerHTML = h;
 }
@@ -1051,7 +1116,8 @@ function collectFormData() {
     wcBadge: v('f-wc-badge'), wcTitle1: v('f-wc-title1'), wcTitle2: v('f-wc-title2'), wcSub: v('f-wc-sub'),
     gfBadge: v('f-gf-badge'), gfTitle1: v('f-gf-title1'), gfTitle2: v('f-gf-title2'),
     secSt: v('f-sec-st'), secStSub: v('f-sec-st-sub'),
-    headerBg: headerBg, notes: v('f-notes'),
+    etcT1: v('f-etc-t1'), etcL1: v('f-etc-l1'), etcT2: v('f-etc-t2'), etcL2: v('f-etc-l2'), etcT3: v('f-etc-t3'), etcL3: v('f-etc-l3'),
+    headerBg: headerBg,
     benefits: bns.map(b=>({ title:b.title, lines:b.lines.map(l=>({ type:l.type, text:l.text })) })),
     welcomes: wcs.map(w=>({ title:w.title, desc:w.desc })),
     gifts:  gfs.map(g=>({ brandBadge:g.brandBadge, giftTitle:g.giftTitle, giftDetail:g.giftDetail, giftNote:g.giftNote, addLabel:g.addLabel, addDetail:g.addDetail })),
@@ -1068,7 +1134,12 @@ function restoreFormData(data) {
   set('f-wc-badge', data.wcBadge); set('f-wc-title1', data.wcTitle1); set('f-wc-title2', data.wcTitle2); set('f-wc-sub', data.wcSub);
   set('f-gf-badge', data.gfBadge); set('f-gf-title1', data.gfTitle1); set('f-gf-title2', data.gfTitle2);
   set('f-sec-st', data.secSt); set('f-sec-st-sub', data.secStSub);
-  set('f-notes', data.notes);
+  set('f-etc-t1', data.etcT1!==undefined?data.etcT1:'기타 안내');
+  set('f-etc-l1', data.etcL1!==undefined?data.etcL1:DEFAULT_ETC_L1);
+  set('f-etc-t2', data.etcT2!==undefined?data.etcT2:DEFAULT_ETC_T2);
+  set('f-etc-l2', data.etcL2!==undefined?data.etcL2:DEFAULT_ETC_L2);
+  set('f-etc-t3', data.etcT3!==undefined?data.etcT3:DEFAULT_ETC_T3);
+  set('f-etc-l3', data.etcL3!==undefined?data.etcL3:DEFAULT_ETC_L3);
   if (data.headerBg) applyColor(data.headerBg, '', '');
   tgs=[]; tgIdx=0;
   (data.targets||[]).forEach(t=>{ const id=++tgIdx; tgs.push({id,name:t.name||'',loc:t.loc||''}); });
@@ -1156,8 +1227,13 @@ function closeExample(e){ if(e&&e.target!==e.currentTarget)return; document.getE
 
 // ─── RESET ───────────────────────────────────────────────────
 function resetAll() {
-  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-bn-sub','f-wc-badge','f-wc-title1','f-wc-title2','f-wc-sub','f-gf-badge','f-gf-title1','f-gf-title2','f-sec-st','f-sec-st-sub','f-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-bn-sub','f-wc-badge','f-wc-title1','f-wc-title2','f-wc-sub','f-gf-badge','f-gf-title1','f-gf-title2','f-sec-st','f-sec-st-sub'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('f-intro').value = DEFAULT_INTRO;
+  // 기타 안내 기본값 복원
+  const setV=(id,val)=>{ const el=document.getElementById(id); if(el) el.value=val; };
+  setV('f-etc-t1','기타 안내'); setV('f-etc-l1',DEFAULT_ETC_L1);
+  setV('f-etc-t2',DEFAULT_ETC_T2); setV('f-etc-l2',DEFAULT_ETC_L2);
+  setV('f-etc-t3',DEFAULT_ETC_T3); setV('f-etc-l3',DEFAULT_ETC_L3);
   tgs=[]; tgIdx=0; rebuildTgs();
   bns=[]; bnIdx=0; rebuildBns();
   wcs=[]; wcIdx=0; rebuildWcs();
