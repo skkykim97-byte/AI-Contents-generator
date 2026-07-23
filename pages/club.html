@@ -160,11 +160,18 @@ textarea{resize:vertical;min-height:72px}
 .o-gift-add-detail{font-size:14px;font-weight:400;color:#3A4557;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 .o-gift-add-note{font-size:12px;font-weight:300;color:#9AA6BA;margin-top:8px;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 
-/* 가입방법 스텝 */
-.o-join{padding:16px 20px 8px;display:flex;flex-direction:column;gap:10px;}
-.o-step{display:flex;align-items:flex-start;gap:14px;background:#fff;border-radius:14px;padding:16px 18px;box-shadow:0 2px 8px rgba(29,36,51,.05);}
-.o-step-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
-.o-step-desc{flex:1;font-size:13px;font-weight:400;color:#1D2433;line-height:1.6;white-space:pre-wrap;word-break:keep-all;padding-top:3px;font-family:'Noto Sans KR',sans-serif;}
+/* 가입방법 (배경 흰색) */
+.o-join-band{background:#fff;padding:36px 20px 40px;}
+.o-join-head{text-align:center;margin-bottom:24px;}
+.o-join-title{font-size:23px;font-weight:700;color:#2B3A5B;letter-spacing:-.5px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-join-sub{font-size:13px;font-weight:400;color:#7A8194;margin-top:10px;line-height:1.6;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-join{display:flex;flex-direction:column;gap:10px;}
+.o-step{display:flex;align-items:center;gap:14px;background:#F4F6F9;border:1px solid #E7EBF1;border-radius:16px;padding:20px 20px;}
+.o-step-num{width:28px;height:28px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-step-desc{flex:1;font-size:15px;font-weight:500;color:#2B3A5B;line-height:1.5;white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-join-notes{margin-top:24px;text-align:center;}
+.o-join-note-line{font-size:12.5px;font-weight:300;color:#8A90A0;line-height:1.7;word-break:keep-all;padding:0 6px;font-family:'Noto Sans KR',sans-serif;}
+.o-join-note-line + .o-join-note-line{margin-top:6px;}
 
 /* 유의사항 */
 .o-notes{padding:22px 24px 34px;margin-top:16px;background:#E4E8F0;}
@@ -456,17 +463,23 @@ textarea{resize:vertical;min-height:72px}
         <div class="sec-body">
           <div class="field">
             <span class="field-label-ko">섹션 타이틀 <span class="byte-counter" id="cnt-sec-st">0자/24자</span></span>
-            <input type="text" id="f-sec-st" placeholder="가입방법" oninput="updateCharCount(this,'cnt-sec-st',24);render()"/>
+            <input type="text" id="f-sec-st" value="가입방법" oninput="updateCharCount(this,'cnt-sec-st',24);render()"/>
           </div>
           <div class="field">
             <span class="field-label-ko">섹션 설명 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 선택</span></span>
-            <input type="text" id="f-sec-st-sub" placeholder="아래 순서대로 간편하게 가입하세요" oninput="render()"/>
+            <input type="text" id="f-sec-st-sub" value="웰컴 패키지로 다양한 혜택을 누려보세요" oninput="render()"/>
           </div>
           <div class="vcard-list" id="st-list"></div>
           <button class="add-card-btn" onclick="addStep()">
             <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             단계 추가
           </button>
+          <div class="field">
+            <span class="field-label-ko">유의사항 <span style="color:var(--tx-hint);font-weight:300;font-size:11px">· 하단 회색 안내</span></span>
+            <textarea id="f-st-notes" rows="4" oninput="render()">· 단, 인증절차 필요로 담당자 승인까지 3-7일 소요될 수 있습니다
+(승인시기 점문의 : 1577-0001)
+· L.POINT 고객명 / 입주 주소지 확인 후 최종 승인해드립니다</textarea>
+          </div>
         </div>
       </div>
 
@@ -537,6 +550,13 @@ const DEFAULT_ETC_T2 = '제3자 정보제공 동의 방법';
 const DEFAULT_ETC_L2 = '· L.POINT APP 또는 고객센터(1899-8900)';
 const DEFAULT_ETC_T3 = '문의 사항';
 const DEFAULT_ETC_L3 = '· 1577-0001로 연락바랍니다';
+
+// 가입방법 기본값
+const DEFAULT_ST_SUB = '웰컴 패키지로 다양한 혜택을 누려보세요';
+const DEFAULT_STEPS = ['웰컴 클럽 가입 신청하기', '사은행사장 방문 후 인증서류 제출하기'];
+const DEFAULT_ST_NOTES = `· 단, 인증절차 필요로 담당자 승인까지 3-7일 소요될 수 있습니다
+(승인시기 점문의 : 1577-0001)
+· L.POINT 고객명 / 입주 주소지 확인 후 최종 승인해드립니다`;
 
 // ─── COLOR ───────────────────────────────────────────────────
 const PRESETS = [
@@ -921,7 +941,7 @@ function render() {
   const secBn=v('f-sec-bn')||'회원전용 혜택 모아보기', secBnSub=v('f-sec-bn-sub');
   const wcBadge=v('f-wc-badge'), wcTitle1=v('f-wc-title1'), wcTitle2=v('f-wc-title2')||'특별한 웰컴 혜택', wcSub=v('f-wc-sub');
   const gfBadge=v('f-gf-badge'), gfTitle1=v('f-gf-title1'), gfTitle2=v('f-gf-title2');
-  const secSt=v('f-sec-st')||'가입방법', secStSub=v('f-sec-st-sub');
+  const secSt=v('f-sec-st')||'가입방법', secStSub=v('f-sec-st-sub'), stNotes=v('f-st-notes');
   const etcT1=v('f-etc-t1'), etcL1=v('f-etc-l1'), etcT2=v('f-etc-t2'), etcL2=v('f-etc-l2'), etcT3=v('f-etc-t3'), etcL3=v('f-etc-l3');
   const tint = shade(headerBg, 0.36);
 
@@ -1073,18 +1093,29 @@ function render() {
     h += `</div>`;
   }
 
-  // 가입방법
-  if (sts.length > 0) {
-    h += `<div class="o-sec"><div class="o-sec-txt">${secSt}</div>`;
-    if (secStSub) h += `<div class="o-sec-sub">${secStSub}</div>`;
+  // 가입방법 (배경 흰색)
+  if (sts.length > 0 || secStSub || stNotes) {
+    h += `<div class="o-join-band">`;
+    h += `<div class="o-join-head"><div class="o-join-title">${secSt}</div>`;
+    if (secStSub) h += `<div class="o-join-sub">${secStSub}</div>`;
     h += `</div>`;
-    h += `<div class="o-join">`;
-    sts.forEach((s, idx) => {
-      h += `<div class="o-step">`;
-      h += `<div class="o-step-num" style="background:${headerBg}">${idx+1}</div>`;
-      h += `<div class="o-step-desc">${(s.desc||'').replace(/\n/g,'<br>')}</div>`;
+    if (sts.length > 0) {
+      h += `<div class="o-join">`;
+      sts.forEach((s, idx) => {
+        h += `<div class="o-step">`;
+        h += `<div class="o-step-num" style="background:${headerBg}">${idx+1}</div>`;
+        h += `<div class="o-step-desc">${(s.desc||'').replace(/\n/g,'<br>')}</div>`;
+        h += `</div>`;
+      });
       h += `</div>`;
-    });
+    }
+    if (stNotes) {
+      h += `<div class="o-join-notes">`;
+      stNotes.split('\n').map(ln=>ln.trim()).filter(ln=>ln).forEach(ln=>{
+        h += `<div class="o-join-note-line">${ln}</div>`;
+      });
+      h += `</div>`;
+    }
     h += `</div>`;
   }
 
@@ -1121,7 +1152,7 @@ function collectFormData() {
     secBn: v('f-sec-bn'), secBnSub: v('f-sec-bn-sub'),
     wcBadge: v('f-wc-badge'), wcTitle1: v('f-wc-title1'), wcTitle2: v('f-wc-title2'), wcSub: v('f-wc-sub'),
     gfBadge: v('f-gf-badge'), gfTitle1: v('f-gf-title1'), gfTitle2: v('f-gf-title2'),
-    secSt: v('f-sec-st'), secStSub: v('f-sec-st-sub'),
+    secSt: v('f-sec-st'), secStSub: v('f-sec-st-sub'), stNotes: v('f-st-notes'),
     etcT1: v('f-etc-t1'), etcL1: v('f-etc-l1'), etcT2: v('f-etc-t2'), etcL2: v('f-etc-l2'), etcT3: v('f-etc-t3'), etcL3: v('f-etc-l3'),
     headerBg: headerBg,
     benefits: bns.map(b=>({ title:b.title, lines:b.lines.map(l=>({ type:l.type, text:l.text })) })),
@@ -1139,7 +1170,9 @@ function restoreFormData(data) {
   set('f-sec-bn', data.secBn); set('f-sec-bn-sub', data.secBnSub);
   set('f-wc-badge', data.wcBadge); set('f-wc-title1', data.wcTitle1); set('f-wc-title2', data.wcTitle2); set('f-wc-sub', data.wcSub);
   set('f-gf-badge', data.gfBadge); set('f-gf-title1', data.gfTitle1); set('f-gf-title2', data.gfTitle2);
-  set('f-sec-st', data.secSt); set('f-sec-st-sub', data.secStSub);
+  set('f-sec-st', data.secSt!==undefined?data.secSt:'가입방법');
+  set('f-sec-st-sub', data.secStSub!==undefined?data.secStSub:DEFAULT_ST_SUB);
+  set('f-st-notes', data.stNotes!==undefined?data.stNotes:DEFAULT_ST_NOTES);
   set('f-etc-t1', data.etcT1!==undefined?data.etcT1:'기타 안내');
   set('f-etc-l1', data.etcL1!==undefined?data.etcL1:DEFAULT_ETC_L1);
   set('f-etc-t2', data.etcT2!==undefined?data.etcT2:DEFAULT_ETC_T2);
@@ -1233,24 +1266,27 @@ function closeExample(e){ if(e&&e.target!==e.currentTarget)return; document.getE
 
 // ─── RESET ───────────────────────────────────────────────────
 function resetAll() {
-  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-bn-sub','f-wc-badge','f-wc-title1','f-wc-title2','f-wc-sub','f-gf-badge','f-gf-title1','f-gf-title2','f-sec-st','f-sec-st-sub'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-bn-sub','f-wc-badge','f-wc-title1','f-wc-title2','f-wc-sub','f-gf-badge','f-gf-title1','f-gf-title2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('f-intro').value = DEFAULT_INTRO;
-  // 기타 안내 기본값 복원
+  // 기본값 복원
   const setV=(id,val)=>{ const el=document.getElementById(id); if(el) el.value=val; };
   setV('f-etc-t1','기타 안내'); setV('f-etc-l1',DEFAULT_ETC_L1);
   setV('f-etc-t2',DEFAULT_ETC_T2); setV('f-etc-l2',DEFAULT_ETC_L2);
   setV('f-etc-t3',DEFAULT_ETC_T3); setV('f-etc-l3',DEFAULT_ETC_L3);
+  setV('f-sec-st','가입방법'); setV('f-sec-st-sub',DEFAULT_ST_SUB); setV('f-st-notes',DEFAULT_ST_NOTES);
   tgs=[]; tgIdx=0; rebuildTgs();
   bns=[]; bnIdx=0; rebuildBns();
   wcs=[]; wcIdx=0; rebuildWcs();
   gfs=[]; gfIdx=0; rebuildGfs();
-  sts=[]; stIdx=0; rebuildSts();
+  sts=[]; stIdx=0; DEFAULT_STEPS.forEach(d=>{ const id=++stIdx; sts.push({id,desc:d}); }); rebuildSts();
   applyColor('#8AA6C2', 0, '스틸블루');
   render();
 }
 
 // ─── INIT ────────────────────────────────────────────────────
 buildSwatches();
+DEFAULT_STEPS.forEach(d=>{ const id=++stIdx; sts.push({id,desc:d}); });
+rebuildSts();
 render();
 </script>
 </body>
