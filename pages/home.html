@@ -16,16 +16,17 @@
   }
   body { font-family: var(--font); background: var(--gray-100); color: var(--gray-800); min-height: 100vh; display: flex; flex-direction: column; }
 
-  header { background: var(--white); border-bottom: 2px solid var(--primary); padding: 0 40px; height: 56px; display: flex; align-items: center; gap: 12px; }
-  .logo-img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+  header { background: var(--white); border-bottom: 1px solid var(--gray-200); height: 60px; display: flex; align-items: center; }
+  .header-inner { width: 100%; max-width: 760px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; gap: 12px; }
+  .logo-img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
   header h1 { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; color: var(--gray-800); }
-  header .badge { margin-left: 8px; background: var(--primary-light); color: var(--primary); font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+  header .badge { margin-left: 8px; background: var(--gray-100); color: var(--gray-600); font-size: 10px; font-weight: 600; letter-spacing: 0.5px; padding: 3px 9px; border-radius: 20px; }
 
   main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 20px; }
-  .card { background: var(--white); border-radius: 16px; box-shadow: var(--shadow-md); width: 100%; max-width: 760px; overflow: hidden; }
+  .card { background: var(--white); border-radius: 18px; box-shadow: 0 8px 40px rgba(20,24,40,0.10); width: 100%; max-width: 760px; overflow: hidden; }
 
-  .card-header { background: var(--primary); padding: 22px 32px; color: white; }
-  .card-header h2 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+  .card-header { background: linear-gradient(120deg, #1E2333 0%, #2B3350 60%, #343D5E 100%); padding: 26px 32px; color: white; position: relative; }
+  .card-header h2 { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; }
 
   .card-body { padding: 32px; display: flex; flex-direction: column; gap: 28px; }
 
@@ -99,9 +100,11 @@
 <body>
 
 <header>
-  <img src="logo.png" alt="롯백" class="logo-img" onerror="this.style.display='none'">
-  <h1>셀프 콘텐츠 제작</h1>
-  <span class="badge">APP</span>
+  <div class="header-inner">
+    <img src="logo.png" alt="로고" class="logo-img" onerror="this.style.display='none'">
+    <h1>셀프 콘텐츠 제작</h1>
+    <span class="badge">APP</span>
+  </div>
 </header>
 
 <main>
