@@ -1264,30 +1264,17 @@ async function copySaveCode(){ try{ await navigator.clipboard.writeText(lastSave
 function openExample(){ document.getElementById('ex-modal').classList.add('show'); }
 function closeExample(e){ if(e&&e.target!==e.currentTarget)return; document.getElementById('ex-modal').classList.remove('show'); }
 
-// ─── RESET ───────────────────────────────────────────────────
+// ─── RESET (기본값으로 복원) ─────────────────────────────────
 function resetAll() {
-  ['f-badge','f-title','f-intro','f-period-label','f-period','f-period-note','f-target-label','f-sec-bn','f-sec-bn-sub','f-wc-badge','f-wc-title1','f-wc-title2','f-wc-sub','f-gf-badge','f-gf-title1','f-gf-title2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-  document.getElementById('f-intro').value = DEFAULT_INTRO;
-  // 기본값 복원
-  const setV=(id,val)=>{ const el=document.getElementById(id); if(el) el.value=val; };
-  setV('f-etc-t1','기타 안내'); setV('f-etc-l1',DEFAULT_ETC_L1);
-  setV('f-etc-t2',DEFAULT_ETC_T2); setV('f-etc-l2',DEFAULT_ETC_L2);
-  setV('f-etc-t3',DEFAULT_ETC_T3); setV('f-etc-l3',DEFAULT_ETC_L3);
-  setV('f-sec-st','가입방법'); setV('f-sec-st-sub',DEFAULT_ST_SUB); setV('f-st-notes',DEFAULT_ST_NOTES);
-  tgs=[]; tgIdx=0; rebuildTgs();
-  bns=[]; bnIdx=0; rebuildBns();
-  wcs=[]; wcIdx=0; rebuildWcs();
-  gfs=[]; gfIdx=0; rebuildGfs();
-  sts=[]; stIdx=0; DEFAULT_STEPS.forEach(d=>{ const id=++stIdx; sts.push({id,desc:d}); }); rebuildSts();
-  applyColor('#8AA6C2', 0, '스틸블루');
-  render();
+  restoreFormData(DEFAULT_DATA);
 }
+
+// ─── DEFAULT DATA (초기 표시 값) ──────────────────────────────
+const DEFAULT_DATA = {"badge":"WHAT IS?","title":"신규아파트 웰컴 클럽은?","intro":"입주 고객님을 위한 다양한 리빙&라이프\n쇼핑 혜택을 제공해 드리기 위해\n마련된 멤버십 클럽입니다.","periodLabel":"기간","period":"2026년 8월 - 2027년 2월","periodNote":"(기간 변경/조기종료 가능)","targetLabel":"대상 APT","targets":[{"name":"E편한세상신곡시그니처뷰 1&2단지","loc":"의정부 신곡동"},{"name":"양주회천 A25","loc":"양주시 덕계동"},{"name":"보문센트럴아이파크","loc":"서울시 성북구"},{"name":"의정부역파밀리에II","loc":"의정부시 의정부동"}],"secBn":"회원 전용 혜택","secBnSub":"","wcBadge":"Benefit 01","wcTitle1":"입주 고객님들에게 제공되는","wcTitle2":"특별한 웰컴 혜택","wcSub":"반가운 마음을 담아 혜택을 준비했어요","gfBadge":"Benefit 02","gfTitle1":"최대 10%까지 풍성한 사은 혜택","gfTitle2":"브랜드와 상품별로 제공되는 추가 할인까지 만나보세요","secSt":"가입방법","secStSub":"","stNotes":"· 단, 인증절차 필요로 담당자 승인까지 3-7일 소요될 수 있습니다\n(승인시기 점문의 : 1577-0001)\n· L.POINT 고객명 / 입주 주소지 확인 후 최종 승인해드립니다","etcT1":"기타 안내","etcL1":"· 점별 참여브랜드 및 사은률이 상이할 수 있습니다\n· 당일 본인 L.POINT 적립 영수증에 한하여 증정합니다\n· 점간/브랜드간 합산 불가, 타 사은행사와 중복 참여 불가합니다\n· 영수증을 분할하여 증정하지 않습니다\n· 가족카드로 결제 시, 가족 대표회원에게 전자영수증이 발급됩니다\n· 점별 세부 내용은 점내 고지물을 참고하시기 바랍니다\n· 금액할인권은 상품권/L.POINT 결제가 불가합니다\n· 특정 혜택의 경우 백화점 내점 및 인증을 요구할 수 있습니다\n· 클럽 회원 조건 미충족 시 자동 탈퇴될 수 있습니다\n· 고객 인증이 필요한 클럽의 경우 롯데백화점 OO점 내점 및 인증 후 가입 완료됩니다\n· 상기 혜택은 정책에 따라 변경될 수 있습니다\n· L.POINT 개인정보 제3자 제공 동의의 고객에 한해 혜택이 제공됩니다\n· L.POINT 개인정보 제3자 제공 미동의로 전환 시 혜택을 받아볼 수 없으며, SMS/APP 수신 동의를 하셔야 원활한 혜택을 받을 수 있습니다","etcT2":"제3자 정보제공 동의 방법","etcL2":"· L.POINT APP 또는 고객센터(1899-8900)","etcT3":"문의 사항","etcL3":"· 1577-0001로 연락바랍니다","headerBg":"#8AA6C2","benefits":[{"title":"무료 주차 쿠폰","lines":[{"type":"normal","text":"3시간 무료 주차"},{"type":"normal","text":"교환권 증정"}]},{"title":"사은/할인 혜택","lines":[{"type":"normal","text":"[삼성/LG] 6%"},{"type":"plus","text":"추가할인 : 3%"},{"type":"normal","text":"[가구/리빙] 5% - 10%"},{"type":"plus","text":"추가할인 : 7%"},{"type":"note","text":"알레르망/아이리스 제외"}]}],"welcomes":[{"title":"무료 주차권","desc":"3시간 무료 주차권\n(월 2매)"},{"title":"미용 티슈 증정","desc":"모나리자 미용 티슈\n(3개입)"}],"gifts":[{"brandBadge":"LG/삼성","giftTitle":"6% 상품권 증정","giftDetail":"당일 300/500/1,000\n1,500/2,000만원 이상 구매시","giftNote":"월별 사은율 변동 가능","addLabel":"추가 할인","addDetail":"3% 금액할인권 (3매, 300만원 이상 구매시)\n·최초 가입시 1회 증정"},{"brandBadge":"가구","giftTitle":"5-10% 상품권 증정","giftDetail":"당일 200.300.500.1,000만원 이상 구매시","giftNote":"","addLabel":"추가 할인","addDetail":"7% 금액할인권(1매, 400만원 이상 구매 시)\n·최초 가입시 1회 증정"}],"steps":[{"desc":"월컴 클럽 가입 신청하기"},{"desc":"사은행사장 방문 후 인증서류 제출하기"}]};
 
 // ─── INIT ────────────────────────────────────────────────────
 buildSwatches();
-DEFAULT_STEPS.forEach(d=>{ const id=++stIdx; sts.push({id,desc:d}); });
-rebuildSts();
-render();
+restoreFormData(DEFAULT_DATA);
 </script>
 </body>
 </html>
