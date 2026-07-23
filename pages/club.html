@@ -175,7 +175,9 @@ textarea{resize:vertical;min-height:72px}
 .o-etc{background:#EFEFF1;padding:30px 24px 40px;}
 .o-etc-block + .o-etc-block{margin-top:24px;}
 .o-etc-ttl{font-size:15px;font-weight:700;color:#5A6172;letter-spacing:-.2px;margin-bottom:12px;line-height:1.4;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
-.o-etc-txt{font-size:12px;font-weight:300;color:#8A90A0;line-height:1.95;white-space:pre-wrap;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-etc-txt{font-size:12px;font-weight:300;color:#8A90A0;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
+.o-etc-line{padding-left:12px;text-indent:-12px;line-height:1.6;}
+.o-etc-line + .o-etc-line{margin-top:7px;}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#18181A;color:#fff;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:500;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20000;white-space:nowrap;font-family:var(--fn);box-shadow:0 4px 20px rgba(0,0,0,.25);}
@@ -420,7 +422,7 @@ textarea{resize:vertical;min-height:72px}
 · 금액할인권은 상품권/L.POINT 결제가 불가합니다
 · 특정 혜택의 경우 백화점 내점 및 인증을 요구할 수 있습니다
 · 클럽 회원 조건 미충족 시 자동 탈퇴될 수 있습니다
-· 고객 인증이 필요한 클럽의 경우 롯데백화점 노원점 내점 및 인증 후 가입 완료됩니다
+· 고객 인증이 필요한 클럽의 경우 롯데백화점 OO점 내점 및 인증 후 가입 완료됩니다
 · 상기 혜택은 정책에 따라 변경될 수 있습니다
 · L.POINT 개인정보 제3자 제공 동의의 고객에 한해 혜택이 제공됩니다
 · L.POINT 개인정보 제3자 제공 미동의로 전환 시 혜택을 받아볼 수 없으며, SMS/APP 수신 동의를 하셔야 원활한 혜택을 받을 수 있습니다</textarea>
@@ -527,7 +529,7 @@ const DEFAULT_ETC_L1 = `· 점별 참여브랜드 및 사은률이 상이할 수
 · 금액할인권은 상품권/L.POINT 결제가 불가합니다
 · 특정 혜택의 경우 백화점 내점 및 인증을 요구할 수 있습니다
 · 클럽 회원 조건 미충족 시 자동 탈퇴될 수 있습니다
-· 고객 인증이 필요한 클럽의 경우 롯데백화점 노원점 내점 및 인증 후 가입 완료됩니다
+· 고객 인증이 필요한 클럽의 경우 롯데백화점 OO점 내점 및 인증 후 가입 완료됩니다
 · 상기 혜택은 정책에 따라 변경될 수 있습니다
 · L.POINT 개인정보 제3자 제공 동의의 고객에 한해 혜택이 제공됩니다
 · L.POINT 개인정보 제3자 제공 미동의로 전환 시 혜택을 받아볼 수 없으며, SMS/APP 수신 동의를 하셔야 원활한 혜택을 받을 수 있습니다`;
@@ -1057,7 +1059,11 @@ function render() {
     const etcBlock = (t,l) => {
       let s='';
       if (t) s += `<div class="o-etc-ttl">${t}</div>`;
-      if (l) s += `<div class="o-etc-txt">${l.replace(/\n/g,'<br>')}</div>`;
+      if (l) {
+        const lines = l.split('\n').map(ln=>ln.trim()).filter(ln=>ln)
+          .map(ln=>`<div class="o-etc-line">${ln}</div>`).join('');
+        s += `<div class="o-etc-txt">${lines}</div>`;
+      }
       return s ? `<div class="o-etc-block">${s}</div>` : '';
     };
     h += `<div class="o-etc">`;
