@@ -109,6 +109,10 @@ input[type=file]{display:none}
 .o-hd-title1{font-size:40px;font-weight:500;letter-spacing:-.5px;line-height:1.35;color:#222;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 .o-hd-title2{font-size:40px;font-weight:500;letter-spacing:-.5px;line-height:1.35;color:#222;margin-bottom:16px;word-break:keep-all;font-family:'Noto Sans KR',sans-serif;}
 .o-hd-period{font-size:15px;font-weight:400;color:#555;letter-spacing:-.2px;font-family:'MaisonNeue','Noto Sans KR',sans-serif;}
+.o-hd-meta{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.o-hd-row{display:flex;align-items:baseline;font-size:15px;font-weight:400;gap:0;}
+.o-hd-key{width:52px;flex-shrink:0;font-weight:400;}
+.o-hd-val{flex:1;line-height:1.5;word-break:keep-all;font-weight:400;}
 .o-hd-logo{position:absolute;top:32px;right:24px;width:80px;text-align:center;}
 .o-hd-logo-img{width:80px;height:80px;object-fit:contain;display:block;}
 .o-hd-logo-ph{width:80px;height:80px;background:#F5E6EC;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#C0A0A8;font-weight:300;}
@@ -910,7 +914,7 @@ function render() {
   h += `<div class="o-hd-title1" style="color:${titleColor}">${title1||'OO백화점 OO점'}</div>`;
   h += `<div class="o-hd-title2" style="color:${titleColor}">${title2||'개점 OO주년'}</div>`;
   h += `</div>`;
-  if (period) h += `<div class="o-hd-period" style="color:${periodColor}">${period}</div>`;
+  if (period) h += `<div class="o-hd-meta"><div class="o-hd-row"><span class="o-hd-key" style="color:${periodColor}">기간</span><span class="o-hd-val" style="color:${periodColor}">${period}</span></div></div>`;
   if (imgStore.logo) h += `<div class="o-hd-logo"><img src="${imgStore.logo}" class="o-hd-logo-img"/></div>`;
   h += `</div>`;
 
