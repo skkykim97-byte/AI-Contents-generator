@@ -385,8 +385,8 @@ input[type=file]{display:none}
   margin-bottom:10px;
   word-break:keep-all;
 }
-.o-hd-meta{display:flex;flex-direction:column;gap:8px}
-.o-hd-row{display:flex;align-items:baseline;font-size:15px;font-weight:300;gap:0}
+.o-hd-meta{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.o-hd-row{display:flex;align-items:baseline;font-size:15px;font-weight:400;gap:0}
 .o-hd-key{width:52px;flex-shrink:0;font-weight:400}
 .o-hd-val{flex:1;line-height:1.5;word-break:keep-all;font-weight:400}
 
@@ -1248,7 +1248,7 @@ function render() {
   h += `<div class="o-hd" style="background:${headerBg}">`;
   if (brand) h += `<div class="o-hd-title" style="color:${headerTx}">${brand}</div>`;
   h += `<div class="o-hd-title" style="color:${headerTx};margin-top:${brand?'0':'0'}">${title || '행사 제목 둘째줄을 입력하세요'}</div>`;
-  h += `<div class="o-hd-meta" style="margin-top:10px">`;
+  h += `<div class="o-hd-meta">`;
   if (period) {
     h += `<div class="o-hd-row"><span class="o-hd-key" style="color:${headerMuted}">기간</span>`;
     h += `<span class="o-hd-val" style="color:${valColor}">${period}</span></div>`;
